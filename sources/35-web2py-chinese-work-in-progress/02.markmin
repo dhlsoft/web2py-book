@@ -18,7 +18,7 @@ Python最初由Guido van Rossum于1991年发布。该语言是开源的、基于
 ### 启动
 ``shell``:inxx
 
-Web2py的二进制发行版支持微软Windows或苹果OS X操作系统，该发行文件中包含内置的Python解释器。
+Web2py的二进制发行版支持微软Windows或苹果OS X操作系统，该发行文件中包含内置的Python2.7解释器。
 
 在Windows操作系统下，可以使用如下命令来启动web2py(在DOS提示符下输入)：
 ``
@@ -35,7 +35,7 @@ web2py.exe -S welcome
 python web2py.py -S welcome
 ``:code
 
-如果您没有预先安装Python2.5(或者更新的版本2.x)，在运行web2py之前，您需要下载并安装新的Python。
+如果您没有预先安装Python 2.7或Python 3.5+，在运行web2py之前，您需要下载并安装新的Python。
 
 -S welcome 命令行选项指示web2py运行交互式壳(shell)，就像是welcome应用中命令在控制器内被执行，即web2py基本构建应用。这向用户暴露了几乎所有的web2py的类、对象及函数。这是web2py交互式命令行与普通Python命令行的唯一不同之处。
 
@@ -78,16 +78,7 @@ class int(object)
 类似的，我们用命令dir获取对象"1"的方法列表：
 ``
 >>> dir(1)
-['__abs__', '__add__', '__and__', '__class__', '__cmp__', '__coerce__',
-'__delattr__', '__div__', '__divmod__', '__doc__', '__float__',
-'__floordiv__', '__getattribute__', '__getnewargs__', '__hash__', '__hex__',
-'__index__', '__init__', '__int__', '__invert__', '__long__', '__lshift__',
-'__mod__', '__mul__', '__neg__', '__new__', '__nonzero__', '__oct__',
-'__or__', '__pos__', '__pow__', '__radd__', '__rand__', '__rdiv__',
-'__rdivmod__', '__reduce__', '__reduce_ex__', '__repr__', '__rfloordiv__',
-'__rlshift__', '__rmod__', '__rmul__', '__ror__', '__rpow__', '__rrshift__',
-'__rshift__', '__rsub__', '__rtruediv__', '__rxor__', '__setattr__',
-'__str__', '__sub__', '__truediv__', '__xor__']
+['__abs__', ..., '__xor__']
 ``:code
 
 ### 类型

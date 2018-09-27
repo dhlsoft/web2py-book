@@ -1,162 +1,165 @@
-
 ## 概述
 
 ### 安装
 
 ``Linux``:inxx ``Mac``:inxx ``Windows``:inxx
 
-在Windows和Mac OS系统上可以直接采用web2py的二进制包进行安装，该二进制包中已经存在Python的解释器，所以不用再单独安装Python的解释器。如果在Linux或者其他类Unix操作系统下科一采用源码进行安装，当然在Windows和Mac OS下也可以采用源码进行安装。当采用源码安装时，默认已经存在Python解释器了。
+web2py 提供用于 Windows 和 Mac OS X 的二进制包。二进制版本包含了 Python2.7 解释器,因此用户不需要预先安装。
+源代码版本能在 Windows、Mac、Linux 和其它 Unix 系统上运行。源代码包版本假定计算机安装了 Python2.7或3.5（甚至更新）
 
-首先解压下载的软件包，得到下面的文件
- ``web2py`` file.
+web2py 不需要安装。启动时,针对特定的操作系统,解压下载的压缩(zip)文件,并运行相应的 ``web2py`` 文件。
 
-在Windows操作系统上, 执行:
+在Unix和Linux(源代码版 source distribution)上运行:
 ``
-web2py.exe
+python web2py.py
 ``:code
 
-在OS X操作系统上, 执行:
+在OS X（可执行版 binary distribution）上运行:
 ``
 open web2py.app
 ``:code
 
-在Unix和Linux操作系统上, 执行下面的命令:
+在Windows（可执行web2py版 binary web2py distribution）上运行:
 ``
-python2.5 web2py.py
+web2py.exe
 ``:code
 
-如果在Windows上采用源码安装，可以先看下[[Mark Hammond's "Python for Windows extensions http://sourceforge.net/projects/pywin32/]], 然后执行:
+在Windows(源代码web2py版 source web2py distribution)上运行:
 ``
-python2.5 web2py.py
+c:/Python27/python.exe web2py.py
 ``:code
 
-web2py程序后面可以跟很多参数，这个我们后面再讨论。
+------
+请注意，如果在Windows上采用源码运行web2py，您必须从``http://sourceforge.net/projects/pywin32/``安装Mark Hammond的win32扩展。
+------
 
-默认情况下，当执行完命令后，web2py会显示开始界面和一个控件让你设置administrator密码和网站启动的IP和端口地址。默认情况下web2py会启动在127.0.0.1:8000这个地址上（就是本机的8000端口），但你可以选择启动在可用的IP和端口上。你可以命令行查询可用的IP地址，在Windows上运行``ipconfig``，在OS X和Linux上运行``ifconfig``。当前我们假设web2py已经启动在本机的8000端口上（127.0.0.1:8000）。如果web2py启动在0.0.0.0:8000上则使用所有可用的网卡。
+web2py程序接受各种命令行选项,这将在后面讨论。
+
+默认情况下,在启动时,web2py 会显示一个启动窗口,然后显示一个GUI部件,要求您选择一个一次性管理员密码、网络接口的IP地址和端口号,其中IP地址用于web服务器,端口号用于服务请求。默认情况下,web2py在127.0.0.1:8000(本地主机localhost上的8000端口)上运行它的Web服务器,但它也能够在任何可用的IP地址和端口上运行。你可以查询网络接口的IP地址,方法是在Windows下打开命令行、键入 ipconfig 或在 OS X 和Linux 下键入 ifconfig。从现在开始,我们假定 web2py 在 localhost(127.0.0.1:8000)上运行,使用 0.0.0.0:80 可以在任何网络接口上运行公开 web2py。
 
 [[image @///image/en400.png center 306px]]
 
-如果你没有提供administrator密码，则administration接口是不可用的。这样外网的用户就不能通过admin来对网站进行操作，比较安全。
+如果你不提供管理员密码,管理界面是不可用的。这是为了防止暴露管理界面而采取的安全措施。
 
-默认情况（不使用Apache代理）administrative接口， **admin**，只能通过本机访问。如果**admin**检测到存在代理，则cookie被设置为安全模式，只能用https方式访问。所有客户端与 **admin**的连接都必须是本地或者加密的，不然攻击者可以采用man-in-the middle攻击或者replay攻击在服务器上执行任意代码。
+管理界面**admin**仅能通过 localhost(本地主机)访问,除非你在后台使用带有mod_proxy 的 Apache 服务器上运行 web2py。如果**admin**检测到代理,会话 cookie 被设为安全,**admin** 登录不起作用,除非客户端和代理之间采用 HTTPS 通信这一安全措施。客户端和**admin**之间的所有通信必须始终是本地的或加密的;否则,攻击者将能发动中间（man-in-the middle）攻击或重放(replay)攻击,并在服务器端执行任意代码。
 
-当administration设置好时，可以通过下面的网页访问web2py程序：
+管理密码设置后,可以通过下面的网页访问web2py程序:
 ``
 http://127.0.0.1:8000/
 ``:code
 
-打开一个web浏览器，输入上面的URL
+如果计算机没有默认的浏览器,打开一个 web 浏览器并输入 URL。
+
 [[image @///image/en500.png center 480px]]
 
-点击"administrative interface"将会进入admin的登录界面.
+点击"administrative interface"将会进入admin管理界面的登录页面。
 
 [[image @///image/en600.png center 480px]]
 
-adminstrator的密码是启动web2py时你填写的那个。
+管理员密码是您在启动时你填写的那个密码。
+请注意,管理员只有一个,因此也只有一个管理员密码,出于安全原因,web2py 每次启动时,开发人员都要选择一个新密码,除非<recycle>选项被指定,这有别于web2py应用中的身份验证机制。
 
-注意这里只能配置一个administrtor，处于安全考虑，开发者每次启动web2py时都会被要求选择一个新的admin密码，除非<recycle>选项被选中。
+管理员登录 web2py 之后,浏览器被定向到"site"页面。
 
-当用admin登录到web2py时，浏览器直接跳转到"site"页面
 [[image @///image/en700.png center 480px]]
 
-这个页面显示所有安装在web2py上安装的应用，并且可以用admin账户管理。
+该页面列出了全部已安装的 web2py 应用,并允许管理员管理它们。
 web2py默认包含3个应用：
 ``admin``:inxx ``examples``:inxx ``welcome``:inxx ``scaffolding``:inxx
 - 一个**admin**应用，就是你正在使用的。
-- 一个**examples**应用，包含在线的文档和一个web2py主页的仿制品。
-- 一个**welcome**应用，这是一个基本的模板用来制作其他应用。如果你创建新的应用，这个应用就是模板，包含欢迎界面。
+- 一个**examples**应用，包含在线交互式文档和一个 web2py 官方网站的副本。
+- 一个**welcome**应用，它是任何其它 web2py 应用的基本模板,也被称为基本构建应用(scaffolding application),也是当启动时欢迎用户的应用。
 
 ``appliances``:inxx
-可以参考''appliances''，这个地方有很多别人已经做好的应用，你可以免费下载
-``appliances``:cite . 我们鼓励web2py用户提交新的应用，不管是开源的还是闭源的，编译后的或者打包的都可以。
+立即可用的 web2py 应用被称作 web2py ''appliances'' , 你可以在``appliances``:cite 下载许多免费提供的应用范例,鼓励 web2py 用户提交新的应用范例,无论是以开源还是闭源(编译和打包)的形式。
 
 在**admin**应用的''site''页面，你可以进行如下操作：
-- **导入**一个应用，在页面的右下角有相关按钮，你需要填入应用的名称、文件的位置或者URL。
-- **卸载** 一个应用. 当卸载应用时会弹出提示信息.
-- **创建** 一个应用通过点击"create"按钮.
-- **打包** 一个应用. 打包的应用包含所有的信息，如数据库等信息（打包格式为tar）. **admin**导入到处的文件时，你不用解压，程序会自动解压。
-- **删除** 一个应用的临时文件，如果错误的页面、会话、缓存等。
-- **编辑** 一个应用.
+- **导入** 通过填写页面右下角的表单,安装应用;给应用命名,选择包含封装应用的文件夹或应用所处位置的 URL,并点击 "submit"。
+- **卸载** 通过点击相应按钮,卸载应用,卸载时会弹出确认页面。
+- **创建** 通过填写一个名称,并点击 "create",即可创建一个新应用。
+- **打包** 通过点击相应的按钮,打包应用发行。下载的应用是一个包括数据库的完整压缩(tar)文件,不用解压这个文件,使用**admin**安装后web2py会自动将它解压。
+- **清理** 清理应用临时文件,例如会话、错误和缓存文件。
+- **启用/禁用** 每个应用程序。当应用程序被禁用时，不能远程调用它，但本地主机不会禁用它。这意味着禁用的应用程序仍然可以在本地访问。通过在应用程序文件夹中创建一个名为“disabled”的文件，可以禁用应用程序。试图访问禁用应用程序的用户将收到“暂时停工维修”错误页面。您可以使用routes_onerror来定制错误页面。
+- **编辑** 一个应用。
 
 -----
-当你用**admin**创建一个应用时，它是以“welcome”为框架的，默认包含一个SQLite数据库，可以通过修改"models/db.py"来进行数据的鉴权、操作、和配置他们，默认还包含"controller/default.py"文件，用来管理“index”、“deownload”、“user”和调用服务。下面我们假设我们的工程中不存在这些文件，我们将一步步创建我们的应用。
+在你用**admin**创建新应用时,它开始是作为带有一个"models/db.py"的"welcome"基本构建应用的克隆,"models/db.py"创建一个 SQLite 数据库,并连接到该数据库,实例化Auth、 Crud 和 Service,并配置它们。它还提供了一个"controller/default.py",为用户管理暴露了动作"index"、"download"和"user",为服务暴露了"call"。下面,我们假设这些文件已被删除,我们将从头开始创建应用。
 -----
 
------
-web2py也包含一个**向导**，用来替换默认的布局等，在本章后续部分会进行介绍。
------
+web2py还附带了一个**向导**,在本章后面介绍,基于网络上提供的布局、插件和模型的高层次描述,向导能为用户编写替代框架代码。
 
-### Say hello
+### 简单例子
+
+#### 问好
 ``index``:inxx
 
-我们首先创建一个简单的web应用，显示”Hello from MyApp“，和统计每个用户的访问次数。
+一个例子,我们创建一个简单的 Web 应用,它向用户显示"Hello from MyApp",我们把这个应用称为“myapp”,还将增加一个统计用户访问相同页面次数的计数器
 
-首先我们用**admin**在**site**创建一个简单的应用。
+您可以通过在**admin**内 **site**页面右上角表单中键入应用的名称,你就可以创建一个新应用。
 
 [[image @///image/en800.png center 447px]]
 
-当你点击”create“按钮后，我们的应用程序就创建出来了，它基于”welcome“应用的，所以我们需要对他进行改造。
+当你点击[create]按钮之后,新应用就会作为内置 welcome 的副本被创建。
 
 [[image @///image/en900.png center 480px]]
 
-如果要查看应用的结果，可以访问:
+要运行新应用,请访问:
 ``
 http://127.0.0.1:8000/myapp
 ``:code
 
-现在你已经拥有一个”welcome“应用的框架了。
+现在,你有一个 welcome 应用的副本了。
 
-在编辑应用，点击”修改“按钮。
+为了编辑应用,可以点击新创建应用的 ''edit'' 按钮。
 
-**修改**页面显示了应用中包含的所有文件。
+**修改** 页面显示了应用中包含的所有文件。
+每个 web2py 应用包括一些特定文件,其中大部分可归纳为以下六类:
+- **models**: 描述数据表示。
+- **controllers**: 描述应用逻辑和工作流程。
+- **views**: 描述数据表达。
+- **languages**: 描述如何将应用表达翻译成其它语言。
+- **modules**: 属于应用的 Python 模块。
+- **static files**: 静态图像,CSS ``css-w,css-o,css-school``:cite 文件,JavaScript``js-w,js-b``:cite文件等等。
+- **plugins**: 用于设计协同工作的文件组。
 
-Every web2py application consists of certain files, most of你 which fall into one of isx categories:
-- **models**: describe the data representation.
-- **controllers**: describe the application logic and workflow.
-- **views**: describe the data presentation.
-- **languages**: describe how to translate the application presentation to other languages.
-- **modules**: Python modules that belong to the application.
-- **static files**: static images, CSS  files``css-w,css-o,css-school``:cite , JavaScript files``js-w,js-b``:cite , etc.
-- **plugins**: groups of files designed to work together.
- 
-Everything is neatly organized following the Model-View-Controller design pattern. Each section in the ''edit'' page corresponds to a subfolder in the application folder.
+遵循 MVC 设计模式,应用设计井然有序。''edit''页面中的每个部分对应于应用文件夹的一个子文件夹。
 
-Notice that section headings will toggle their content. Folder names under static files are also collapsible.
+注意,节标题将切换其内容,静态文件的文件夹名称也是可折叠的。
 
 -------
-Each file listed in the section corresponds to a file physically located in the subfolder. Any operation performed on a file via the **admin** interface (create, edit, delete) can be performed directly from the shell using your favorite editor.
+本节中列出的每个文件对应于子文件夹中的实体文件。通过 **admin** 界面对文件的任何操作(创建、编辑、删除),都可以使用您偏爱的编辑器直接从 shell 执行。
 -------
 
-The application contains other types of files (database, session files, error files, etc.), but they are not listed on the ''edit'' page because they are not created or modified by the administrator; they are created and modified by the application itself.
+该应用包含其它类型的文件(数据库、会话文件、错误文件等),但它们并没有在编辑页面中列出,因为它们不是由管理员创建或修改,而是由应用本身创建和修改。
 
-The controllers contain the logic and workflow of the application. Every URL gets mapped into a call to one of the functions in the controllers (actions). There are two default controllers: "appadmin.py" and "default.py". **appadmin** provides the database administrative interface; we do not need it now. "default.py" is the controller that you need to edit, the one that is called by default when no controller is specified in the URL. Edit the "index" function as follows:
+控制器包含应用逻辑和工作流程,每个 URL 都被映射成控制器(actions)中某个函数的调用。有两个默认控制器:"appadmin.py"和"default.py", **appadmin**  提供数据库管理界面,目前我们还不需要它,"default.py"是你需要编辑的控制器,当 URL 中没有指定控制器时,默认调用它。编辑 "index" 函数如下:
 ``
 def index():
     return "Hello from MyApp"
 ``:code
 
-Here is what the online editor looks like:
+下面是在线编辑器的图示:
 
 [[image @///image/en1000.png center 480px]]
 
-Save it and go back to the ''edit'' page. Click on the index link to visit the newly created page.
+保存并返回到''edit'' 页面。点击 index 链接访问新创建的页面。
 
-When you visit the URL
+当你访问URL时
 ``
 http://127.0.0.1:8000/myapp/default/index
 ``:code
 
-the index action in the default controller of the myapp application is called. It returns a string that the browser displays for us. It should look like this:
+myapp应用中的默认控制器的index行为将被调用,它返回一个在浏览器中显示的字符串,如下图所示:
 
 [[image @///image/en1100.png center 480px]]
 
-Now, edit the "index" function as follows:
+现在,编辑 "index" 函数如下:
 ``
 def index():
     return dict(message="Hello from MyApp")
 ``:code
 
-Also from the ''edit'' page, edit the view "default/index.html" (the view file associated with the action) and completely replace the existing contents of that file with the following:
+从''edit'' 页面,编辑视图"default/index.html"(视图文件与 action 有关),并且用如下内容完全替换该文件的当前内容:
 ``
 <html>
    <head></head>
@@ -166,47 +169,53 @@ Also from the ''edit'' page, edit the view "default/index.html" (the view file a
 </html>
 ``:code
 
-Now the action returns a dictionary defining a ``message``. When an action returns a dictionary, web2py looks for a view with the name
+现在 action 返回一个定义``message``的字典,当 action 返回一个字典时,web2py 会查找一个名称如下的视图:
 
-``[controller]/[function].[extension]``:code
+``
+[controller]/[function].[extension]
+``:code
 
- and executes it. Here [extension] is the requested extension. If no extension is specified, it defaults to "html", and that is what we will assume here. Under this assumption, the view is an HTML file that embeds Python code using special {{ }} tags. In particular, in the example, the ``{{=message}}`` instructs web2py to replace the tagged code with the value of the ``message`` returned by the action. Notice that ``message`` here is not a web2py keyword but is defined in the action. So far we have not used any web2py keywords.
+并执行它。这里``[extension]`` 是请求的扩展名,如果没有指定扩展名,默认为"html" ,这里我们也将这样假设,在这个假设下,视图是一个使用特殊标签{{ }}并嵌入 Python 代码的 HTML 文件,特别是,在本例中``{{=message}}`` 指示 web2py 用 action 返回的 ``message`` 值取代标签代码。注意,这里 ``message`` 不是一个 web2py 关键字,但被定义在 action 中。到目前为止我们没有使用任何 web2py 关键字。
 
-If web2py does not find the requested view, it uses the "generic.html" view that comes with every application.
-
--------
-If an extension other than "html" is specified ("json" for example), and the view file "[controller]/[function].json" is not found, web2py looks for the view "generic.json". web2py comes with generic.html, generic.json, generic.xml, and generic.rss. These generic views can be modified for each application individually, and additional views can be added easily.
--------
+如果 web2py 没有找到请求的视图, 它将使用通用视图“generic.html”。
 
 -------
-Generic views are a development tool. In production every action should have its own view. In fact, by default, generic views are only enabled from localhost.
+``Mac Mail``:inxx ``Google Maps``:inxx ``jsonp``:inxx
+如果指定 "html" 以外的扩展名(例如"json" ),并且视图文件"[controller]/[function].json" 未被找到,web2py 将查找"generic.json"视图。web2py 带有generic.html、 generic.json、 generic.jsonp、 generic.xml、 generic.rss 、generic.ics (for Mac Mail Calendar)、generic.map (for embedding Google Maps)和generic.pdf (based on fpdf)。应用可以单独修改这些通用视图,并且可以很容易的添加其它视图。
 -------
 
 -------
-You can also specify a view with ``response.view = 'default/something.html'``
+通用视图是一种开发工具。在生产中每个 action 都应有自己的视图,实际上,默认时通用视图只能从 localhost 启用。
 -------
 
-Read more on this topic in Chapter 10.
+-------
+你也可以使用  ``response.view = 'default/something.html'``指定一个视图。
+-------
 
-If you go back to "EDIT" and click on index, you will now see the following HTML page:
+在第 10 章中,你也可以看到有关这个主题的更多内容。
+
+如果你回到"EDIT" 并点击 index,你将看到如下 HTML 页面:
 
 [[image @///image/en1200.png center 480px]]
 
-For debugging purposes you can always append
+#### 调试工具栏
+``toolbar``:inxx
+
+出于调试目的，您可以插入
 
 ``
 {{=response.toolbar()}}
 ``:code
 
-to the code in a view and it will show you some useful information, including the request, response and session objects, and list all db queries with their timing.
+到视图中,它会向你显示一些有用信息,包括请求、响应和会话对象,并列出所有数据库查询及其时间。
 
-### Let's count
+#### 计数
 ``session``:inxx
-Let's now add a counter to this page that will count how many times the same visitor displays the page.
+我们现在添加一个计数器到页面中,该计数器将统计相同访问者访问页面的次数。
 
-web2py automatically and transparently tracks visitors using sessions and cookies. For each new visitor, it creates a session and assigns a unique "session_id". The session is a container for variables that are stored server-side. The unique id is sent to the browser via a cookie. When the visitor requests another page from the same application, the browser sends the cookie back, it is retrieved by web2py, and the corresponding session is restored.
+web2py 将自动、透明的使用会话和 cookie 追踪访问者。对于新访问者, 它创建一个会话并分配唯一的"session_id" 。会话是一个存储服务器端变量的容器,唯一的 id 通过 cookie发送到浏览器,当访问者请求同一应用中的另一页面时,浏览器发回cookie,它被web2py回收并且相应的会话被恢复。
 
-To use the session, modify the default controller:
+为了使用会话,修改默认控制器如下:
 ``
 def index():
     if not session.counter:
@@ -216,16 +225,16 @@ def index():
     return dict(message="Hello from MyApp", counter=session.counter)
 ``:code
 
-Notice that ``counter`` is not a web2py keyword but ``session`` is. We are asking web2py to check whether there is a counter variable in the session and, if not, to create one and set it to 1. If the counter is there, we ask web2py to increase the counter by 1. Finally we pass the value of the counter to the view.
+注意 ``counter`` 不是 web2py 关键字但 ``session``  是,我们要求 web2py 检查会话中是否有计数器变量,如果没有创建一个并将其设为 1,如果有计数器变量,我们要求 web2py 把计数器的值加 1。最后,我们把计数器的值传递给视图。
 
-A more compact way to code the same function is this:
+更紧凑更简洁的实现相同功能的代码如下:
 ``
 def index():
     session.counter = (session.counter or 0) + 1
     return dict(message="Hello from MyApp", counter=session.counter)
 ``:code
 
-Now modify the view to add a line that displays the value of the counter:
+现在修改视图,添加一行显示计数器值的代码:
 ``
 <html>
    <head></head>
@@ -236,20 +245,21 @@ Now modify the view to add a line that displays the value of the counter:
 </html>
 ``:code
 
-When you visit the index page again (and again) you should get the following HTML page:
+当你再次访问 index 页面时,你应该得到以下 HTML 页面:
 
 [[image @///image/en1300.png center 480px]]
 
-The counter is associated with each visitor, and is incremented each time the visitor reloads the page. Different visitors see different counters.
+计数器与每个访问者相关,访问者每次重载页面时计数器递增 1,不同访问者看到的计数器不同。
 
-### Say my name
+
+#### 说出我的名字
 ``form``:inxx ``request.vars``:inxx
 
-Now create two pages (first and second), where the first page creates a form, asks the visitor's name, and redirects to the second page, which greets the visitor by name.
+现在创建两个页面(first 和 second),其中 first 页面创建一个表单,询问访问者的名字,并重定向到 second 页面,second 页面通过名字向访问者打招呼。
 
-[[yUML diagram @///image/en1400.png center 293px]]
+[[yUML diagram @///image/en1400.png center 200px]]
 
-Write the corresponding actions in the default controller:
+在默认控制器中写入相应 action(动作):
 ``
 def first():
     return dict()
@@ -258,44 +268,44 @@ def second():
     return dict()
 ``:code
 
-Then create a view "default/first.html" for the first action,
-and enter:
+然后为 first action 创建一个视图"default/first.html",
+并输入:
 ``
 {{extend 'layout.html'}}
-What is your name?
-<form action="second">
+<h1>What is your name?</h1>
+<form action="{{=URL('second')}}">
   <input name="visitor_name" />
   <input type="submit" />
 </form>
 ``:code
 
-Finally, create a view "default/second.html" for the second action:
+最后,为 second action 创建一个视图 "default/second.html":
 ``
 {{extend 'layout.html'}}
 <h1>Hello {{=request.vars.visitor_name}}</h1>
 ``:code
 
 ``layout``:inxx
-In both views we have extended the basic "layout.html" view that comes with web2py. The layout view keeps the look and feel of the two pages coherent. The layout file can be edited and replaced easily, since it mainly contains HTML code.
+在这两个视图中,我们都扩展了 web2py 自带的基本视图 "layout.html",layout 视图保持两页面的外观和感觉一致,因为 layout 文件主要包含 HTML 代码,因此可以轻松地编辑和替换。
 
-If you now visit the first page, type your name:
+如果你现在访问 first 页面,输入你的名字:
 
 [[image @///image/en1500.png center 480px]]
 
-and submit the form, you will receive a greeting:
+并提交表单,你将收到一个问候:
 
 [[image @///image/en1600.png center 480px]]
 
-### Postbacks
+#### 页面回传
 ``redirect``:inxx ``URL``:inxx ``postback``:inxx
 
-The mechanism for form submission that we used before is very common, but it is not good programming practice. All input should be validated and, in the above example, the burden of validation would fall on the second action. Thus the action that performs the validation is different from the action that generated the form. This tends to cause redundancy in the code.
+我们前面使用的表单提交机制非常常见,但这并不是好的编程习惯。所有输入都应该进行验证，在上面的例子中,验证的负担会落在 second action 上,执行验证的 action 与生成表单的 action 不同,这往往造成代码冗余。
 
-A better pattern for form submission is to submit forms to the same action that generated them, in our example the "first". The "first" action should receive the variables, process them, store them server-side, and redirect the visitor to the "second" page, which retrieves the variables. This mechanism is called a ''postback''.
+一个更好的表单提交模式是将表单提交给生成它们的action,在我们的例子中是"first", "first" action 应该接受变量、处理变量和将变量存储在服务器端,并将访问者重新定向到 "second"页面,该页面将回收变量,这种机制被称为''页面回传''(postback)。
 
-[[yUML diagram @///image/en1700.png center 293px]]
+[[yUML diagram @///image/en1700.png center 200px]]
 
-Modify the default controller to implement self-submission:
+修改默认控制器实现自提交:
 ``
 def first():
     if request.vars.visitor_name:
@@ -307,7 +317,7 @@ def second():
     return dict()
 ``:code
 
-Then modify the "default/first.html" view:
+然后,修改视图"default/first.html":
 ``
 {{extend 'layout.html'}}
 What is your name?
@@ -317,219 +327,283 @@ What is your name?
 </form>
 ``:code
 
-and the "default/second.html" view needs to retrieve the data from the ``session`` instead of from the ``request.vars``:
+并且 "default/second.html"视图需要从 ``session`` 而非 ``request.vars`` 恢复数据:
 ``
 {{extend 'layout.html'}}
 <h1>Hello {{=session.visitor_name or "anonymous"}}</h1>
 ``:code
 
-From the point of view of the visitor, the self-submission behaves exactly the same as the previous implementation. We have not added validation yet, but it is now clear that validation should be performed by the first action.
+从访问者的角度,自提交与先前的实现方法完全相同。我们还没有添加验证,但现在很清楚验证应该由 first action 执行。
 
-This approach is better also because the name of the visitor stays in the session, and can be accessed by all actions and views in the applications without having to be passed around explicitly.
+这种方法比较好,因为访问者的名字留在 session 中,并且可以被应用程序中的所有 action 和 view 访问，而不需要显式地传递。
 
-Note that if the "second" action is ever called before a visitor name is set, it will display "Hello anonymous" because  ``session.visitor_name`` returns ``None``. Alternatively we could have added the following code in the controller (inside the ``second`` function):
+注意:在访问者名被设定之前,如果"second" action 被调用,它将显示"Hello anonymous",这是因为``session.visitor_name``返回为 ``None``。另外,我们可以在控制器中添加下面的代码(在 ``second`` 函数内):
 
 ``
-if not request.function=='first' and not session.visitor_name:
+if request.function != 'first' and not session.visitor_name:
     redirect(URL('first'))
 ``:code
 
-This is a general mechanism that you can use to enforce authorization on controllers, though see Chapter 9 for a more powerful method.
+这是在控制器上强制授权的一种''ad hoc''特定机制,更有效的方法参阅第9章。
 
 ``FORM``:inxx ``INPUT``:inxx ``requires``:inxx ``IS_NOT_EMPTY``:inxx ``accepts``:inxx
 
-With web2py we can move one step further and ask web2py to generate the form for us, including validation. web2py provides helpers (FORM, INPUT, TEXTAREA, and SELECT/OPTION) with the same names as the equivalent HTML tags. They can be used to build forms either in the controller or in the view.
+使用 web2py,我们可以更进一步，让web2py为我们生成包括验证在内的表单,web2py提供帮助对象(FORM、 INPUT、 TEXTAREA 和 SELECT/OPTION)。它们与等效的 HTML 标签同名,且它们可以用于在控制器或视图中构建表单。
 
-For example, here is one possible way to rewrite the first action:
+例如,这里是改写 first action 的一种可能方式:
 ``
 def first():
     form = FORM(INPUT(_name='visitor_name', requires=IS_NOT_EMPTY()),
-              INPUT(_type='submit'))
+                INPUT(_type='submit'))
     if form.process().accepted:
         session.visitor_name = form.vars.visitor_name
         redirect(URL('second'))
     return dict(form=form)
 ``:code
 
-where we are saying that the FORM tag contains two INPUT tags. The attributes of the input tags are specified by the named arguments starting with underscore. The ``requires`` argument is not a tag attribute (because it does not start by underscore) but it sets a validator for the value of visitor_name.
+这里我们说的 FORM 标签包含两个 INPUT 标签,input 标签的属性由以下划线开头的命名参数指定。``requires`` 参数不是一个标签属性(因为它不以下划线开头),但为visitor_name的值设置了一个验证。
 
-Here is yet another better wat to create the same form:
+这里还有另一种更好的方式来创建相同的表单:
+
+``
+def first():
+    form = SQLFORM.factory(Field('visitor_name',
+                                 label='what is your name?',
+                                 requires=IS_NOT_EMPTY()))
+    if form.process().accepted:
+        session.visitor_name = form.vars.visitor_name
+        redirect(URL('second'))
+    return dict(form=form)
+``:code
+
+通过在视图 "default/first.html" 中嵌入 ``form`` 对象,可以很容易的在 HTML 中将它序列化。
+``
+{{extend 'layout.html'}}
+{{=form}}
+``:code
+
+``form.process()`` 方法使用了验证器并返回表单本身,如果表单已经被处理并通过验证,``form.accepted``变量将被设为 True。如果自提交表单通过验证,它将在会话中存储变量并像以前一样重定向。如果表单没有通过验证,错误消息会被插入到表单中,并以如下方式显示给用户:
+
+[[image @///image/en1800.png center 480px]]
+
+下一节,我们将展示如何从模型自动生成表单。
+
+在我们的所有示例中，我们都使用会话将用户名从 first action 传递到second action。我们可以使用不同的机制，传递数据作为重定向URL的一部分:
 
 ``
 def first():
     form = SQLFORM.factory(Field('visitor_name', requires=IS_NOT_EMPTY()))
     if form.process().accepted:
-        session.visitor_name = form.vars.visitor_name
-        redirect(URL('second'))
+        name = form.vars.visitor_name
+        redirect(URL('second', vars=dict(name=name)))
     return dict(form=form)
+
+def second():
+    name = request.vars.name or redirect(URL('first'))
+    return dict(name=name)
 ``:code
 
-The ``form`` object can be easily serialized in HTML by embedding it in the "default/first.html" view.
+然后,修改视图 "default/second.html":
+
 ``
 {{extend 'layout.html'}}
-What is your name?
-{{=form}}
+<h1>Hello {{=name}}</h1>
 ``:code
 
-The ``form.process()`` method applies the validators and returns the form itself. The ``form.accepted`` variable is set to True if the form was processed and passed validation. If the self-submitted form passes validation, it stores the variables in the session and redirects as before. If the form does not pass validation, error messages are inserted into the form and shown to the user, as below:
+请注意，通常使用URL将数据从一个 action 传递到另一个 action 不是一个好方式。这使得保护应用程序数据变得更加困难。在会话中存储数据更安全。
 
-[[image @///image/en1800.png center 480px]]
+#### 国际化
 
-In the next section we will show how forms can be generated automatically from a model.
+您的代码可能包含硬编码的字符串，例如 "What is your name?"。 您应该能够在不编辑代码的情况下定制字符串，特别是在不同语言中插入这些字符串的翻译。这样，如果访问者的语言偏好设置为"意大利语"，web2py将使用意大利语翻译字符串。web2py的这个特性称为“国际化”，将在下一章详细介绍。
 
-### An image blog
+在这里我们只是看到，为了使用这个特性，您应该标记需要翻译的字符串。这是通过在代码中封装一个带引号的字符串来完成的，例如
+
+``
+"What is your name?"
+``:code
+
+用``T`` 操作符：
+
+``
+T("What is your name?")
+``:code
+
+
+您还可以为视图中硬编码的翻译字符串标记。例如
+
+``
+<h1>What is your name?</h1>
+``:code
+
+就变成了
+
+``
+<h1>{{=T("What is your name?")}}</h1>
+``:code
+
+对于代码中的每一个字符串(字段标签、flash消息等)，除了表和字段名之外，最好都这样做。
+
+一旦确定并标记了字符串，web2py就会处理几乎所有其他事情。admin管理界面还提供了一个页面，您可以在其中用希望支持的语言翻译每个字符串。
+
+-----------
+web2py包括一个强大的多元化引擎，将在下一章中描述。它集成了国际化引擎和markmin渲染器。
+-----------
+
+### 一个图像博客
 ``upload``:inxx
 
-Here, as another example, we wish to create a web application that allows the administrator to post images and give them a name, and allows the visitors of the web site to view the named images and submit comments.
+在这里，作为另一个例子,在这里我们希望创建一个 Web 应用,它允许管理员发布图片并给它们命名,同时允许网站访问者查看命名的图片并提交评论(帖子posts)。
 
-As before, from the **site** page in **admin**, create a new application called ``images``, and navigate to the ''edit'' page:
+与之前一样,从  **admin** 中的 **site** 页面创建一个命名为 ``images``的新应用,并导航到 ''edit''页面:
 
 [[image @///image/en1900.png center 480px]]
 
-We start by creating a model, a representation of the persistent data in the application (the images to upload, their names, and the comments). First, you need to create/edit a model file which, for lack of imagination, we call "db.py". We assume the code below will replace any existing code in "db.py". Models and controllers must have a ``.py`` extension since they are Python code. If the extension is not provided, it is appended by web2py. Views instead have a ``.html`` extension since they mainly contain HTML code.
+我们开始创建一个模型,即应用中持久数据的表示(上传的图像、它们的名字和评论)。首先,你需要创建/编辑模型文件,由于缺乏想象力,我们称之为 "db.py"。我们假设下面的代码将取代 "db.py"中任何现有的代码。模型和控制器必须具有 ``.py``扩展名,因为它们是Python 代码。如果没有提供扩展名,web2py 会自动添加,视图具有``.html``扩展名,因为它们主要包含 HTML 代码。
 
-Edit the "db.py" file by clicking the corresponding "edit" button:
+删除模型"menu.py"文件。
+
+通过点击相应的 "edit" 按钮,可以编辑 "db.py" 文件:
 
 [[image @///image/en2000.png center 480px]]
 
-and enter the following:
+并输入以下代码:
 
 ``IS_EMAIL``:inxx ``IS_NOT_EMPTY``:inxx ``IS_IN_DB``:inxx
 ``
 db = DAL("sqlite://storage.sqlite")
 
 db.define_table('image',
-   Field('title', unique=True),
-   Field('file', 'upload'),
-   format = '%(title)s')
+                Field('title', unique=True),
+                Field('file', 'upload'),
+                format = '%(title)s')
 
-db.define_table('comment',
-   Field('image_id', db.image),
-   Field('author'),
-   Field('email'),
-   Field('body', 'text'))
+db.define_table('post',
+                Field('image_id', 'reference image'),
+                Field('author'),
+                Field('email'),
+                Field('body', 'text'))
 
 db.image.title.requires = IS_NOT_IN_DB(db, db.image.title)
-db.comment.image_id.requires = IS_IN_DB(db, db.image.id, '%(title)s')
-db.comment.author.requires = IS_NOT_EMPTY()
-db.comment.email.requires = IS_EMAIL()
-db.comment.body.requires = IS_NOT_EMPTY()
+db.post.image_id.requires = IS_IN_DB(db, db.image.id, '%(title)s')
+db.post.author.requires = IS_NOT_EMPTY()
+db.post.email.requires = IS_EMAIL()
+db.post.body.requires = IS_NOT_EMPTY()
 
-db.comment.image_id.writable = db.comment.image_id.readable = False
+db.post.image_id.writable = db.post.image_id.readable = False
 ``:code
 
-Let's analyze this line by line.
+让我们来逐行分析一下
 
-Line 1 defines a global variable called ``db`` that represents the database connection. In this case it is a connection to a SQLite database stored in the file  "applications/images/databases/storage.sqlite". In the SQLite case, if the database does not exist, it is created. You can change the name of the file, as well as the name of the global variable ``db``, but it is convenient to give them the same name, to make it easy to remember.
+第 1 行定义一个表示数据库连接，称为 ``db`` 的全局变量。在本例中,它是一个到 SQLite数据库的连接,该数据库存储在"applications/images/databases/storage.sqlite"文件中,在使用 SQLite 情况下,如果数据库不存在则创建它,可以更改文件和全局变量 ``db``的名称,但给予它们相同的名称更便于记忆。
 
-Lines 3-5 define a table "image". ``define_table`` is a method of the ``db`` object. The first argument, "image", is the name of the table we are defining. The other arguments are the fields belonging to that table. This table has a field called "title", a field called "file", and a field called "id" that serves as the table primary key ("id" is not explicitly declared because all tables have an id field by default). The field "title" is a string, and the field "file" is of type "upload". "upload" is a special type of field used by the web2py Data Abstraction Layer (DAL) to store the names of uploaded files. web2py knows how to upload files (via streaming if they are large), rename them safely, and store them.
+第 3-6 行定义一个"image"表。``define_table`` 是``db``对象的一个方法,第一个参数"image"是我们定义的表的名称,其它参数都是属于该表的字段,该表有一个"title"字段,一个"file"字段和一个"id"字段,并且"id"字段作为表的主键("id"没有显式声明,因为默认时所有表都有一个 id 字段)。"title"字段是一个字符串,字段"file"是"upload"类型。"upload"是一个特殊的字段类型,web2py 数据抽象层(DAL)用它来存储上传文件的名称。web2py 知道如何上传文件(如果文件大则用流媒体)、安全的重命名文件和存储文件。
 
-When a table is defined, web2py takes one of several possible actions:
-- if the table does not exist, the table is created;
-- if the table exists and does not correspond to the definition, the table is altered accordingly, and if a field has a different type, web2py tries to convert its contents;
-- if the table exists and corresponds to the definition, web2py does nothing.
+当定义表时,web2py可能采取如下操作之一:
+- 如果表不存在则创建它;
+- 如果表存在但不符合定义,表将被相应的修改,如果字段有不同的类型,web2py会设法转换其内容;
+- 如果表存在并且符合定义,web2py不执行任何操作。
 
-This behavior is called "migration". In web2py migrations are automatic, but can be disabled for each table by passing ``migrate=False`` as the last argument of ``define_table``.
+这种行为被称为"migration"。在 web2py 中迁移(migration)是自动的,但通过传递 ``migrate=False`` 作为``define_table``的最后一个参数,可以禁用每个表的迁移。
 
-Line 6 defines a format string for the table. It determines how a record should be represented as a string. Notice that the ``format`` argument can also be a function that takes a record and returns a string. For example:
+第 6 行为表定义了一个格式字符串,它决定了如何将记录表示为一个字符串。注意, ``format`` 参数也可以是一个函数,该函数需要一个记录并返回一个字符串。例如:
 
 ``
 format=lambda row: row.title
 ``:code
 
-Lines 8-12 define another table called "comment".
-A comment has an "author", an "email" (we intend to store the email address of the author of the comment), a "body" of type "text" (we intend to use it to store the actual comment posted by the author), and an "image_id" field of type reference that points to ``db.image`` via the "id" field.
+8-12 行定义另一个名为"post"的表。
+"post"表包含"author"、"email"(我们打算存储文章作者的电子邮件地址)、"text"类型的"body"(我们打算用它来存储作者发布的评论)和引用类型的"image_id"字段通过"id"字段指向 ``db.image``。
 
-In line 14, ``db.image.title`` represents the field "title" of table "image". The attribute ``requires`` allows you to set requirements/constraints that will be enforced by web2py forms. Here we require that the "title" is unique:
+在第 14 行,``db.image.title`` 表示"image"表的"title" 字段。属性``requires``允许您设置规定/限制,该规定/限制将被 web2py 表单强制设置,这里我们要求"title"是唯一的:
 
 ``IS_NOT_IN_DB(db, db.image.title)``:code
 
-''Notice this is optional because it is set automatically given that ``Field('title', unique=True)``''.
+''注意这是可选的,鉴于``Field('title', unique=True)``它将被自动设置''。
 
-The objects representing these constraints are called validators. Multiple validators can be grouped in a list. Validators are executed in the order they appear.
-``IS_NOT_IN_DB(a, b)`` is a special validator that checks that the value of a field ``b`` for a new record is not already in ``a``.
+表示这些限制的对象被称为验证器,多个验证器可以组合在一个列表中,并且根据出现的顺序执行验证。
+``IS_NOT_IN_DB(a, b)`` 是一个特殊验证,它检查新纪录字段 ``b`` 的值是否已经不在``a``中。
 
-Line 15 requires that the field "image_id" of table "comment" is in ``db.image.id``. As far as the database is concerned, we had already declared this  when we defined the table "comment".
-Now we are explicitly telling the model that this condition should be enforced by web2py, too, at the form processing level when a new comment is posted, so that invalid values do not propagate from input forms to the database. We also require that the "image_id" be represented by the "title", ``'%(title)s'``, of the corresponding record.
+第 15 行要求表"post" 的"image_id"字段在 ``db.image.id``中。就涉及的数据库而言,当定义表"post"时我们已经声明了这一点,现在我们明确地告诉模型,在表单处理层当有新评论发布时,该条件应当由 web2py 强制执行,这样无效值就不会从输入表单传递到数据库。
+我们还要求用相应记录的"title" ,即``'%(title)s'``来代表"image_id"。
 
-Line 20 indicates that the field "image_id" of table "comment" should not be shown in forms, ``writable=False`` and not even in readonly forms, ``readable=False``.
+第 20 行表明"post" 表的字段 "image_id"不应显示在表单中,``writable=False`` ,甚至只读形式也不行,``readable=False``。
 
-The meaning of the validators in lines 15-17 should be obvious.
+17-18 行中验证器的含义应该是显而易见的。
 
 ``format``:inxx
-Notice that the validator
+注意如下验证:
 ``
-db.comment.image_id.requires = IS_IN_DB(db, db.image.id, '%(title)s')
+db.post.image_id.requires = IS_IN_DB(db, db.image.id, '%(title)s')
 ``:code
 
-can be omitted (and would be automatic) if we specify a format for referenced table:
+如果我们为引用的表指定格式,可以省略(并且是自动的)它:
 ``
 db.define_table('image', ..., format='%(title)s')
 ``:code
 
-where the format can be a string or a function that takes a record and returns a string.
+这里该格式可以是字符串，也可以是接受记录并返回字符串的函数。
 
 ``appadmin``:inxx
-Once a model is defined, if there are no errors, web2py creates an application administration interface to manage the database. You access it via the "database administration" link in the ''edit'' page or directly:
+一旦模型被定义,如果没有错误,web2py 创建一个应用管理界面来管理数据库,可以通过 ''edit'' 页面中的 "database administration" 链接来访问它,或者直接访问:
 ``
 http://127.0.0.1:8000/images/appadmin
 ``:code
 
-Here is a screenshot of the **appadmin** interface:
+下面是 **appadmin** 界面的截图:
 
 [[image @///image/en2100.png center 480px]]
 
-This interface is coded in the controller called "appadmin.py" and the corresponding view "appadmin.html". From now on, we will refer to this interface simply as **appadmin**. It allows the administrator to insert new database records, edit and delete existing records, browse tables, and perform database joins.
+此界面在控制器"appadmin.py"和相应的视图 "appadmin.html"中编码。从现在起,我们将把这一界面简单的称作 **appadmin**,它允许管理员插入新的数据库记录、编辑和删除现有记录、浏览表和进行数据库连接。
 
-The first time **appadmin** is accessed, the model is executed and the tables are created. The web2py DAL translates Python code into SQL statements that are specific to the selected database back-end (SQLite in this example). You can see the generated SQL from the ''edit'' page by clicking on the "sql.log" link under "models". Notice that the link is not present until the tables have been created.
+ **appadmin** 第一次被访问时,执行模型并创建表,web2py DAL 将 Python 代码翻译成针对选定数据库后台(本例中是 SQLite)的 SQL 语句,通过点击"models"下的 "sql.log" 链接,你可以从 ''edit'' 页面看到生成的 SQL,注意在表被创建之前链接是不存在的。
 
 [[image @///image/en2200.png center 480px]]
 
-If you were to edit the model and access **appadmin** again, web2py would generate SQL to alter the existing tables. The generated SQL is logged into "sql.log".
+如果你要编辑模型,并再次访问 **appadmin** ,web2py 会生成 SQL 来修改现有的表,生成的 SQL 被记录在“sql.log”中。
 
-Now go back to **appadmin** and try to insert a new image record:
+现在回到 **appadmin** ,并尝试插入一个新的图片记录:
 
 [[image @///image/en2300.png center 480px]]
 
-web2py has translated the ``db.image.file`` "upload" field into an upload form for the file. When the form is submitted and an image file is uploaded, the file is renamed in a secure way that preserves the extension, it is saved with the new name under the application "uploads" folder, and the new name is stored in the ``db.image.file`` field. This process is designed to prevent directory traversal attacks.
+web2py 翻译 ``db.image.file`` 的"upload"字段为文件的上传表单,当表单被提交并且图像文件被上传时,将以安全的保留扩展名的方式重命名文件,用新文件名存储该文件到应用"uploads"文件夹中,新文件名将被保存在 ``db.image.file`` 字段中,该过程被设计来防止目录遍历攻击。
 
-Notice that each field type is rendered by a ''widget''. Default widgets can be overridden.
+注意,每个字段类型由一个部件(''widget'')呈现,默认部件可能被重写。
 
-When you click on a table name in **appadmin**, web2py performs a select of all records on the current table, identified by the DAL query
+当你在 **appadmin**中点击表名时,web2py 在当前表中执行选择所有记录,并由 DAL 查询确定:
 ``
 db.image.id > 0
 ``:code
 
-and renders the result.
+呈现结果如下。
 
 [[image @///image/en2400.png center 480px]]
 
-You can select a different set of records by editing the SQL query and pressing [Submit].
+您可以通过编辑 DAL 查询并按 [Submit]来选择一组不同的记录集。
 
-To edit or delete a single record, click on the record id number.
+若要编辑或删除单个记录,可以点击记录的 id 号。
 
-Because of the ``IS_IN_DB`` validator, the reference field "image_id" is rendered by a drop-down menu. The items in the drop-down are stored as keys (``db.image.id``), but are represented by their ``db.image.title``, as specified by the validator.
+由于 ``IS_IN_DB`` 验证,引用字段 "image_id" 通过下拉菜单呈现,下拉列表将被存储为键(``db.image.id``),但由 ``db.image.title``表示,正如验证指定的一样。
 
-Validators are powerful objects that know how to represent fields, filter field values, generate errors, and format values extracted from the field.
+验证器是功能强大的对象,它知道如何表示字段、过滤字段值、生成错误以及从字段中提取格式值。
 
-The following figure shows what happens when you submit a form that does not pass validation:
+下图显示了当您提交一个未通过验证的表单时会发生什么情况:
 
 [[image @///image/en2500.png center 480px]]
 
-The same forms that are automatically generated by **appadmin** can also be generated programmatically via the ``SQLFORM`` helper and embedded in user applications. These forms are CSS-friendly, and can be customized.
+由 **appadmin** 自动生成的相同表单,也可以通过 ``SQLFORM`` 帮助对象编程产生并嵌入用户应用中。这些表单都是 CSS 友好的且可被定制。
 
-Every application has its own **appadmin**; therefore, **appadmin** itself can be modified without affecting other applications.
+每个应用都有自己的 **appadmin**;因而, **appadmin**本身可以在不影响其它应用下被修改。
 
-So far, the application knows how to store data, and we have seen how to access the database via **appadmin**. Access to **appadmin** is restricted to the administrator, and it is not intended as a production web interface for the application; hence the next part of this walk-through. Specifically we want to create:
-- An "index" page that lists all available images sorted by title and links to detail pages for the images.
-- A "show/[id]" page that shows the visitor the requested image and allows the visitor to view and post comments.
-- A "download/[name]" action to download uploaded images.
+到目前为止,应用知道如何存储数据,并且我们已经看到如何通过**appadmin**访问数据库。仅限管理员访问**appadmin**,它的目的不是作为一个应用的生产web接口；因此下一部分逐步解说。具体来说,我们要创建:
+- 一个"index"页面,按页面的标题排序,列出所有可用的图像以及图像详细信息页面的链接。
+- 一个"show/[id]"页面,显示访问者请求的图像并允许访问者查看和发表评论。
+- 一个"download/[name]"动作,下载上传的图片。
 
-This is represented schematically here:
+图示如下:
 
 [[yUML diagram @///image/en2600.png center 480px]]
 
-Go back to the ''edit'' page and edit the "default.py" controller, replacing its contents with the following:
+返回到''edit'' 页面并编辑 "default.py" 控制器,将其内容替换为以下内容:
 
 ``select``:inxx
 ``
@@ -538,18 +612,18 @@ def index():
     return dict(images=images)
 ``:code
 
-This action returns a dictionary. The keys of the items in the dictionary are interpreted as variables passed to the view associated to the action. When developing, if there is no view, the action is rendered by the "generic.html" view that is provided with every web2py application.
+此动作返回一个字典。字典中的条目的键被解释为变量,传递给与动作相关的视图。在开发时,如果没有视图,动作被"generic.html"视图呈现，每个 web2py 应用都提供该视图。
 
-The index action performs a select of all fields (``db.image.ALL``) from table image, ordered by ``db.image.title``. The result of the select is a ``Rows`` object containing the records. Assign it to a local variable called ``images`` returned by the action to the view. ``images`` is iterable and its elements are the selected rows. For each row the columns can be accessed as dictionaries:
-``images[0]['title']`` or equivalently as ``images[0].title``.
+index 动作执行对表 image 中所有字段 (``db.image.ALL``) 的选择,按照 ``db.image.title``排序。选择的结果是一个``Rows`` 对象,其中包含选中的记录。将它赋值给一个局部变量,该局部变量叫做``images`` ,由动作返回给视图。 ``images`` 是迭代的,它的元素是选定的行,每行的列可以作为字典访问:
+``images[0]['title']`` 或等价为 ``images[0].title``。
 
-If you do not write a view, the dictionary is rendered by "views/generic.html" and a call to the index action would look like this:
+如果你没有写视图,字典将被 "views/generic.html"呈现并对 index 动作的调用如下:
 
 [[image @///image/en2700.png center 480px]]
 
-You have not created a view for this action yet, so web2py renders the set of records in plain tabular form.
+您还没有为该动作创建视图,因此 web2py 用普通表格形式呈现记录集。
 
-Proceed to create a view for the index action. Return to admin, edit "default/index.html" and replace its content with the following:
+继续为 index 动作建立一个视图。返回 admin,编辑 "default/index.html" 并将其内容替换为以下内容:
 ``
 {{extend 'layout.html'}}
 <h1>Current Images</h1>
@@ -560,50 +634,50 @@ Proceed to create a view for the index action. Return to admin, edit "default/in
 </ul>
 ``:code
 
-The first thing to notice is that a view is pure HTML with special {{...}} tags. The code embedded in {{...}} is pure Python code with one caveat: indentation is irrelevant. Blocks of code start with lines ending in colon (:) and end in lines beginning with the keyword ``pass``. In some cases the end of a block is obvious from context and the use of ``pass`` is not required.
+首先要注意的是,视图是有特殊标签{{...}}的纯HTML,嵌入{{...}}中的代码是纯Python 代码,需要注意一点:缩进是无关紧要的。代码块开始于以冒号(:)结束的行,并终止于以关键词 ``pass``结尾的行。在某些情况下,块的结尾从上下文看是很明显的,不需要使用 ``pass``。
 
-Lines 5-7 loop over the image rows and for each row image display:
+5-7 行循环 image 的行,并为每行显示:
 ``
 LI(A(image.title, _href=URL('show', args=image.id))
 ``:code
 
-This is a ``<li>...</li>`` tag that contains an ``<a href="...">...</a>`` tag which contains the ``image.title``. The value of the hypertext reference (href attribute) is:
+这是一个 ``<li>...</li>`` 标签,其中包含 ``<a href="...">...</a>`` 标签,该标签中包含 ``image.title``,超文本引用(href 属性)的值是:
 ``
 URL('show', args=image.id)
 ``:code
 
-i.e., the URL within the same application and controller as the current request that calls the function called "show", passing a single argument to the function, ``args=image.id``.
-``LI``, ``A``, etc. are web2py helpers that map to the corresponding HTML tags. Their unnamed arguments are interpreted as objects to be serialized and inserted in the tag's innerHTML. Named arguments starting with an underscore (for example ``_href``) are interpreted as tag attributes but without the underscore. For example ``_href`` is the ``href`` attribute, ``_class`` is the ``class`` attribute, etc.
+即同一应用中的 URL 和控制器,该控制器作为当前请求调用函数 "show",传递一个参数给函数, ``args=image.id``。
+``LI``, ``A``等是 web2py 帮助对象,它们映射到相应的 HTML 标签,它们的未命名参数被解释为需要序列化的对象并被插入标签内的 HTML,以下划线(例如 ``_href``)开始的命名参数被解释为不带下划线的标记属性。例如, ``_href`` 是 ``href`` 属性, ``_class`` 是 ``class`` 属性等。
 
-As an example, the following statement:
+例如:
 ``
 {{=LI(A('something', _href=URL('show', args=123))}}
 ``:code
 
-is rendered as:
+被呈现为:
 ``
 <li><a href="/images/default/show/123">something</a></li>
 ``:code
 
-A handful of helpers (``INPUT``, ``TEXTAREA``, ``OPTION`` and ``SELECT``) also support some special named attributes not starting with underscore (``value``, and ``requires``). They are important for building custom forms and will be discussed later.
+一些帮助对象(``INPUT``, ``TEXTAREA``, ``OPTION`` 和 ``SELECT`` )也支持一些特殊的不以下划线开始的命名属性(``value``和  ``requires``)。它们对于构建定制表单非常重要，稍后将对此进行讨论。
 
-Go back to the ''edit'' page. It now indicates that "default.py exposes index". By clicking on "index", you can visit the newly created page:
+返回 ''edit'' 页面,它现在表明"default.py exposes(暴露) index",通过点击"index",你可以访问新创建的页面:
 ``
 http://127.0.0.1:8000/images/default/index
 ``:code
 
-which looks like:
+这看起来像:
 
 [[image @///image/en2800.png center 480px]]
 
-If you click on the image name link, you are directed to:
+如果您点击图像名称链接，您将被定向到:
 ``
 http://127.0.0.1:8000/images/default/show/1
 ``:code
 
-and this results in an error, since you have not yet created an action called "show" in controller "default.py".
+这将导致错误,因为你还没有在控制器"default.py"中创建名为"show"的动作。
 
-Let's edit the "default.py" controller and replace its content with:
+让我们编辑 "default.py" 控制器,并将其内容替换如下:
 
 ``SQLFORM``:inxx ``accepts``:inxx ``response.flash``:inxx ``request.args``:inxx
 ``response.download``:inxx
@@ -613,57 +687,67 @@ def index():
     return dict(images=images)
 
 def show():
-    image = db(db.image.id==request.args(0)).select().first()
-    db.comment.image_id.default = image.id
-    form = SQLFORM(db.comment)
+    image = db.image(request.args(0, cast=int)) or redirect(URL('index'))
+    db.post.image_id.default = image.id
+    form = SQLFORM(db.post)
     if form.process().accepted:
         response.flash = 'your comment is posted'
-    comments = db(db.comment.image_id==image.id).select()
+    comments = db(db.post.image_id == image.id).select(orderby=db.post.id)
     return dict(image=image, comments=comments, form=form)
 
 def download():
     return response.download(request, db)
 ``:code
 
-The controller contains two actions: "show" and "download".
-The "show" action selects the image with the ``id`` parsed from the request args and all comments related to the image. "show" then passes everything to the view "default/show.html".
+控制器包含两个动作: "show" 和 "download"。
+"show"动作用从请求 args 中解析得到的 ``id`` ,选择图片和与其相关的所有评论,之后 "show" 将一切传递给视图 "default/show.html"。
 
-The image id referenced by:
+引用图片 id:
 ``
 URL('show', args=image.id)
 ``:code
 
-in "default/index.html", can be accessed as:
-``request.args(0)``
-from the "show" action.
+在 "default/index.html"中,可以作为:"show"动作中的
 
-The "download" action expects a filename in ``request.args(0)``, builds a path to the location where that file is supposed to be, and sends it back to the client. If the file is too large, it streams the file without incurring any memory overhead.
+``request.args(0, cast=int)``
 
-Notice the following statements:
-- Line 7 creates an insert form SQLFORM for the ``db.comment`` table using only the specified fields.
-- Line 8 sets the value for the reference field, which is not part of the input form because it is not in the list of fields specified above.
-- Line 9 processes the submitted form (the submitted form variables are in ``request.vars``) within the current session (the session is used to prevent double submissions, and to enforce navigation). If the submitted form variables are validated, the new comment is inserted in the ``db.comment`` table; otherwise the form is modified to include error messages (for example, if the author's email address is invalid). This is all done in line 9!.
-- Line 10 is only executed if the form is accepted, after the record is inserted into the database table. ``response.flash`` is a web2py variable that is displayed in the views and used to notify the visitor that something happened.
-- Line 11 selects all comments that reference the current image.
+被访问。``cast=int`` 参数是可选的，但非常重要。它试图将在PATH_INFO中传递的字符串值转换为int。如果失败，它将引发一个适当的异常，而不是引发一个票据。如果强制转换失败，还可以重定向:
+
+``request.args(0, cast=int, otherwise=URL('error'))``
+
+此外 ``db.image(...)`` 是一个快捷方式
+
+``
+db(db.image.id == ...).select().first()
+``:code
+
+"download" 动作需要 ``request.args(0)``中的文件名,建立一个路径到文件应该存在的位置,并把它发送回客户端。如果文件过大,它流式传输该文件,而不产生任何内存开销。
+
+注意以下语句:
+- 第 7 行设置引用字段的值，因为``db.post`` 不是输入表单的一部分而是表模型对象。
+- 第 8 行为表 ``db.post`` 创建一个插入表单 SQLFORM。
+- 第 9 行在当前会话(会话用来防止重复提交,强制执行导航)中处理提交的表单(提交的表单变量在 ``request.vars``中)。如果提交的表单变量经过验证,在表 ``db.post`` 中插入新评论;否则,表单被修改为包括错误消息(例如,如果作者的电子邮件地址无效),这一切都是在第 9 行中完成的!
+- 第 10 行只在表单被接受才会被执行,记录被插入到数据库表中。 ``response.flash`` 是一个 web2py 变量,它被显示在视图中并被用来通知访问者发生了什么事情。
+- 第 11 行选择所有引用当前图片的评论，``.select(orderby=db.post.id)`` 以字段id为条件排序评论。
 
 -------
-The "download" action is already defined in the "default.py" controller of the scaffolding application.
+在基本构建应用的 "default.py" 控制器中,已经定义了 "download" 动作。
 -------
 
-The "download" action does not return a dictionary, so it does not need a view. The "show" action, though, should have a view, so return to **admin** and create a new view called "default/show.html".
+"download"动作不返回字典,因此它不需要视图。但是,"show"动作应该有视图,因此返回 **admin** 并创建一个新的视图叫做 "default/show.html"。
 
-Edit this new file and replace its content with the following:
+编辑这个新文件并将其内容替换为以下内容:
 ``
 {{extend 'layout.html'}}
 <h1>Image: {{=image.title}}</h1>
-<center>
+<div style="text-align:center">
 <img width="200px"
      src="{{=URL('download', args=image.file)}}" />
-</center>
+</div>
 {{if len(comments):}}
   <h2>Comments</h2><br /><p>
-  {{for comment in comments:}}
-    <p>{{=comment.author}} says <i>{{=comment.body}}</i></p>
+  {{for post in comments:}}
+    <p>{{=post.author}} says <i>{{=post.body}}</i></p>
   {{pass}}</p>
 {{else:}}
   <h2>No comments posted yet</h2>
@@ -672,109 +756,56 @@ Edit this new file and replace its content with the following:
 {{=form}}
 ``:code
 
-This view displays the **image.file** by calling the "download" action inside an ``<img ... />`` tag.
-If there are comments, it loops over them and displays each one.
+该视图通过调用 ``<img ... />`` 标签内的"download"动作显示 **image.file** 。
+如果有评论,对它们循环,并显示每一个。
 
-Here is how everything will appear to a visitor.
+以下是显示给访问者的效果。
 
 [[image @///image/en2900.png center 480px]]
 
-When a visitor submits a comment via this page, the comment is stored in the database and appended at the bottom of the page.
+当访问者通过此页提交评论,评论将被存储在数据库中并附加在页面底部。
 
-### Adding CRUD
+#### 添加认证
 
-web2py also provides a CRUD (Create/Read/Update/Delete) API that simplifies forms even more. To use CRUD it is necessary to define it somewhere, such as in file "db.py":
-``
-from gluon.tools import Crud
-crud = Crud(db)
-``:code
+web2py 基于角色的访问控制 API 是相当复杂的,但是现在我们会限制自己,限制通过身份验证的用户访问 show 动作,在第 9 章将进行更详细的讨论。
 
--------
-These two lines are already in the scaffolding application.
--------
-
-The ``crud`` object provides high-level methods, for example:
-``
-form = crud.create(table)
-``:code
-
-that can be used to replace the programming pattern:
-``
-form = SQLFORM(table)
-if form.process().accepted:
-    session.flash = '...'
-    redirect('...')
-``:code
-
-Here, we rewrite the previous "show" action using crud and making some more improvements:
-
-``
-def show():
-    image = db.image(request.args(0)) or redirect(URL('index'))
-    db.comment.image_id.default = image.id
-    form = crud.create(db.comment,
-                       message='your comment is posted',
-		       next=URL(args=image.id))
-    comments = db(db.comment.image_id==image.id).select()
-    return dict(image=image, comments=comments, form=form)
-``:code
-
-First of all notice we have used the syntax
-
-``
-db.image(request.args(0)) or redirect(...)
-``:code
-
-to fetch the required record. Since ```table(id)`` returns None if the record is not found, we can use ``or redirect(...)`` in this case in one line.
-
-The ``next`` argument of ``crud.create`` is the URL to redirect to after the form is accepted. The ``message`` argument is the one to be displayed upon acceptance. You can read more about CRUD in Chapter 7.
-
-### Adding Authentication
-
-The web2py API for Role-Based Access Control is quite sophisticated, but for now we will limit ourselves to restricting access to the show action to authenticated users, deferring a more detailed discussion to Chapter 9.
-
-To limit access to authenticated users, we need to complete three steps. In a model, for example "db.py", we need to add:
+为了限制通过身份验证的用户访问,我们需要完成三个步骤。在一个模型中,例如 "db.py",我们需要添加:
 ``
 from gluon.tools import Auth
 auth = Auth(db)
-auth.define_tables()
+auth.define_tables(username=True)
 ``:code
 
-In our controller, we need to add one action:
+在我们的控制器中,我们需要添加一个动作:
 ``
 def user():
     return dict(form=auth())
 ``:code
 
-This is sufficient to enable login, register, logout, etc. pages. The default layout will also show options to the corresponding pages in the top right corner.
+这足以启用登录、注册、注销等页面。默认布局还会在右上角显示相应页面的选项。
 
 [[image @///image/en3000.png center 300px]]
 
-We can now decorate the functions that we want to restrict, for example:
+现在我们可以修饰我们想要限制的函数,例如:
 ``
 @auth.requires_login()
 def show():
-    image = db.image(request.args(0)) or redirect(URL('index'))
-    db.comment.image_id.default = image.id
-    form = crud.create(db.comment, next=URL(args=image.id),
-                     message='your comment is posted')
-    comments = db(db.comment.image_id==image.id).select()
-    return dict(image=image, comments=comments, form=form)
+    ...
 ``:code
 
-Any attempt to access
+任何企图访问的尝试
 ``
 http://127.0.0.1:8000/images/default/show/[image_id]
 ``:code
 
-will require login. If the user is not logged it, the user will be redirected to
+都需要登录。如果用户没有登录,用户将被重定向到
 ``
 http://127.0.0.1:8000/images/default/user/login
 ``:code
 
 [[image @///image/en3100.png center 480px]]
 
-The ``user`` function also exposes, among others, the following actions:
+ ``user`` 函数还包括下列actions动作:
 ``
 http://127.0.0.1:8000/images/default/user/logout
 http://127.0.0.1:8000/images/default/user/register
@@ -788,20 +819,20 @@ http://127.0.0.1:8000/images/default/user/impersonate
 http://127.0.0.1:8000/images/default/user/not_authorized
 ``:code
 
-Now, a first-time user needs to register in order to be able to log in and read or post comments.
+现在,以便能够登录并阅读或发表评论,第一次登录的用户需要注册。
 
 -------
-Both the ``auth`` object and the ``user`` function are already defined in the scaffolding application. The ``auth`` object is highly customizable and can deal with email verification, registration approvals, CAPTCHA, and alternate login methods via plugins.
+ ``auth`` 对象和 ``user`` 函数都已经定义在基本构建应用中,``auth`` 对象高度可定制并且可以处理电子邮件验证,注册审批,验证码和其他登录方法。
 -------
 
-#### Adding grids
+#### 添加网格(grids)
 
 We can improve this further using the ``SQLFORM.grid`` and ``SQLFORM.smartgrid`` gadgets to create a management interface for our application:
 
 ``
 @auth.requires_membership('manager')
 def manage():
-    grid = SQLFORM.smartgrid(db.image)
+    grid = SQLFORM.smartgrid(db.image, linked_tables=['post'])
     return dict(grid=grid)
 ``:code
 
@@ -813,7 +844,7 @@ with associated "views/default/manage.html"
 {{=grid}}
 ``
 
-Using appadmin create a group "manager" and make some users members of the group. They will not be able to access
+Using appadmin create a group "manager" and make some users members of the group. They will be able to access
 
 ``
 http://127.0.0.1:8000/images/default/manage
@@ -827,26 +858,25 @@ create, update and delete images and their comments:
 
 [[image @///image/en3300.png center 480px]]
 
-### Configuring the layout
+#### Configuring the layout
 
-You can configure the default layout by editing "views/layout.html" but you can also configure it without editing the HTML. In fact, the "static/base.css" stylesheet is well documented and described in Chapter 5. You can change color, columns, size, borders and background without editing the HTML. If you want to edit the menu, the title or the subtitle, you can do so in any model file. The scaffolding app, sets default values of these parameters in the file "models/menu.py":
+You can configure the default layout by editing "views/layout.html" but you can also configure it without editing the HTML. In fact, the "static/css/web2py.css" stylesheet is well documented and described in Chapter 5. You can change color, columns, size, borders and background without editing the HTML. If you want to edit the menu, the title or the subtitle, you can do so in any model file. The scaffolding app, sets default values of these parameters in the file "models/menu.py":
 
 ``
 response.title = request.application
-response.subtitle = T('customize me!')
+response.subtitle = 'customize me!'
 response.meta.author = 'you'
 response.meta.description = 'describe your app'
 response.meta.keywords = 'bla bla bla'
 response.menu = [ [ 'Index', False, URL('index') ] ]
 ``:code
 
-### A wiki
+### A simple wiki
 ``wiki``:inxx ``RSS``:inxx ``Ajax``:inxx ``XMLRPC``:inxx
-In this section, we build a wiki, from scratch and without using the extended functionality provided by plugin_wiki which is described in chapter 12. The visitor will be able to create pages, search them (by title), and edit them. The visitor will also be able to post comments (exactly as in the previous applications), and also post documents (as attachments to the pages) and link them from the pages. As a convention, we adopt the Markmin syntax for our wiki syntax. We will also implement a search page with Ajax, an RSS feed for the pages, and a handler to search the pages via XML-RPC``xmlrpc``:cite .
 
-The following diagram lists the actions that we need to implement and the links we intend to build among them.
+In this section, we build a simple wiki from scratch using only low level APIs (as opposed to using the built-in wiki capabilities of web2py demonstrated in the next section). The visitor will be able to create pages, search them (by title), and edit them. The visitor will also be able to post comments (exactly as in the previous applications), and also post documents (as attachments to the pages) and link them from the pages. As a convention, we adopt the Markmin syntax for our wiki syntax. We will also implement a search page with Ajax, an RSS feed for the pages, and a handler to search the pages via XML-RPC``xmlrpc``:cite . The following diagram lists the actions that we need to implement and the links we intend to build among them.
 
-[[yUML diagram @///image/en3400.png center 250px]]
+[[yUML diagram @///image/en3400.png center 200px]]
 
 Start by creating a new scaffolding app, naming it "mywiki".
 
@@ -862,35 +892,35 @@ auth.define_tables()
 crud = Crud(db)
 
 db.define_table('page',
-    Field('title'),
-    Field('body', 'text'),
-    Field('created_on', 'datetime', default=request.now),
-    Field('created_by', db.auth_user, default=auth.user_id),
-    format='%(title)s')
+                Field('title'),
+                Field('body', 'text'),
+                Field('created_on', 'datetime', default=request.now),
+                Field('created_by', 'reference auth_user', default=auth.user_id),
+                format='%(title)s')
 
-db.define_table('comment',
-    Field('page_id', db.page),
-    Field('body', 'text'),
-    Field('created_on', 'datetime', default=request.now),
-    Field('created_by', db.auth_user, default=auth.user_id))
+db.define_table('post',
+                Field('page_id', 'reference page'),
+                Field('body', 'text'),
+                Field('created_on', 'datetime', default=request.now),
+                Field('created_by', 'reference auth_user', default=auth.user_id))
 
 db.define_table('document',
-    Field('page_id', db.page),
-    Field('name'),
-    Field('file', 'upload'),
-    Field('created_on', 'datetime', default=request.now),
-    Field('created_by', db.auth_user, default=auth.user_id),
-    format='%(name)s')
+                Field('page_id', 'reference page'),
+                Field('name'),
+                Field('file', 'upload'),
+                Field('created_on', 'datetime', default=request.now),
+                Field('created_by', 'reference auth_user', default=auth.user_id),
+                format='%(name)s')
 
 db.page.title.requires = IS_NOT_IN_DB(db, 'page.title')
 db.page.body.requires = IS_NOT_EMPTY()
 db.page.created_by.readable = db.page.created_by.writable = False
 db.page.created_on.readable = db.page.created_on.writable = False
 
-db.comment.body.requires = IS_NOT_EMPTY()
-db.comment.page_id.readable = db.comment.page_id.writable = False
-db.comment.created_by.readable = db.comment.created_by.writable = False
-db.comment.created_on.readable = db.comment.created_on.writable = False
+db.post.body.requires = IS_NOT_EMPTY()
+db.post.page_id.readable = db.post.page_id.writable = False
+db.post.created_by.readable = db.post.created_by.writable = False
+db.post.created_on.readable = db.post.created_on.writable = False
 
 db.document.name.requires = IS_NOT_IN_DB(db, 'document.name')
 db.document.page_id.readable = db.document.page_id.writable = False
@@ -900,8 +930,8 @@ db.document.created_on.readable = db.document.created_on.writable = False
 
 Edit the controller "default.py" and create the following actions:
 - index: list all wiki pages
-- create: post another wiki page
-- show: show a wiki page and its comments, and append comments
+- create: add a new wiki page
+- show: show a wiki page and its comments, and add new comments
 - edit: edit an existing page
 - documents: manage the documents attached to a page
 - download: download a document (as in the images example)
@@ -911,76 +941,77 @@ Edit the controller "default.py" and create the following actions:
 Here is the "default.py" controller:
 ``
 def index():
-     """ this controller returns a dictionary rendered by the view
-         it lists all wiki pages
-     >>> index().has_key('pages')
-     True
-     """
-     pages = db().select(db.page.id,db.page.title,orderby=db.page.title)
-     return dict(pages=pages)
+    """ this controller returns a dictionary rendered by the view
+        it lists all wiki pages
+    >>> index().has_key('pages')
+    True
+    """
+    pages = db().select(db.page.id, db.page.title, orderby=db.page.title)
+    return dict(pages=pages)
 
 @auth.requires_login()
 def create():
-     "creates a new empty wiki page"
-     form = crud.create(db.page, next=URL('index'))
-     return dict(form=form)
+    """creates a new empty wiki page"""
+    form = SQLFORM(db.page).process(next=URL('index'))
+    return dict(form=form)
 
 def show():
-     "shows a wiki page"
-     this_page = db.page(request.args(0)) or redirect(URL('index'))
-     db.comment.page_id.default = this_page.id
-     form = crud.create(db.comment) if auth.user else None
-     pagecomments = db(db.comment.page_id==this_page.id).select()
-     return dict(page=this_page, comments=pagecomments, form=form)
+    """shows a wiki page"""
+    this_page = db.page(request.args(0, cast=int)) or redirect(URL('index'))
+    db.post.page_id.default = this_page.id
+    form = SQLFORM(db.post).process() if auth.user else None
+    pagecomments = db(db.post.page_id == this_page.id).select(orderby=db.post.id)
+    return dict(page=this_page, comments=pagecomments, form=form)
 
 @auth.requires_login()
 def edit():
-     "edit an existing wiki page"
-     this_page = db.page(request.args(0)) or redirect(URL('index'))
-     form = crud.update(db.page, this_page,
-                        next=URL('show',args=request.args))
-     return dict(form=form)
+    """edit an existing wiki page"""
+    this_page = db.page(request.args(0, cast=int)) or redirect(URL('index'))
+    form = SQLFORM(db.page, this_page).process(
+        next = URL('show', args=request.args))
+    return dict(form=form)
 
 @auth.requires_login()
 def documents():
-     "browser, edit all documents attached to a certain page"
-     page = db.page(request.args(0)) or redirect(URL('index'))
-     db.document.page_id.default = page.id
-     db.document.page_id.writable = False
-     grid = SQLFORM.grid(db.document.page_id==page.id,args=[page.id])
-     return dict(page=page, grid=grid)
+    """browser, edit all documents attached to a certain page"""
+    page = db.page(request.args(0, cast=int)) or redirect(URL('index'))
+    db.document.page_id.default = page.id
+    grid = SQLFORM.grid(db.document.page_id == page.id, args=[page.id])
+    return dict(page=page, grid=grid)
 
 def user():
-     return dict(form=auth())
+    return dict(form=auth())
 
 def download():
-     "allows downloading of documents"
-     return response.download(request, db)
+    """allows downloading of documents"""
+    return response.download(request, db)
 
 def search():
-     "an ajax wiki search page"
-     return dict(form=FORM(INPUT(_id='keyword',_name='keyword',
-              _onkeyup="ajax('callback', ['keyword'], 'target');")),
-              target_div=DIV(_id='target'))
+    """an ajax wiki search page"""
+    return dict(form=FORM(INPUT(_id='keyword',
+                                _name='keyword',
+                                _onkeyup="ajax('callback', ['keyword'], 'target');")),
+                target_div=DIV(_id='target'))
 
 def callback():
-     "an ajax callback that returns a <ul> of links to wiki pages"
-     query = db.page.title.contains(request.vars.keyword)
-     pages = db(query).select(orderby=db.page.title)
-     links = [A(p.title, _href=URL('show',args=p.id)) for p in pages]
-     return UL(*links)
+    """an ajax callback that returns a <ul> of links to wiki pages"""
+    query = db.page.title.contains(request.vars.keyword)
+    pages = db(query).select(orderby=db.page.title)
+    links = [A(p.title, _href=URL('show', args=p.id)) for p in pages]
+    return UL(*links)
 ``:code
 
 
-Lines 2-6 provide a comment for the index action. Lines 4-5 inside the comment are interpreted by python as test code (doctest). Tests can be run via the admin interface. In this case the tests verify that the index action runs without errors.
+Lines 2-6 constitute a comment for the index action. Lines 4-5 inside the comment are interpreted by python as test code (doctest). Tests can be run via the admin interface. In this case the tests verify that the index action runs without errors.
 
-Lines 18, 27, and 35 try to fetch a ``page`` record with the id in ``request.args(0)``.
+Lines 18, 27, and 35 try to fetch a ``page`` record with the id in
+``request.args(0)``.
 
-Lines 13, 20 define and process create forms for a new page and a new comment and.
+Lines 13, 20 define and process create forms for a new page and a new comment and
 
 Line 28 defines and processes an update form for a wiki page.
 
-Line 38 creates a ``grid`` object that allows to browser, add and update the comments linked to a page.
+Line 37 creates a ``grid`` object that allows to view, add and update the comments linked to a page.
 
 Some magic happens in line 51. The ``onkeyup`` attribute of the INPUT tag "keyword" is set. Every time the visitor releases a key, the JavaScript code inside the ``onkeyup`` attribute is executed, client-side. Here is the JavaScript code:
 ``
@@ -988,7 +1019,7 @@ ajax('callback', ['keyword'], 'target');
 ``:code
 ``ajax`` is a JavaScript function defined in the file "web2py.js" which is included by the default "layout.html". It takes three parameters: the URL of the action that performs the synchronous callback, a list of the IDs of variables to be sent to the callback (["keyword"]), and the ID where the response has to be inserted ("target").
 
-As soon as you type something in the search box and release a key, the client calls the server and sends the content of the 'keyword' field, and, when the sever responds, the response is embedded in the page itself as the innerHTML of the 'target' tag.
+As soon as you type something in the search box and release a key, the client calls the server and sends the content of the 'keyword' field, and, when the server responds, the response is embedded in the page itself as the innerHTML of the 'target' tag.
 
 The 'target' tag is a DIV defined in line 52. It could have been defined in the view as well.
 
@@ -999,7 +1030,7 @@ Here is the code for the view "default/create.html":
 {{=form}}
 ``:code
 
-If you visit the **create** page, you see the following:
+Assuming you are registered and logged in, if you visit the **create** page, you see the following:
 
 [[image @///image/en3500.png center 480px]]
 
@@ -1024,13 +1055,12 @@ Here is the code for the view "default/show.html":
 ``
 {{extend 'layout.html'}}
 <h1>{{=page.title}}</h1>
-[ {{=A('edit', _href=URL('edit', args=request.args))}}
-| {{=A('documents', _href=URL('documents', args=request.args))}} ]<br />
+[ {{=A('edit', _href=URL('edit', args=request.args))}} ]<br />
 {{=MARKMIN(page.body)}}
 <h2>Comments</h2>
-{{for comment in comments:}}
-  <p>{{=db.auth_user[comment.created_by].first_name}} on {{=comment.created_on}}
-          says <I>{{=comment.body}}</i></p>
+{{for post in comments:}}
+  <p>{{=db.auth_user[post.created_by].first_name}} on {{=post.created_on}}
+     says <i>{{=post.body}}</i></p>
 {{pass}}
 <h2>Post a comment</h2>
 {{=form}}
@@ -1039,10 +1069,10 @@ Here is the code for the view "default/show.html":
 If you wish to use markdown syntax instead of markmin syntax:
 
 ``
-from gluon.contrib.markdown import WIKI
+from gluon.contrib.markdown import WIKI as MARKDOWN
 ``:code
 
-and use ``WIKI`` instead of the ``MARKMIN`` helper.
+and use ``MARKDOWN`` instead of the ``MARKMIN`` helper.
 Alternatively, you can choose to accept raw HTML instead of markmin syntax. In this case you would replace:
 ``
 {{=MARKMIN(page.body)}}
@@ -1054,7 +1084,7 @@ with:
 ``:code
 
 ``sanitize``:inxx
-(so that the XML does not get escaped, as by default web2py behavior).
+(so that the XML does not get escaped, which web2py normally does by default for security reasons).
 
 This can be done better with:
 ``
@@ -1071,7 +1101,8 @@ Here is the code for the view "default/edit.html":
 ``
 {{extend 'layout.html'}}
 <h1>Edit wiki page</h1>
-[ {{=A('show', _href=URL('show', args=request.args))}} ]<br />
+[ {{=A('show', _href=URL('show', args=request.args))}}
+| {{=A('documents', _href=URL('documents', args=request.args))}} ]<br />
 {{=form}}
 ``:code
 
@@ -1104,32 +1135,29 @@ which generates the following Ajax search form:
 
 You can also try to call the callback action directly by visiting, for example, the following URL:
 ``
-http://127.0.0.1:8000/mywiki/default/callback?keyword=wiki
+http://127.0.0.1:8000/mywiki/default/callback?keyword=main
 ``:code
 
 If you look at the page source you see the HTML returned by the callback:
 ``
-<ul><li><a href="/mywiki/default/show/4">I made a Wiki</a></li></ul>
+<ul><li><a href="/mywiki/default/show/4">My Main Page</a></li></ul>
 ``:code
 
 ``rss``:inxx
-Generating an RSS feed from the stored pages using web2py is easy because web2py includes ``gluon.contrib.rss2``. Just append the following action to the default controller:
+Generating an RSS feed of your wiki pages using web2py is easy because web2py includes ``gluon.contrib.rss2``. Just append the following action to the default controller:
 ``
 def news():
-    "generates rss feed form the wiki pages"
-    reponse.generic_patterns = ['.rss']
+    """generates rss feed from the wiki pages"""
+    response.generic_patterns = ['.rss']
     pages = db().select(db.page.ALL, orderby=db.page.title)
-    return dict(
-       title = 'mywiki rss feed',
-       link = 'http://127.0.0.1:8000/mywiki/default/index',
-       description = 'mywiki news',
-       created_on = request.now,
-       items = [
-          dict(title = row.title,
-               link = URL('show', args=row.id),
-               description = MARKMIN(row.body).xml(),
-               created_on = row.created_on
-               ) for row in pages])
+    return dict(title='mywiki rss feed',
+                link='http://127.0.0.1:8000/mywiki/default/index',
+                description='mywiki news',
+                created_on=request.now,
+                items=[dict(title=row.title,
+                            link=URL('show', args=row.id, scheme=True, host=True, extension=False),
+                            description=MARKMIN(row.body).xml(),
+                            created_on=row.created_on) for row in pages])
 ``:code
 
 and when you visit the page
@@ -1143,6 +1171,14 @@ you see the feed (the exact output depends on the feed reader). Notice that the 
 
 web2py also includes feedparser to read third-party feeds.
 
+Notice that the line:
+
+``
+response.generic_patterns = ['.rss']
+``:code
+
+instructs web2py to use generic views (in our case "views/generic.rss") when the URL ends in the glob pattern ".rss". By default generic views are only allowed from localhost for development purposes.
+
 ``XMLRPC``:inxx
 Finally, let's add an XML-RPC handler that allows searching the wiki programmatically:
 ``
@@ -1150,23 +1186,22 @@ service = Service()
 
 @service.xmlrpc
 def find_by(keyword):
-     "finds pages that contain keyword for XML-RPC"
-     return db(db.page.title.contains(keyword).select().as_list()
+    """finds pages that contain keyword for XML-RPC"""
+    return db(db.page.title.contains(keyword)).select().as_list()
 
 def call():
-    "exposes all registered services, including XML-RPC"
+    """exposes all registered services, including XML-RPC"""
     return service()
 ``:code
 
-Here, the handler action simply publishes (via XML-RPC), the functions specified in the list. In this case, ``find_by``. ``find_by`` is not an action (because it takes an argument). It queries the database with ``.select()`` and then extracts the records as a list with ``.response`` and returns the list.
+Here, the handler action simply publishes (via XML-RPC), the functions decorated by ``@ervice.xmlrpc``. In this case, ``find_by``. ``find_by`` is not an action (because it takes an argument). It queries the database with ``.select()`` and then extracts the records as a list with ``.as_list()`` and returns the list.
 
 Here is an example of how to access the XML-RPC handler from an external
 Python program.
 ``
 >>> import xmlrpclib
->>> server = xmlrpclib.ServerProxy(
-    'http://127.0.0.1:8000/mywiki/default/call/xmlrpc')
->>> for item in server.find_by('wiki'):
+>>> server = xmlrpclib.ServerProxy('http://127.0.0.1:8000/mywiki/default/call/xmlrpc')
+>>> for item in server.find_by('main'):
         print item['created_on'], item['title']
 ``:code
 
@@ -1174,84 +1209,413 @@ The handler can be accessed from many other programming languages that understan
 
 #### On ``date``, ``datetime`` and ``time`` format
 
-There are three different representation for each of the field types ``date``, ``datetime`` and ``time``:
+There are three different representations for each of the field types ``date``, ``datetime`` and ``time``:
 - the database representation
-- the internal web2py prepresentation
+- the internal web2py representation
 - the string representation in forms and tables
 
 The database representation is an internal issue and does not affect the code. Internally, at the web2py level, they are stored as ``datetime.date``, ``datetime.datetime`` and ``datetime.time`` object respectively and they can be manipulated as such:
 
 ``
 for page in db(db.page).select():
-    print page.title, page.day, page.month, page.year
+    print page.title, page.created_on.day, page.created_on.month, page.created_on.year
 ``
 
-When dates are converted to strings in forms they are converted using the ISO representation 
+When dates are converted to strings in forms they are converted using the ISO representation
 ``
 %Y-%m-%d %H:%M:%S
 ``
 
-yet this representation in internationalized and you can use the admin stranslation page to change the format to an alternate one. For example:
+yet this representation is internationalized and you can use the admin translation page to change the format to an alternate one. For example:
 
 ``
-%m/%b/%Y %H:%M:%S
+%m/%d/%Y %H:%M:%S
 ``
 
-------
-Mind that by default English is not translated because web2py assumes the applications is already written in English. If you want internationalization to work for English you need to create the translation file (using admin) and you need declare that the application current language is something other than english, for example:
+Mind that by default English is not translated because web2py assumes the applications are written in English. If you want internationalization to work for English you need to create the translation file (using admin) and you need to declare that the application's current language is something other than english, for example:
 ``
 T.current_languages = ['null']
 ``
+
+### The built-in web2py wiki
+
+Now you can forget the code we have built-in the previous section (not what you have learned about web2py APIs, just the code of the specific example) as we are going to provide an example of the built-in web2py wiki.
+
+In fact, web2py comes with wiki capabilities including media attachments, tags, tag cloud, page permissions, and support for oembed ``oembed``:cite and components (chapter 14). This wiki can be used with any web2py application.
+
+------
+Notice the API of the built-in wiki is still considered experimental and small changes are still possible.
+------
+
+Here we assume we are starting from scratch from a simple clone of the "welcome" application called "wikidemo". If not, make sure that in ``db.py`` migrations are enabled else the new required wiki tables will not be automatically created.
+
+Edit the controller and replace the "index" action with.
+``
+def index(): return auth.wiki()
+``:code
+
+Done! You have a fully working wiki.
+Please note that wiki needs some tables to be defined, and they'll only be defined when accessing the controller. If you want them to be readily available, use ``auth.wiki(resolve=False)``, and make sure table migrations are turned on: more on that on the **Extending-the-auth-wiki-feature** section following.
+
+At this point no page has been created and in order to create pages you must be logged-in and you must be member of a group called "wiki_editor" or "wiki_author". If you are logged-in as administrator the "wiki_editor" group is created automatically and you are made a member. The difference between editors and authors is that the editors can create pages, edit and delete any page, while the authors can create pages (with some optional restrictions) and can only edit/delete the pages they have created.
+
+The ``auth.wiki()`` function returns in a dictionary with a key ``content`` which is understood by the scaffolding "views/default/index.html". You can make your own view for this action:
+
+``
+{{extend 'layout.html'}}
+{{=content}}
+``:code
+
+and add extra HTML or code as needed. You do not have to use the "index" action to expose the wiki. You can use an action with a different name.
+
+To try the wiki, simply login into admin, visit the page
+
+``
+http://127.0.0.1:8000/wikidemo/default/index
+``
+
+Then choose a slug (in the publishing business, a slug is a short name given to an article that is in production) and you will be redirected to an empty page where you can edit the content using MARKMIN wiki syntax. A new menu item called "[wiki]" will allow you to create, search, and edit pages. Wiki pages have URLs like:
+
+``
+http://127.0.0.1:8000/wikidemo/default/index/[slug]
+``
+
+Service pages have names which start by underscore:
+
+``
+http://127.0.0.1:8000/wikidemo/default/index/_create
+http://127.0.0.1:8000/wikidemo/default/index/_search
+http://127.0.0.1:8000/wikidemo/default/index/_could
+http://127.0.0.1:8000/wikidemo/default/index/_recent
+http://127.0.0.1:8000/wikidemo/default/index/_edit/...
+http://127.0.0.1:8000/wikidemo/default/index/_editmedia/...
+http://127.0.0.1:8000/wikidemo/default/index/_preview/...
+``
+
+Try to create more pages such as "index", "aboutus", and "contactus".
+Try to edit them.
+
+
+The ``wiki`` method has the following signature:
+
+``
+def wiki(self, slug=None, env=None, render='markmin',
+         manage_permissions=False, force_prefix='',
+         restrict_search=False, resolve=True,
+         extra=None, menu_groups=None)
+``:code
+
+It takes the following arguments:
+
+- ``render`` which defaults to ``'markmin'`` but can be set equal to ``'html'``. It determines the syntax of the wiki. We will discuss the markmin wiki markup later. If you change it to HTML you can use a wysiwyg javascript editor such as TinyMCE or NicEdit.
+- ``manage_permissions``. This is set to ``False`` by default and only recognizes permissions for "wiki_editor" and "wiki_author". If you change it to ``True`` the create/edit page will give the option to specify by name the group(s) whose members have permission to read and edit the page. There is a group "everybody" which includes all users.
+
+- ``force_prefix``. If set to something like ``'%(id)s-'`` it will restrict authors (not editors) to creating pages with a prefix like "[user id]-[page name]". The prefix can contain the id ("%(id)s") or the username ("%(username)s") or any other field from the auth_user table, as long as the corresponding column contains a valid string that would pass URL validation.
+- ``restrict_search``. This defaults to ``False`` and any logged-in user can search all wiki pages (but not necessary read or edit them). If set to ``True``, authors can search only their own pages, editors can search everything, other users cannot search anything.
+- ``menu_groups``. This defaults to ``None`` and it indicates that wiki management menu (search, create, edit, etc.) is always displayed. You can set it to a list of group names whose members only can see this menu, for example ``['wiki_editor','wiki_author']``. Notice that even if the menu is exposed to everybody that does not mean everybody is allowed to perform actions listed in the menu since they are regulated by the access control system.
+
+The ``wiki`` method has some additional parameters which will be explained later: ``slug``, ``env``, and ``extra``.
+
+
+
+#### MARKMIN basics
+
+The MARKMIN syntax allows you to markup **bold** text using ``**bold**``, ''italic'' text with ``''italic''``, and ``code`` text should be delimited by double inverted quotes. Titles must be prefixed by a #, sections by ##, and sub-sections by ###. Use a minus (-) to prefix an un-ordered item and plus (+) to prefix an ordered item. URLs are automatically converted into links. Here is an example of markmin text:
+
+``
+# This is a title
+## this is a section title
+### this is a subsection title
+
+Text can be **bold**, ''italic'', !`!!`!code!`!!`! etc.
+Learn more at:
+
+http://web2py.com
+``:code
+
+
+You can use the ``extra`` parameter of ``auth.wiki`` to pass extra rendering rules to the MARKMIN helper.
+
+You can find more information about the MARKMIN syntax in chapter 5.
+
+``auth.wiki`` is more powerful than the barebones MARKMIN helpers, supporting oembed and components.
+
+You can use the ``env`` parameter of ``auth.wiki`` to expose functions to your wiki.
+For example:
+
+``
+auth.wiki(env=dict(join=lambda a:"-".join(a.split(","))))
+``
+
+allows you to use the markup syntax:
+
+``
+@{join:1,2,3}
+``
+
+This calls the join function passed to env with argument ``"1,2,3"`` and will be rendered as ``1-2-3``.
+
+#### Oembed protocol
+
+You can type in (or cut-and-paste) any URL into a wiki page and it is rendered as a link to the URL. There are exceptions:
+
+- If the URL has an image extension, the link is embedded as an image, ``<img/>``.
+- If the URL has an audio extension, the link is embedded as HTML5 audio ``<audio/>``.
+- If the URL has a video extension, the link is embedded as HTML5 video ``<video/>``.
+- If the URL has a MS Office or PDF extension, Google Doc Viewer is embedded, showing the content of the document (only works for public documents).
+- If the URL points to a YouTube page, a Vimeo page, or a Flickr page, web2py contacts the corresponding web service and queries it about the proper way to embed the content. This is done using the ``oembed`` protocol.
+
+Here is a complete list of supported formats:
+``
+Image (.PNG, .GIF, .JPG, .JPEG)
+Audio (.WAV, .OGG, .MP3)
+Video (.MOV, .MPE, .MP4, .MPG, .MPG2, .MPEG, .MPEG4, .MOVIE)
+``
+
+Supported via Google Doc Viewer:
+
+``
+Microsoft Excel (.XLS and .XLSX)
+Microsoft PowerPoint 2007 / 2010 (.PPTX)
+Apple Pages (.PAGES)
+Adobe PDF (.PDF)
+Adobe Illustrator (.AI)
+Adobe Photoshop (.PSD)
+Autodesk AutoCad (.DXF)
+Scalable Vector Graphics (.SVG)
+PostScript (.EPS, .PS)
+TrueType (.TTF)
+xml Paper Specification (.XPS)
+``:code
+
+Supported by oembed:
+
+``
+flickr.com
+youtube.com
+hulu.com
+vimeo.com
+slideshare.net
+qik.com
+polleverywhere.com
+wordpress.com
+revision3.com
+viddler.com
+``:code
+
+This is implemented in the web2py file ``gluon.contrib.autolinks`` and specifically in the function ``expand_one``. You can extend oembed support by registering more services. This is done by appending an entry to the ``EMBED_MAPS`` list:
+
+``
+from gluon.contrib.autolinks import EMBED_MAPS
+EMBED_MAPS.append((re.compile('http://vimeo.com/\S*'),
+                   'http://vimeo.com/api/oembed.json'))
+``:code
+
+#### Referencing wiki content
+
+If you create a wiki page with slug "contactus" you can refer to this page as
+
+``
+\@////contactus
+``:code
+
+Here @````//// stands for
+
+``
+\@/app/controller/function/
+``:code
+
+but "app", "controller", and "function" are omitted thus assuming default.
+
+Similarly you can use the wiki menu to upload a media file (for example an image) linked to the page. The "manage media" page will show all the files you have uploaded and will also show the proper expression to link the media file. If, for example you upload a file named "test.jpg" with title "beach", the link expression will be something like:
+
+``
+\@////15/beach.jpg
+``:code
+
+``\@////`` is the same prefix described before. ``15`` is the id of the record storing the media file. ``beach`` is the title. ``.jpg`` is the extension of the original file.
+
+If you cut and paste ``\@////15/beach.jpg`` into wiki pages you embed the image.
+
+Mind that media files are linked to pages and inherit access permission from the pages.
+
+#### Wiki menus
+
+If you create a page with slug "wiki-menu" page it will be interpreted as a description of the menu. Here is an example:
+
+``
+- Home > \@////index
+- Info > \@////info
+- web2py > http://www.web2py.com
+- - About us > \@////aboutus
+- - Contact us > \@////contactus
+``
+
+Each line a menu item. We used double dash for nested menu items. The ``>`` symbols separates the menu item title from the menu item link.
+
+Mind that the menu is appended to ``response.menu``. It does not replace it. The ``[wiki]`` menu item with service functions is added automatically.
+
+#### Service functions
+
+If, for example, you want to use the wiki to create an editable sidebar you could create a page with ``slug="sidebar"`` and then embed it in your layout.html with
+
+``
+{{=auth.wiki(slug='sidebar')}}
+``:code
+
+Notice that there is nothing special with the word "sidebar". Any wiki page can be retrieved and embedded at any point in your code. This allows you mix and match wiki functionalities with regular web2py functionalities.
+
+------
+Also note that ``auth.wiki('sidebar')``:code is the same as ``auth.wiki(slug='sidebar')``:code, since the slug kwarg is the first in the method signature. The former gives a slightly simpler syntax.
 ------
 
 
+You can also embed special wiki functions such as the search by tags:
 
+``
+{{=auth.wiki('_search')}}
+``:code
+
+or the tag cloud:
+
+``
+{{=auth.wiki('_cloud')}}
+``:code
+
+
+#### Extending the auth.wiki feature
+
+When your wiki-enabled app gets more complicated, perhaps you might need to customize the wiki db records managed by the Auth interface or expose customized forms for wiki CRUD tasks. For example, you might want to customize a wiki table record representation or add a new field validator. This is not allowed by default, since the wiki model is defined only after the wiki interface is requested with the auth.wiki() method. To allow access to the wiki specific db setup within the model of your app you must add the following sentence to your model file (i.e. db.py)
+
+``
+# Make sure this is called after the auth instance is created
+# and before any change to the wiki tables
+auth.wiki(resolve=False)
+``:code
+
+By using the line above in your model, the wiki tables will be accessible (i.e. ``wiki_page``) for custom CRUD or other db tasks.
+
+------
+Note that you still have to call auth.wiki() in the controller or view in order to expose the wiki interface, since the ``resolve=False`` parameter instructs the auth object to just build the wiki model without any other interface setup.
+------
+
+
+Also, by setting resolve to ``False`` in the method call, the wiki tables will be now accessible through the app's default db interface at ``<app>/appadmin`` for managing wiki records.
+
+
+Another customization possible is adding extra fields to the standard wiki tables (in the same way as with the ``auth_user`` table, as described in Chapter 9). Here is how:
+
+``
+# Place this after auth object initialization
+auth.settings.extra_fields["wiki_page"] = [Field("ablob", "blob"), ]
+``:code
+
+The line above adds a ``blob`` field to the ``wiki_page`` table. There is no need to call ``auth.wiki(resolve=False)``:code for this option, unless you need access to the wiki model for other customizations.
+
+
+#### Components
+
+One of the most powerful functions of the new web2py consists in the ability of embedding an action inside another action. We call this a component.
+
+Consider the following model:
+
+``
+db.define_table('thing', Field('name', requires=IS_NOT_EMPTY()))
+``:code
+
+and the following action:
+
+``
+@auth.requires_login()
+def manage_things():
+    return SQLFORM.grid(db.thing)
+``:code
+
+This action is special because it returns a widget/helper not a dict of objects. Now we can embed this ``manage_things`` action into any view, with
+
+``
+{{=LOAD('default', 'manage_things', ajax=True)}}
+``:code
+
+This allows the visitor interact with the component via Ajax without reloading the host page that embeds the widget. The action is called via Ajax, inherits the style of the host page, and captures all form submissions and flash messages so that they are handled within the current page. On top of this the ``SQLFORM.grid`` widget uses digitally signed URLs to restrict access. More information about components can be found in chapter 13.
+
+Components like the one above can be embedded into wiki pages using the MARKMIN syntax:
+
+``
+@{component:default/manage_things}
+``
+
+This simply tells web2py that we want to include the "manage_things" action defined in the "default" controller as an Ajax "component".
+
+---------
+Most users will be able to build relatively complex applications simply by using ``auth.wiki`` to create pages and menus and embedded custom components into wiki pages. Wikis can be thought of as a mechanism to allow members of the group to create pages, but they can also be thought of as a way to develop applications in a modular way.
+---------
 
 ### More on **admin**
 ``admin``:inxx
 
 The administrative interface provides additional functionality that we briefly review here.
 
-#### ''site''
+#### Site
 ``site``:inxx
 
-This page lists all installed applications. There are two forms at the bottom.
+This page is the main administrative interface of web2py. It lists all installed applications on the left, while on the right side there are some special action forms.
 
-The first of them allows creating a new application by specifying its name.
+The first of them shows the web2py version and proposes to upgrade it if new versions are available. Of course, before upgrading be sure to have a full working backup!
+Then there are two other forms that allow the creation of a new application (simple or by using an online wizard) by specifying its name.
 
-``Instant Press``:inxx
-The second form allows uploading an existing application from either a local file or a remote URL. When you upload an application, you need to specify a name for it. This can be its original name, but does not need to be. This allows installing multiple copies of the same application. You can try, for example, to upload the the Instant Press CMS created by Martin Mulone from:
+``Instant Press``:inxx ``Movuca``:inxx
+The following form allows uploading an existing application from either a local file or a remote URL. When you upload an application, you need to specify a name for it (using different names
+allows you to install multiple copies of the same application). You can try, for example, to upload the Movuca Social Networking application app created by Bruno Rocha:
+
+``
+https://github.com/rochacbruno/Movuca
+``
+
+or Instant Press CMS created by Martin Mulone:
 
 ``
 http://code.google.com/p/instant-press/
-``:code
+``
+
+or one of the many example applications available at:
+
+``
+http://web2py.com/appliances
+``
 
 ------
-Web2py files are packages as ``.w2p`` files. These ones are tar gzipped files. Web2py uses the ``.w2p`` extension instead of the ``.tgz`` extension to prevent the browser from unzipping on download. They can be uncompressed manually with ``tar zxvf [filename]`` although this is never necessary.
+Web2py files are packages as ``.w2p`` files. These are tar gzipped files. Web2py uses the ``.w2p`` extension instead of the ``.tgz`` extension to prevent the browser from unzipping on download. They can be uncompressed manually with ``tar xzvf [filename]`` although this is never necessary.
 ------
 
 [[image @///image/en4100.png center 444px]]
 
-Upon successful upload, web2py displays the MD5 checksum of the uploaded file. You can use it to verify that the file was not corrupted during upload. The InstantPress name will appear in the list of installed applications.
+Upon successful upload, web2py displays the MD5 checksum of the uploaded file. You can use it to verify that the file was not corrupted during upload. The application name will appear in the list of installed applications.
 
-Click on the InstantPress name on admin to get it up and running.
+If you run web2py from source and you have ``gitpython`` installed (if necessary, set it up with 'easy_install gitpython'), you can install applications directly from git repositories
+using the ``.git`` URL in the upload form. In this case you will also be enabled to use the admin interface to push changes back into the repository, but this is an experimental feature.
 
-[[image @///image/en4200.png center 480px]]
+For example, you can locally install the application that shows this book on the web2py site with the URL:
 
-You can read more about Instant Press at the following URL:
 ``
-http://code.google.com/p/instant-press/
+https://github.com/web2py/web2py-book.git
 ``
 
-For each application the ''site'' page allows you to:
+------
+That repository hosts the current, updated version of this book (which could be different from the stable version you can see on the web site). You are warmly invited to use it for submitting
+improvements, fixes and corrections in the form of pull requests.
+------
+
+For each application installed you can use the ''site'' page to:
+- Go directly to the application by clicking on its name.
 - Uninstall the application.
 - Jump to the ''about'' page (read below).
 - Jump to the ''edit'' page (read below).
 - Jump to the ''errors'' page (read below).
 - Clean up temporary files (sessions, errors, and cache.disk files).
 - Pack all. This returns a tar file containing a complete copy of the application. We suggest that you clean up temporary files before packing an application.
-- Compile the application. If there are no errors, this option will bytecode-compile all models, controllers and views. Because views can extend and include other views in a tree, before bytecode compilation, the view tree for every controller is collapsed into a single file. The net effect is that a bytecode-compiled application is faster, because there is no more parsing of templates or string substitutions occurring at runtime.
-- Pack compiled. This option is only present for bytecode-compiled applications. It allows packing the application without source code for distribution as closed source. Note that Python (as any other programming language) can technically be decompiled; therefore compilation does not provide complete protection of the source code. Nevertheless, decompilation can be difficult and can be illegal.
+- Compile the application. If there are no errors, this option will bytecode-compiles all models, controllers and views. Because views can extend and include other views in a tree, before bytecode compilation, the view tree for every controller is collapsed into a single file. The net effect is that a bytecode-compiled application is faster, because there is no more parsing of templates or string substitutions occurring at runtime.
+- Pack compiled. This option is only present for bytecode-compiled applications. It allows packing the application without source code for distribution as closed source. Note that Python (as any other programming language) can technically be decompiled; therefore compilation does not provide complete protection of the source code. Nevertheless, de-compilation can be difficult and can be illegal.
 - Remove compiled. It simply removes the byte-code compiled models, views and controllers from the application. If the application was packaged with source code or edited locally, there is no harm in removing the bytecode-compiled files, and the application will continue to work. If the application was installed form a packed compiled file, then this is not safe, because there is no source code to revert to, and the application will no longer work.
 
 ``admin.py``:inxx
@@ -1260,7 +1624,9 @@ For each application the ''site'' page allows you to:
 All the functionality available from the web2py admin site page is also accessible programmatically via the API defined in the module ``gluon/admin.py``. Simply open a python shell and import this module.
 -------
 
-#### ''about''
+If the Google App Engine SDK is installed the admin ''site'' page shows a button to push your applications to GAE. If ``python-git`` is installed, there is also a button to push your application to Open Shift. To install applications on ``Heroku`` or other hosting system you should look into the "scripts" folder for the appropriate script.
+
+#### About
 ``about``:inxx ``license``:inxx
 
 The ''about'' tab allows editing the description of the application and its license. These are written respectively in the ABOUT and LICENSE files in the application folder.
@@ -1269,7 +1635,7 @@ The ''about'' tab allows editing the description of the application and its lice
 
 You can use ``MARKMIN``, or ``gluon.contrib.markdown.WIKI`` syntax for these files as described in ref.``markdown2``:cite .
 
-#### ''edit''
+#### Design
 ``EDIT``:inxx
 You have used the ''edit'' page already in this chapter. Here we want to point out a few more functionalities of the ''edit'' page.
 - If you click on any file name, you can see the contents of the file with syntax highlighting.
@@ -1291,25 +1657,66 @@ The image below shows how to edit a language file, in this case the "it" (Italia
 
 [[image @///image/en4600.png center 480px]]
 
-##### ''shell''
+#### Integrated web-based debugger
+
+''(requires Python 2.7 or later)''
+
+The web2py admin includes a web-based debugger.
+``debugger``:inxx
+Using the provided web-based editor you can add breakpoints to the Python code and, from the associated debugger console, you can inspect the system variables at those breakpoints and resume execution. This is illustrated in the following screenshot:
+The interactive console also serves as a python scratchpad.
+
+[[image @///image/debugger.png center 480px]]
+
+This functionality is based on the Qdb debugger created by Mariano Reingart.
+It uses multiprocessing.connection to communicate between the backend
+and frontend, with a JSON-RPC-like stream protocol. ``qdb``:cite
+
+##### Setting breakpoints via code
+``breakpoints``:inxx
+Include this:
+``
+from gluon.debug import dbg
+``:code
+
+and to drop into the debugger, put this in the desired location:
+``
+dbg.set_trace()
+``:code
+
+The debugger app has a breakpoint manager.
+
+------
+Notes:
+web2py does not know whether you actually have a debug window open in your browser; execution suspends regardless.
+IDEs usually have their own inter-process debugger, e.g. PyCharm or PyDev. They may complain if you include the gluon library.
+------
+
+
+#### Web-based Python shell
 
 If you click on the "shell" link under the controllers tab in ''edit'', web2py will open a web based Python shell and will execute the models for the current application. This allows you to interactively talk to your application.
 
 [[image @///image/en4700.png center 480px]]
 
-##### ''crontab''
+-------
+Be careful using the web based shell - because different shell requests will be executed in different threads. This easily gives errors, especially if you play with databases
+creation and connections. For activities like these (i.e. if you need persistence) it's much better to use the python command line.
+-------
+#### Crontab
 
-Also under the controllers tab in ''edit'' there is a "crontab" link. By clicking on this link you will be able to edit the web2py crontab file. This follows the same syntax as the unix crontab but does not rely on unix. In fact, it only requires web2py, and it works on Windows. It allows you to register actions that need to be executed in background at scheduled times.
+Also under the controllers tab in ''edit'' there is a "crontab" link. By clicking on this link you will be able to edit the web2py crontab file. This follows the same syntax as the Unix crontab but does not rely on Unix. In fact, it only requires web2py, and it works on Windows. It allows you to register actions that need to be executed in background at scheduled times.
 For more information about this, see the next chapter.
 
-#### ''errors''
+#### Errors
 ``errors``:inxx
+
 When programming web2py, you will inevitably make mistakes and introduce bugs. web2py helps in two ways: 1) it allows you to create tests for every function that can be run in the browser from the ''edit'' page; and 2) when an error manifests itself, a ticket is issued to the visitor and the error is logged.
 
 Intentionally introduce an error in the images application as shown below:
 ``
 def index():
-    images = db().select(db.image.ALL,orderby=db.image.title)
+    images = db().select(db.image.ALL, orderby=db.image.title)
     1/0
     return dict(images=images)
 ``:code
@@ -1324,7 +1731,7 @@ Only the administrator can access the ticket:
 
 The ticket shows the traceback, and the content of the file that caused the problem, and the complete state of system (variables, request, session, etc.) If the error occurs in a view, web2py shows the view converted from HTML into Python code. This allows to easily identify the logical structure of the file.
 
-By default tickets are stored on filesystem and group by traceback. The administrative interface provides an aggregate views (type of traceback and number of occurrence) and a detailed view (all tickets are listed by ticket id). The administrator can switch between the two views.
+By default tickets are stored on filesystem and displayed grouped by traceback. The administrative interface provides an aggregate views (type of traceback and number of occurrence) and a detailed view (all tickets are listed by ticket id). The administrator can switch between the two views.
 
 Notice that everywhere **admin** shows syntax-highlighted code (for example, in error reports, web2py keywords are shown in orange). If you click on a web2py keyword, you are redirected to a documentation page about the keyword.
 
@@ -1357,19 +1764,25 @@ All tickets are listed under admin in the ''errors'' page for each application:
 
 [[image @///image/en5200.png center 480px]]
 
-#### ''Mercurial''
+#### Mercurial
 ``Mercurial``:inxx
 
-If you are running from source and you have the Mercurial version control libraries installed:
-``
-easy_install mercurial
-``:code
-
-then the administrative interface shows one more menu item called "mercurial". It automatically creates a local Mercurial repository for the application. Pressing the "commit" button in the page will commit the current application. Mercurial creates and stores information about changes you make in your code into a hidden folder ".hg" in your app subfolder. Every app has its own ".hg" folder and its own ".hgignore" file (tells Mercurial which files to ignore).
-
-The Mercurial web interface does allow you to browse previous commit and diff files but we do recommend you use Mercurial directly from the shell or one of the may GUI-based Mercurial clients since they are more powerful. For example they will allow you sync your app with a remote source repository:
+If you are running from source, the administrative interface shows one more menu item called "Versioning".
 
 [[images @///image/en5300.png center 480px]]
+
+Entering a comment and pressing the "commit" button in the resulting page will commit the current application. With the first commit, a local Mercurial repository for the specific
+application will be created.
+Under the hood, Mercurial stores information about changes you make in your code into a hidden folder ".hg" in your app subfolder. Every app has its own ".hg" folder and its own ".hgignore" file (tells Mercurial which files to ignore).
+In order to use this feature, you must have the Mercurial version control libraries installed (at least version 1.9):
+
+
+``
+pip install mercurial
+``:code
+
+The Mercurial web interface does allow you to browse previous commit and diff files but we do recommend you use Mercurial directly from the shell or one of the many GUI-based Mercurial clients since they are more powerful. For example they will allow you to sync your app with a remote source repository.
+
 
 
 You can read more about Mercurial here:
@@ -1377,10 +1790,24 @@ You can read more about Mercurial here:
 http://mercurial.selenic.com/
 ``
 
-#### Admin wizard (experimental)
+#### Git integration
+``git``:inxx
+The admin app also includes git integration. Python git libraries are required, e.g.
+``
+pip install gitpython
+``:code
+
+and then per application, you must clone or otherwise configure a git repository.
+
+After these steps, the Manage menu for each git-managed application will show git push and git pull.
+Applications which are not managed by git are ignored.
+You can pull and push apps from the default remote repository.
+
+
+#### Application Wizard (experimental)
 
 The **admin** interface includes a Wizard that can help you create a new applications.
-You can access the wizard from the "sites" page as shown in the image below.
+You can access the wizard from the "site" page as shown in the image below.
 
 [[image @///image/en5400.png center 480px]]
 
@@ -1408,18 +1835,18 @@ In any case the wizard is a handy tool for fast prototyping and it can be used t
 
 #### Configuring **admin**
 
-Normally there is no need to perform any configuration of admin but a few customizations are possible. After you login into admin you can edit the admin configuration file via the URL:
+Normally there is no need to perform any configuration of **admin** but a few customizations are possible. After you login into admin you can edit the admin configuration file via the URL:
 ``
 http://127.0.0.1:8000/admin/default/edit/admin/models/0.py
 ``
 Notice that **admin** can be used to edit itself. In fact **admin** is an app as any other one.
 
-The file "0.py" is very much self documented and if you are opening probably you already know what you are looking for. Anyway there a few customizations that are more important than others:
+The file "0.py" is more or less self documented, anyway, here are some of the most important possible customizations:
 
 ``
 GAE_APPCFG = os.path.abspath(os.path.join('/usr/local/bin/appcfg.py'))
 ``
-This should point to the location of the "appcfg.py" file that comes with the Google App Engine SDK. If you have the SDK you may want to change this config parameters to the correct value. It will allow you to deploy to GAE from the admin interface.
+This should point to the location of the "appcfg.py" file that comes with the Google App Engine SDK. If you have the SDK you may want to change these config parameters to the correct value. It will allow you to deploy to GAE from the admin interface.
 
 ``DEMO_MODE``:inxx
 
@@ -1428,7 +1855,7 @@ You can also set web2py admin in demo mode:
 DEMO_MODE = True
 FILTER_APPS = ['welcome']
 ``
-And only the apps listed in filter apps will be accessible and they will be only accessible in read-only mode.
+And only the apps listed in FILTER_APPS will be accessible and they will be only accessible in read-only mode.
 
 ``MULTI_USER_MODE``:inxx
 ``virtual laboratory``:inxx
@@ -1439,7 +1866,15 @@ MULTI_USER_MODE = True
 ``
 In this way students will be required to login and will only be able to access their own apps via admin. You, as first user/teacher, will be able to access them all.
 
-Mind that this mechanism still assumes all users are trusted. All the apps created under admin run under the same credentials on the same filesystem. It is possible for an app created by a student to access the data and the source of an app created by another student.
+In multi user mode, you can register students using the "bulk register" link in admin and manage them using the "manage students" link. The system also keeps track of when students login and how many lines of code they add/remove to/from their code. This data is presented to the administrator as charts under the application "about" page.
+
+Mind that this mechanism still assumes all users are trusted. All the apps created under admin run under the same credentials on the same filesystem. It is possible for an app created by a student to access the data and the source of an app created by another student. It is also possible for a student to create an app that locks the server.
+
+#### Mobile **admin**
+
+Notice that the admin application includes "plugin_jqmobile" which packages jQuery Mobile. When admin is accessed from a mobile device, this is detected by web2py and the interface is displayed using a mobile-friendly layout:
+
+[[image @///image/mobile.png center 306px]]
 
 ### More on **appadmin**
 
@@ -1462,9 +1897,9 @@ where string values must be enclosed in single quotes. Multiple fields can be se
 
 To delete a record, click the corresponding checkbox to confirm that you are sure.
 
-**appadmin** can also perform joins if the SQL FILTER contains a SQL condition that involves two or more tables. For example, try:
+**appadmin** can also perform joins if the query contains a SQL condition that involves two or more tables. For example, try:
 ``
-db.image.id == db.comment.image_id
+db.image.id == db.post.image_id
 ``:code
 
 web2py passes this along to the DAL, and it understands that the query links two tables; hence, both tables are selected with an INNER JOIN. Here is the output:
@@ -1477,8 +1912,6 @@ If you click on the number of a reference field, you get an edit page for the re
 
 You cannot update or delete rows selected by a join, because they involve records from multiple tables and this would be ambiguous.
 
-In addition to its database administration capabilities, **appadmin** also enables you to view details about the contents of the application's ``cache`` (at ``/yourapp/appadmin/ccache``) as well as the contents of the current ``request``, ``response``, and ``session`` objects (at ``/yourapp/appadmin/state``).
+In addition to its database administration capabilities, **appadmin** also enables you to view details about the contents of the application's ``cache`` (at ``/yourapp/appadmin/cache``) as well as the contents of the current ``request``, ``response``, and ``session`` objects (at ``/yourapp/appadmin/state``).
 
-------
 **appadmin** replaces ``response.menu`` with its own menu, which provides links to the application's **edit** page in **admin**, the **db** (database administration) page, the **state** page, and the **cache** page. If your application's layout does not generate a menu using ``response.menu``, then you will not see the **appadmin** menu. In that case, you can modify the appadmin.html file and add ``{{=MENU(response.menu)}}`` to display the menu.
-------
