@@ -1194,7 +1194,7 @@ def call():
     return service()
 ``:code
 
-Here, the handler action simply publishes (via XML-RPC), the functions decorated by ``@ervice.xmlrpc``. In this case, ``find_by``. ``find_by`` is not an action (because it takes an argument). It queries the database with ``.select()`` and then extracts the records as a list with ``.as_list()`` and returns the list.
+Here, the handler action simply publishes (via XML-RPC), the functions decorated by ``@service.xmlrpc``. In this case, ``find_by``. ``find_by`` is not an action (because it takes an argument). It queries the database with ``.select()`` and then extracts the records as a list with ``.as_list()`` and returns the list.
 
 Here is an example of how to access the XML-RPC handler from an external
 Python program.

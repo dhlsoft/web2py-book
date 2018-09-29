@@ -827,7 +827,7 @@ http://127.0.0.1:8000/images/default/user/not_authorized
 
 #### 添加网格(grids)
 
-We can improve this further using the ``SQLFORM.grid`` and ``SQLFORM.smartgrid`` gadgets to create a management interface for our application:
+我们可以使用``SQLFORM.grid``和 ``SQLFORM.smartgrid`` 小工具进一步改善我们的应用,创建一个管理界面:
 
 ``
 @auth.requires_membership('manager')
@@ -836,7 +836,7 @@ def manage():
     return dict(grid=grid)
 ``:code
 
-with associated "views/default/manage.html"
+带有相关的"views/default/manage.html"
 
 ``
 {{extend 'layout.html'}}
@@ -844,23 +844,23 @@ with associated "views/default/manage.html"
 {{=grid}}
 ``
 
-Using appadmin create a group "manager" and make some users members of the group. They will be able to access
+使用 appadmin 创建组 "manager" 并使一些用户成为该组的成员,他们将能够访问
 
 ``
 http://127.0.0.1:8000/images/default/manage
 ``
 
-and browse, search:
+和浏览、搜索:
 
 [[image @///image/en3200.png center 480px]]
 
-create, update and delete images and their comments:
+创建、更新和删除图像以及他们的评论:
 
 [[image @///image/en3300.png center 480px]]
 
-#### Configuring the layout
+#### 配置布局
 
-You can configure the default layout by editing "views/layout.html" but you can also configure it without editing the HTML. In fact, the "static/css/web2py.css" stylesheet is well documented and described in Chapter 5. You can change color, columns, size, borders and background without editing the HTML. If you want to edit the menu, the title or the subtitle, you can do so in any model file. The scaffolding app, sets default values of these parameters in the file "models/menu.py":
+您可以通过编辑 "views/layout.html" 来配置默认布局,也可以配置它而无需编辑HTML。实际上, "static/css/web2py.css" 样式表在第 5 章中有详细描述。您可以改变颜色、列、大小、边界和背景而无需编辑 HTML,如果您要编辑菜单、标题或副标题,可以在任何模型文件中操作,基本构建应用能在文件 "models/menu.py"中设置这些参数的默认值:
 
 ``
 response.title = request.application
@@ -871,18 +871,18 @@ response.meta.keywords = 'bla bla bla'
 response.menu = [ [ 'Index', False, URL('index') ] ]
 ``:code
 
-### A simple wiki
+### 一个简单的维基wiki
 ``wiki``:inxx ``RSS``:inxx ``Ajax``:inxx ``XMLRPC``:inxx
 
-In this section, we build a simple wiki from scratch using only low level APIs (as opposed to using the built-in wiki capabilities of web2py demonstrated in the next section). The visitor will be able to create pages, search them (by title), and edit them. The visitor will also be able to post comments (exactly as in the previous applications), and also post documents (as attachments to the pages) and link them from the pages. As a convention, we adopt the Markmin syntax for our wiki syntax. We will also implement a search page with Ajax, an RSS feed for the pages, and a handler to search the pages via XML-RPC``xmlrpc``:cite . The following diagram lists the actions that we need to implement and the links we intend to build among them.
+在本节中,我们仅使用最基本的API（而不是在下一节中演示web2py内置wiki功能）从头构建一个简单的wiki。访问者将能够创建页面,搜索页面(按照标题)并编辑页面,还能发表评论(与之前的应用完全相似),还可以上传文件(作为页面的附件)并从页面链接。作为惯例,我们的wiki 语法采用 Markmin 语法,还将使用 Ajax 实现一个搜索页面,该页面的 RSS 订阅,以及一个通过 XML-RPC``xmlrpc``:cite 搜索该页面。下图列出了我们需要实现的动作以及我们打算在其中构建的链接。
 
 [[yUML diagram @///image/en3400.png center 200px]]
 
-Start by creating a new scaffolding app, naming it "mywiki".
+开始创建一个新的基本构建应用,命名为t "mywiki"。
 
-The model must contain three tables: page, comment, and document. Both comment and document reference page because they belong to page. A document contains a file field of type upload as in the previous images application.
+该模型必须包含三个表:page(页面),comment(评论)和 document(文档),评论和文档都引用页面,是因为它们属于页面,文档包含 upload 类型的file字段,正如前面的images应用一样。
 
-Here is the complete model:
+以下是完整的模型:
 ``
 db = DAL('sqlite://storage.sqlite')
 
@@ -928,17 +928,17 @@ db.document.created_by.readable = db.document.created_by.writable = False
 db.document.created_on.readable = db.document.created_on.writable = False
 ``:code
 
-Edit the controller "default.py" and create the following actions:
-- index: list all wiki pages
-- create: add a new wiki page
-- show: show a wiki page and its comments, and add new comments
-- edit: edit an existing page
-- documents: manage the documents attached to a page
-- download: download a document (as in the images example)
-- search: display a search box and, via an Ajax callback, return all matching titles as the visitor types
-- callback: the Ajax callback function. It returns the HTML that gets embedded in the search page while the visitor types.
+编辑控制器 "default.py" 并创建以下动作:
+- index: 列出所有的 wiki 页面
+- create: 添加一个新的 wiki 页面
+- show: 显示一个 wiki 页面以及它的评论,并追加新评论
+- edit: 编辑一个现有页面
+- documents: 管理附加到一个页面的文件
+- download: 下载文件(如在 images 例子中)
+- search: 显示一个搜索框并且通过 Ajax 回调,在访问者输入的同时返回所有匹配的标题
+- callback: Ajax 回调函数。它返回在访问者输入时被嵌入搜索页面的 HTML。
 
-Here is the "default.py" controller:
+这里是 "default.py" 控制器:
 ``
 def index():
     """ this controller returns a dictionary rendered by the view
@@ -1002,39 +1002,39 @@ def callback():
 ``:code
 
 
-Lines 2-6 constitute a comment for the index action. Lines 4-5 inside the comment are interpreted by python as test code (doctest). Tests can be run via the admin interface. In this case the tests verify that the index action runs without errors.
+第 2-6 行为 index 动作提供了一个评论,评论中的 4-5 行由 python 解释成测试代码(doctest),通过管理界面可以运行测试,在本例中,测试验证 index 动作运行没有错误。
 
-Lines 18, 27, and 35 try to fetch a ``page`` record with the id in
-``request.args(0)``.
+第 18、27 和 35 行尝试用``request.args(0)``中的 id 获取一个 page 记录。
 
-Lines 13, 20 define and process create forms for a new page and a new comment and
 
-Line 28 defines and processes an update form for a wiki page.
+第 13、20 行为新页面和新评论定义和处理创建表单。
 
-Line 37 creates a ``grid`` object that allows to view, add and update the comments linked to a page.
+第 28 行定义和处理一个 wiki 页面的更新表单。
 
-Some magic happens in line 51. The ``onkeyup`` attribute of the INPUT tag "keyword" is set. Every time the visitor releases a key, the JavaScript code inside the ``onkeyup`` attribute is executed, client-side. Here is the JavaScript code:
+第 37 行创建一个 ``grid`` 对象来浏览、添加和更新链接到页面的评论。
+
+第 51 行发生了一些奇妙的事情,INPUT 标签 "keyword" 的 ``onkeyup`` 属性被设定,每次访问者放开一个按键, ``onkeyup`` 属性中的 JavaScript 代码在客户端被执行。下面是 JavaScript 代码:
 ``
 ajax('callback', ['keyword'], 'target');
 ``:code
-``ajax`` is a JavaScript function defined in the file "web2py.js" which is included by the default "layout.html". It takes three parameters: the URL of the action that performs the synchronous callback, a list of the IDs of variables to be sent to the callback (["keyword"]), and the ID where the response has to be inserted ("target").
+``ajax`` 是一个在文件 "web2py.js" 中定义的 JavaScript 函数,默认的 "layout.html"包含该文件,它有三个参数:动作的 URL,执行同步回调;列表中变量的 ID,被发送到回调(["keyword"])和响应要插入的 ID("target")。
 
-As soon as you type something in the search box and release a key, the client calls the server and sends the content of the 'keyword' field, and, when the server responds, the response is embedded in the page itself as the innerHTML of the 'target' tag.
+当您在搜索框中键入内容,并放开按键,客户端调用服务器并发送'keyword'字段的内容,而且当服务器响应时,响应被作为'target' 标签的内部 HTML 嵌入到页面中。
 
-The 'target' tag is a DIV defined in line 52. It could have been defined in the view as well.
+'target' 标签是一个 DIV 被定义在第 52 行中,也可以在视图中定义它。
 
-Here is the code for the view "default/create.html":
+下面是视图 "default/create.html"的代码:
 ``
 {{extend 'layout.html'}}
 <h1>Create new wiki page</h1>
 {{=form}}
 ``:code
 
-Assuming you are registered and logged in, if you visit the **create** page, you see the following:
+假设您已注册并登录，如果您访问 **create** 页面，您将看到以下内容:
 
 [[image @///image/en3500.png center 480px]]
 
-Here is the code for the view "default/index.html":
+下面是视图 "default/index.html"的代码:
 ``
 {{extend 'layout.html'}}
 <h1>Available wiki pages</h1>
@@ -1045,11 +1045,11 @@ Here is the code for the view "default/index.html":
 [ {{=A('create page', _href=URL('create'))}} ]
 ``:code
 
-It generates the following page:
+它将生成如下页面:
 
 [[image @///image/en3600.png center 480px]]
 
-Here is the code for the view "default/show.html":
+下面是视图"default/show.html"的代码:
 
 ``markdown``:inxx ``MARKMIN``:inxx
 ``
@@ -1066,14 +1066,14 @@ Here is the code for the view "default/show.html":
 {{=form}}
 ``:code
 
-If you wish to use markdown syntax instead of markmin syntax:
+如果你想使用 markdown 语法取代 markmin 语法:
 
 ``
 from gluon.contrib.markdown import WIKI as MARKDOWN
 ``:code
 
-and use ``MARKDOWN`` instead of the ``MARKMIN`` helper.
-Alternatively, you can choose to accept raw HTML instead of markmin syntax. In this case you would replace:
+使用 WIKI 取代 MARKMIN 帮助对象。
+或者,您可以选择原始的 HTML 取代 markmin 句法。在本例中,您将取代:
 ``
 {{=MARKMIN(page.body)}}
 ``:code
@@ -1084,20 +1084,20 @@ with:
 ``:code
 
 ``sanitize``:inxx
-(so that the XML does not get escaped, which web2py normally does by default for security reasons).
+(这样 XML 没有得到转义,正如 web2py 出于安全考虑通常会这样做)。
 
-This can be done better with:
+更好的做法如下:
 ``
 {{=XML(page.body, sanitize=True)}}
 ``:code
 
-By setting ``sanitize=True``, you tell web2py to escape unsafe XML tags such as "<script>", and thus prevent XSS vulnerabilities.
+通过设定 ``sanitize=True``,告诉 web2py 转义不安全的 XML 标签例如 "<script>",这样防止 XSS 漏洞。
 
-Now if, from the index page, you click on a page title, you can see the page that you have created:
+现在如果从 index 页面,点击页面标题,可以看到你创建的页面:
 
 [[image @///image/en3700.png center 480px]]
 
-Here is the code for the view "default/edit.html":
+下面是视图 "default/edit.html"的代码:
 ``
 {{extend 'layout.html'}}
 <h1>Edit wiki page</h1>
@@ -1106,9 +1106,9 @@ Here is the code for the view "default/edit.html":
 {{=form}}
 ``:code
 
-It generates a page that looks almost identical to the create page.
+它生成的页面看起来与create页面几乎相同。
 
-Here is the code for the view "default/documents.html":
+下面是视图 "default/documents.html"的代码:
 ``
 {{extend 'layout.html'}}
 <h1>Documents for page: {{=page.title}}</h1>
@@ -1117,11 +1117,11 @@ Here is the code for the view "default/documents.html":
 {{=grid}}
 ``:code
 
-If, from the "show" page, you click on documents, you can now manage the documents attached to the page.
+如果从 "show" 页面点击文件,现在可以管理附加到该页面的文件。
 
 [[image @///image/en3800.png center 480px]]
 
-Finally here is the code for the view "default/search.html":
+最后是视图"default/search.html"的代码:
 ``
 {{extend 'layout.html'}}
 <h1>Search wiki pages</h1>
@@ -1129,22 +1129,22 @@ Finally here is the code for the view "default/search.html":
 {{=form}}<br />{{=target_div}}
 ``:code
 
-which generates the following Ajax search form:
+生成如下 Ajax 搜索表单:
 
 [[image @///image/en3900.png center 480px]]
 
-You can also try to call the callback action directly by visiting, for example, the following URL:
+您还可以尝试直接调用 callback 动作,例如通过访问如下 URL:
 ``
 http://127.0.0.1:8000/mywiki/default/callback?keyword=main
 ``:code
 
-If you look at the page source you see the HTML returned by the callback:
+如果您看页面源代码,您会看到 callback 返回的 HTML:
 ``
 <ul><li><a href="/mywiki/default/show/4">My Main Page</a></li></ul>
 ``:code
 
 ``rss``:inxx
-Generating an RSS feed of your wiki pages using web2py is easy because web2py includes ``gluon.contrib.rss2``. Just append the following action to the default controller:
+使用 web2py 从存储的页面生成 RSS 订阅很容易是因为 web2py 包含 ``gluon.contrib.rss2``。只需将以下动作附加到默认控制器中:
 ``
 def news():
     """generates rss feed from the wiki pages"""
@@ -1160,27 +1160,27 @@ def news():
                             created_on=row.created_on) for row in pages])
 ``:code
 
-and when you visit the page
+当你访问这个页面时
 ``
 http://127.0.0.1:8000/mywiki/default/news.rss
 ``:code
 
-you see the feed (the exact output depends on the feed reader). Notice that the dict is automatically converted to RSS, thanks to the .rss extension in the URL.
+您将会看到订阅(确定的输出取决于订阅的读者),注意字典被自动转换成 RSS,得益于URL 中的.rss 扩展。
 
 [[image @///image/en4000.png center 480px]]
 
-web2py also includes feedparser to read third-party feeds.
+web2py 中包含 feedparser 用于读取第三方订阅。
 
-Notice that the line:
+注意这一行:
 
 ``
 response.generic_patterns = ['.rss']
 ``:code
 
-instructs web2py to use generic views (in our case "views/generic.rss") when the URL ends in the glob pattern ".rss". By default generic views are only allowed from localhost for development purposes.
+当URL以glob模式 ".rss"结束时，指示 web2py 使用通用视图(在我们的例子中是 "views/generic.rss")。默认情况下，通用视图只允许在localhost进行开发使用。
 
 ``XMLRPC``:inxx
-Finally, let's add an XML-RPC handler that allows searching the wiki programmatically:
+最后,让我们添加一个 XML-RPC 处理程序,它允许以编程方式搜索 wiki:
 ``
 service = Service()
 
@@ -1194,10 +1194,10 @@ def call():
     return service()
 ``:code
 
-Here, the handler action simply publishes (via XML-RPC), the functions decorated by ``@ervice.xmlrpc``. In this case, ``find_by``. ``find_by`` is not an action (because it takes an argument). It queries the database with ``.select()`` and then extracts the records as a list with ``.as_list()`` and returns the list.
+这里,handler 动作只是发布(通过 XML-RPC)由``@service.xmlrpc``修饰的函数。本例中, ``find_by`` 不是一个动作(因为它需要一个参数),它使用 ``.select()`` 查询数据库,使用 ``.as_list()`` 提取记录作为一个列表并返回该列表。
 
-Here is an example of how to access the XML-RPC handler from an external
-Python program.
+下面是如何从外部 Python 程序访问 XML-RPC 处理程序的示例。
+
 ``
 >>> import xmlrpclib
 >>> server = xmlrpclib.ServerProxy('http://127.0.0.1:8000/mywiki/default/call/xmlrpc')
@@ -1205,82 +1205,82 @@ Python program.
         print item['created_on'], item['title']
 ``:code
 
-The handler can be accessed from many other programming languages that understand XML-RPC, including C, C++, C# and Java.
+可以通过其它的编程语言访问 XML-RPC 处理程序,包括 C、 C++、 C#和 Java。
 
-#### On ``date``, ``datetime`` and ``time`` format
+#### 关于 ``date``,  ``datetime``  和 ``time``  属性格式
 
-There are three different representations for each of the field types ``date``, ``datetime`` and ``time``:
-- the database representation
-- the internal web2py representation
-- the string representation in forms and tables
+每个字段类型的``date``、 ``datetime`` 和 ``time``有三种不同的表示形式:
+- 数据库表示
+- 内部 web2py 表示
+- 表单和表中的字符串表示形式
 
-The database representation is an internal issue and does not affect the code. Internally, at the web2py level, they are stored as ``datetime.date``, ``datetime.datetime`` and ``datetime.time`` object respectively and they can be manipulated as such:
+数据库表示是一个内部问题并且不会影响代码。在内部,在 web2py 层面,它们分别被作为 ``datetime.date``、``datetime.datetime`` 以及  ``datetime.time`` 对象存储,可以如下操纵它们:
 
 ``
 for page in db(db.page).select():
     print page.title, page.created_on.day, page.created_on.month, page.created_on.year
 ``
 
-When dates are converted to strings in forms they are converted using the ISO representation
+使用 ISO 表示将日期转换成表单中的字符串
 ``
 %Y-%m-%d %H:%M:%S
 ``
 
-yet this representation is internationalized and you can use the admin translation page to change the format to an alternate one. For example:
+但这种表示是国际化的而且你可以使用 admin 翻译页面将格式改为另一种格式。例如:
 
 ``
 %m/%d/%Y %H:%M:%S
 ``
 
-Mind that by default English is not translated because web2py assumes the applications are written in English. If you want internationalization to work for English you need to create the translation file (using admin) and you need to declare that the application's current language is something other than english, for example:
+注意默认为英语不会被翻译,因为 web2py 假定应用已经用英语编写,如果想让国际化适用于英语,需要创建翻译文件(使用 admin)而且需要声明该应用的当前语言是除英语以外的其他东西,例如:
 ``
 T.current_languages = ['null']
 ``
 
-### The built-in web2py wiki
+### 内置的web2py wiki
 
-Now you can forget the code we have built-in the previous section (not what you have learned about web2py APIs, just the code of the specific example) as we are going to provide an example of the built-in web2py wiki.
+现在，您可以忘记上一节中内置的代码(不是您了解的web2py api，而是特定示例的代码)，因为我们将提供一个内置的web2py wiki示例。
 
-In fact, web2py comes with wiki capabilities including media attachments, tags, tag cloud, page permissions, and support for oembed ``oembed``:cite and components (chapter 14). This wiki can be used with any web2py application.
+事实上，web2py附带了wiki功能，包括媒体附件、标签、标签云、页面权限以及对oembed ``oembed``:cite 和组件的支持(第14章)。这个wiki可以用于任何web2py应用程序。
 
 ------
-Notice the API of the built-in wiki is still considered experimental and small changes are still possible.
+请注意，内置wiki的API仍然被认为是实验性的，小的更改仍然是可能的。
 ------
 
-Here we assume we are starting from scratch from a simple clone of the "welcome" application called "wikidemo". If not, make sure that in ``db.py`` migrations are enabled else the new required wiki tables will not be automatically created.
+在这里，假设我们是从"welcome"应用程序简单克隆一个名为"wikidemo"的应用开始的。请确保在``db.py``文件中启用了迁移，否则将不会自动创建新的必需的wiki表。
 
-Edit the controller and replace the "index" action with.
+编辑控制器并将 "index" 动作替换为。
 ``
 def index(): return auth.wiki()
 ``:code
 
-Done! You have a fully working wiki.
-Please note that wiki needs some tables to be defined, and they'll only be defined when accessing the controller. If you want them to be readily available, use ``auth.wiki(resolve=False)``, and make sure table migrations are turned on: more on that on the **Extending-the-auth-wiki-feature** section following.
+完成了!你有一个完整的wiki。
+请注意，wiki需要定义一些表，它们只在访问控制器时定义。如果您想要它们随时可用，可以使用``auth.wiki(resolve=False)``，并确保打开了表迁移:下面的**Extending-the-auth-wiki-feature** 小节将对此进行详细介绍。
 
-At this point no page has been created and in order to create pages you must be logged-in and you must be member of a group called "wiki_editor" or "wiki_author". If you are logged-in as administrator the "wiki_editor" group is created automatically and you are made a member. The difference between editors and authors is that the editors can create pages, edit and delete any page, while the authors can create pages (with some optional restrictions) and can only edit/delete the pages they have created.
+现在还没有创建页面，为了创建页面，您必须登录，并且必须是一个名为"wiki_editor"或"wiki_author"的组的成员。如果您以管理员身份登录，则会自动创建"wiki_editor"组，并成为成员。编辑者和作者的区别在于编辑者可以创建页面、编辑和删除任何页面，而作者可以创建页面(有一些可选的限制)，并且只能编辑/删除他们创建的页面。
 
-The ``auth.wiki()`` function returns in a dictionary with a key ``content`` which is understood by the scaffolding "views/default/index.html". You can make your own view for this action:
+``auth.wiki()`` 函数在字典中返回一个键 ``content``，基本构建 "views/default/index.html"可以理解为该键。你可以对这个动作提出自己的看法:
 
 ``
 {{extend 'layout.html'}}
 {{=content}}
 ``:code
 
-and add extra HTML or code as needed. You do not have to use the "index" action to expose the wiki. You can use an action with a different name.
+并根据需要添加额外的HTML或代码。您不必使用"index" 动作来公开wiki。您可以使用具有不同名称的动作。
 
-To try the wiki, simply login into admin, visit the page
+要尝试wiki，只需登录admin，访问页面
 
 ``
 http://127.0.0.1:8000/wikidemo/default/index
 ``
 
-Then choose a slug (in the publishing business, a slug is a short name given to an article that is in production) and you will be redirected to an empty page where you can edit the content using MARKMIN wiki syntax. A new menu item called "[wiki]" will allow you to create, search, and edit pages. Wiki pages have URLs like:
+然后选择一个slug(在出版业务中，slug是对生产中的一篇文章的简称)，你将被重定向到一个空白页面，在那里你可以使用MARKMIN wiki语法编辑内容。一个名为 "[wiki]" 的新菜单项将允许您创建、搜索和编辑页面。Wiki页面的url如下:
 
 ``
 http://127.0.0.1:8000/wikidemo/default/index/[slug]
 ``
 
-Service pages have names which start by underscore:
+服务页面的名称以下划线开头:
 
 ``
 http://127.0.0.1:8000/wikidemo/default/index/_create
@@ -1292,11 +1292,11 @@ http://127.0.0.1:8000/wikidemo/default/index/_editmedia/...
 http://127.0.0.1:8000/wikidemo/default/index/_preview/...
 ``
 
-Try to create more pages such as "index", "aboutus", and "contactus".
-Try to edit them.
+尝试创建更多的页面，例如 "index"、 "aboutus"和"contactus"。
+试着编辑它们。
 
 
-The ``wiki`` method has the following signature:
+ ``wiki`` 方法有以下参数:
 
 ``
 def wiki(self, slug=None, env=None, render='markmin',
@@ -1305,22 +1305,22 @@ def wiki(self, slug=None, env=None, render='markmin',
          extra=None, menu_groups=None)
 ``:code
 
-It takes the following arguments:
+它采用以下参数:
 
-- ``render`` which defaults to ``'markmin'`` but can be set equal to ``'html'``. It determines the syntax of the wiki. We will discuss the markmin wiki markup later. If you change it to HTML you can use a wysiwyg javascript editor such as TinyMCE or NicEdit.
-- ``manage_permissions``. This is set to ``False`` by default and only recognizes permissions for "wiki_editor" and "wiki_author". If you change it to ``True`` the create/edit page will give the option to specify by name the group(s) whose members have permission to read and edit the page. There is a group "everybody" which includes all users.
+- ``render`` 默认为``'markmin'`` 但可以设置为``'html'``。它决定了wiki的语法。稍后我们将讨论markmin wiki。如果将其更改为HTML，可以使用wysiwyg javascript编辑器，比如TinyMCE或NicEdit。
+- ``manage_permissions`` 默认设置为``False`` ，只识别"wiki_editor"和"wiki_author"的权限。如果您将其更改为``True`` ，则create/edit页面将提供按名称指定成员有权阅读和编辑页面的组的选项。有一组"everybody"包括所有用户。
 
-- ``force_prefix``. If set to something like ``'%(id)s-'`` it will restrict authors (not editors) to creating pages with a prefix like "[user id]-[page name]". The prefix can contain the id ("%(id)s") or the username ("%(username)s") or any other field from the auth_user table, as long as the corresponding column contains a valid string that would pass URL validation.
-- ``restrict_search``. This defaults to ``False`` and any logged-in user can search all wiki pages (but not necessary read or edit them). If set to ``True``, authors can search only their own pages, editors can search everything, other users cannot search anything.
-- ``menu_groups``. This defaults to ``None`` and it indicates that wiki management menu (search, create, edit, etc.) is always displayed. You can set it to a list of group names whose members only can see this menu, for example ``['wiki_editor','wiki_author']``. Notice that even if the menu is exposed to everybody that does not mean everybody is allowed to perform actions listed in the menu since they are regulated by the access control system.
+- ``force_prefix`` 如果设置为 ``'%(id)s-'`` ，它将限制作者(而不是编辑者)创建前缀为"[用户id]-[页面名称]"的页面。前缀可以包含id ("%(id)s") 或用户名 ("%(username)s") 或auth_user表中的任何其他字段，只要对应的列包含传递URL验证的有效字符串。
+- ``restrict_search`` 这默认为``False`` ，任何登录的用户都可以搜索所有的wiki页面(但不需要阅读或编辑它们)。如果设置为``True``，作者只能搜索自己的页面，编辑者可以搜索所有内容，其他用户不能搜索任何内容。
+- ``menu_groups`` 默认为 ``None`` ，表示总是显示wiki管理菜单(搜索、创建、编辑等)。您可以将它设置为一个组名列表，其成员只能看到这个菜单，例如``['wiki_editor','wiki_author']``。请注意，即使菜单向所有人公开，这并不意味着每个人都可以执行菜单中列出的操作，因为它们是由访问控制系统控制的。
 
-The ``wiki`` method has some additional parameters which will be explained later: ``slug``, ``env``, and ``extra``.
+``wiki`` 方法还有一些附加参数，稍后将解释:``slug``、``env``和``extra``。
 
 
 
-#### MARKMIN basics
+#### MARKMIN 基础知识
 
-The MARKMIN syntax allows you to markup **bold** text using ``**bold**``, ''italic'' text with ``''italic''``, and ``code`` text should be delimited by double inverted quotes. Titles must be prefixed by a #, sections by ##, and sub-sections by ###. Use a minus (-) to prefix an un-ordered item and plus (+) to prefix an ordered item. URLs are automatically converted into links. Here is an example of markmin text:
+MARKMIN语法允许您使用``**粗体**``标记**粗体**文本、``''斜体''``标记''斜体''文本,并且``code``应该用双引号分隔。标题必须以#开头，部分以##结尾，子部分以##结尾。使用-(-)前缀非有序项，加上(+)前缀有序项。url被自动转换为链接。下面是一个markmin文本示例:
 
 ``
 # This is a title
@@ -1334,45 +1334,45 @@ http://web2py.com
 ``:code
 
 
-You can use the ``extra`` parameter of ``auth.wiki`` to pass extra rendering rules to the MARKMIN helper.
+您可以使用 ``auth.wiki`` 的 ``extra`` 参数。将额外的渲染规则传递给MARKMIN助手。
 
-You can find more information about the MARKMIN syntax in chapter 5.
+您可以在第5章中找到更多关于MARKMIN语法的信息。
 
-``auth.wiki`` is more powerful than the barebones MARKMIN helpers, supporting oembed and components.
+``auth.wiki`` 比barebones MARKMIN助手更强大，它支持oembed和组件。
 
-You can use the ``env`` parameter of ``auth.wiki`` to expose functions to your wiki.
-For example:
+您可以使用 ``auth.wiki`` 的 ``env`` 参数。来向您的wiki公开函数。
+例如:
 
 ``
 auth.wiki(env=dict(join=lambda a:"-".join(a.split(","))))
 ``
 
-allows you to use the markup syntax:
+允许您使用标记语法:
 
 ``
 @{join:1,2,3}
 ``
 
-This calls the join function passed to env with argument ``"1,2,3"`` and will be rendered as ``1-2-3``.
+这将调用传递给env的join函数，其参数为 ``"1,2,3"`` ，并将呈现为 ``1-2-3``。
 
-#### Oembed protocol
+#### Oembed 协议
 
-You can type in (or cut-and-paste) any URL into a wiki page and it is rendered as a link to the URL. There are exceptions:
+您可以在wiki页面中键入(或剪切-粘贴)任何URL，并将其呈现为指向该URL的链接。也有例外:
 
-- If the URL has an image extension, the link is embedded as an image, ``<img/>``.
-- If the URL has an audio extension, the link is embedded as HTML5 audio ``<audio/>``.
-- If the URL has a video extension, the link is embedded as HTML5 video ``<video/>``.
-- If the URL has a MS Office or PDF extension, Google Doc Viewer is embedded, showing the content of the document (only works for public documents).
-- If the URL points to a YouTube page, a Vimeo page, or a Flickr page, web2py contacts the corresponding web service and queries it about the proper way to embed the content. This is done using the ``oembed`` protocol.
+- 如果URL有图像扩展，链接被嵌入到一个图像中， ``<img/>``。
+- 如果URL有音频扩展，链接嵌入到HTML5 audio ``<audio/>``。
+- 如果URL有视频扩展，链接被嵌入到HTML5 video  ``<video/>``。
+- 如果URL有MS Office或PDF扩展名，则会嵌入谷歌Doc Viewer，显示文档的内容(仅适用于公共文档)。
+- 如果URL指向YouTube页面、Vimeo页面或Flickr页面，web2py会联系相应的web服务，并询问嵌入内容的正确方式。这是使用“oembed”协议来完成的。
 
-Here is a complete list of supported formats:
+以下是一个完整的支持格式列表:
 ``
 Image (.PNG, .GIF, .JPG, .JPEG)
 Audio (.WAV, .OGG, .MP3)
 Video (.MOV, .MPE, .MP4, .MPG, .MPG2, .MPEG, .MPEG4, .MOVIE)
 ``
 
-Supported via Google Doc Viewer:
+支持通过谷歌Doc浏览器:
 
 ``
 Microsoft Excel (.XLS and .XLSX)
@@ -1388,7 +1388,7 @@ TrueType (.TTF)
 xml Paper Specification (.XPS)
 ``:code
 
-Supported by oembed:
+oembed的支持:
 
 ``
 flickr.com
@@ -1403,7 +1403,7 @@ revision3.com
 viddler.com
 ``:code
 
-This is implemented in the web2py file ``gluon.contrib.autolinks`` and specifically in the function ``expand_one``. You can extend oembed support by registering more services. This is done by appending an entry to the ``EMBED_MAPS`` list:
+这是在web2py文件``gluon.contrib.autolinks``中实现的，特别是在函数``expand_one``中。您可以通过注册更多的服务来扩展oembed支持。这是通过添加一个条目到 ``EMBED_MAPS`` 列表:
 
 ``
 from gluon.contrib.autolinks import EMBED_MAPS
@@ -1411,37 +1411,37 @@ EMBED_MAPS.append((re.compile('http://vimeo.com/\S*'),
                    'http://vimeo.com/api/oembed.json'))
 ``:code
 
-#### Referencing wiki content
+#### 引用 wiki 内容
 
-If you create a wiki page with slug "contactus" you can refer to this page as
+如果您使用slug "contactus"创建一个wiki页面，您可以将该页面称为
 
 ``
 \@////contactus
 ``:code
 
-Here @````//// stands for
+这里 @````//// 代表
 
 ``
 \@/app/controller/function/
 ``:code
 
-but "app", "controller", and "function" are omitted thus assuming default.
+但是默认情况下， "app"、"controller"和"function"被省略。
 
-Similarly you can use the wiki menu to upload a media file (for example an image) linked to the page. The "manage media" page will show all the files you have uploaded and will also show the proper expression to link the media file. If, for example you upload a file named "test.jpg" with title "beach", the link expression will be something like:
+类似地，您可以使用wiki菜单上传链接到页面的媒体文件(例如图片)。"管理媒体"页面将显示您上传的所有文件，并显示适当的表达式链接媒体文件。例如，如果您上传一个名为 "test.jpg" 的文件，标题为"beach"，链接表达式将如下所示:
 
 ``
 \@////15/beach.jpg
 ``:code
 
-``\@////`` is the same prefix described before. ``15`` is the id of the record storing the media file. ``beach`` is the title. ``.jpg`` is the extension of the original file.
+``\@////`` 是前面描述的相同前缀。``15`` 是存储媒体文件的记录的id。 ``beach`` 是标题。``.jpg`` 是原始文件的扩展名。
 
-If you cut and paste ``\@////15/beach.jpg`` into wiki pages you embed the image.
+如果您剪切和粘贴 ``\@////15/beach.jpg`` 到wiki页面，您就嵌入了图像。
 
-Mind that media files are linked to pages and inherit access permission from the pages.
+请注意，媒体文件链接到页面继承来自页面的访问权限。
 
-#### Wiki menus
+#### Wiki 菜单
 
-If you create a page with slug "wiki-menu" page it will be interpreted as a description of the menu. Here is an example:
+如果你用slug "wiki-menu" 创建一个页面，它将被解释为菜单的描述。下面是一个例子:
 
 ``
 - Home > \@////index
@@ -1451,79 +1451,79 @@ If you create a page with slug "wiki-menu" page it will be interpreted as a desc
 - - Contact us > \@////contactus
 ``
 
-Each line a menu item. We used double dash for nested menu items. The ``>`` symbols separates the menu item title from the menu item link.
+每行有一个菜单项。我们对嵌套菜单项使用双破折号。 ``>`` 符号将菜单项标题与菜单项链接分开。
 
-Mind that the menu is appended to ``response.menu``. It does not replace it. The ``[wiki]`` menu item with service functions is added automatically.
+请注意，菜单被附加到 ``response.menu``后面。它不能取代它。带有服务功能的 ``[wiki]`` 菜单项会自动添加。
 
-#### Service functions
+#### 服务功能
 
-If, for example, you want to use the wiki to create an editable sidebar you could create a page with ``slug="sidebar"`` and then embed it in your layout.html with
+例如，如果您想使用wiki来创建一个可编辑的侧边栏，那么可以使用``slug="sidebar"``创建一个页面，然后嵌入到你的 layout.html 中
 
 ``
 {{=auth.wiki(slug='sidebar')}}
 ``:code
 
-Notice that there is nothing special with the word "sidebar". Any wiki page can be retrieved and embedded at any point in your code. This allows you mix and match wiki functionalities with regular web2py functionalities.
+注意， "sidebar"这个词没有什么特别之处。任何wiki页面都可以在代码的任何位置进行检索和嵌入。这允许您将wiki功能与常规的web2py功能混合并匹配。
 
 ------
-Also note that ``auth.wiki('sidebar')``:code is the same as ``auth.wiki(slug='sidebar')``:code, since the slug kwarg is the first in the method signature. The former gives a slightly simpler syntax.
+还要注意，``auth.wiki('sidebar')``:code和 ``auth.wiki(slug='sidebar')``:code，因为slug kwarg是方法参数中的第一个。前者给出了稍微简单的语法。
 ------
 
 
-You can also embed special wiki functions such as the search by tags:
+您还可以嵌入特殊的wiki功能，例如通过标签搜索：
 
 ``
 {{=auth.wiki('_search')}}
 ``:code
 
-or the tag cloud:
+或者标签云:
 
 ``
 {{=auth.wiki('_cloud')}}
 ``:code
 
 
-#### Extending the auth.wiki feature
+#### 扩展 auth.wiki 功能
 
-When your wiki-enabled app gets more complicated, perhaps you might need to customize the wiki db records managed by the Auth interface or expose customized forms for wiki CRUD tasks. For example, you might want to customize a wiki table record representation or add a new field validator. This is not allowed by default, since the wiki model is defined only after the wiki interface is requested with the auth.wiki() method. To allow access to the wiki specific db setup within the model of your app you must add the following sentence to your model file (i.e. db.py)
+当支持wiki的应用程序变得更加复杂时，您可能需要定制由Auth接口管理的wiki db记录，或者为wiki CRUD任务公开定制的表单。例如，您可能希望定制一个wiki表记录表示或添加一个新的字段验证器。这在默认情况下是不允许的，因为wiki模型是在使用auth.wiki()方法请求wiki接口之后定义的。要访问应用程序模型中特定于wiki的db设置，您必须向模型文件(即db.py)添加以下语句
 
 ``
-# Make sure this is called after the auth instance is created
-# and before any change to the wiki tables
+# 确保在创建auth实例后调用此函数
+# 在对wiki表进行任何更改之前
 auth.wiki(resolve=False)
 ``:code
 
-By using the line above in your model, the wiki tables will be accessible (i.e. ``wiki_page``) for custom CRUD or other db tasks.
+通过在您的模型中使用上面的写法，wiki表将是可访问的(即 ``wiki_page``)，用于定制CRUD或其他db任务。
 
 ------
-Note that you still have to call auth.wiki() in the controller or view in order to expose the wiki interface, since the ``resolve=False`` parameter instructs the auth object to just build the wiki model without any other interface setup.
+注意，为了公开wiki接口，仍然需要在控制器或视图中调用auth.wiki()，因为 ``resolve=False`` 参数指示auth对象在没有任何其他接口设置的情况下只构建wiki模型。
 ------
 
 
-Also, by setting resolve to ``False`` in the method call, the wiki tables will be now accessible through the app's default db interface at ``<app>/appadmin`` for managing wiki records.
+另外，通过在方法调用中将resolve设置为 ``False``，现在可以通过应用程序的默认db接口``<app>/appadmin``访问wiki表，用于管理wiki记录。
 
 
-Another customization possible is adding extra fields to the standard wiki tables (in the same way as with the ``auth_user`` table, as described in Chapter 9). Here is how:
+另一种可能的定制是将额外的字段添加到标准wiki表（与第9章中描述的 ``auth_user`` 表相同）。以下是：
 
 ``
-# Place this after auth object initialization
+# 在auth对象初始化之后放置
 auth.settings.extra_fields["wiki_page"] = [Field("ablob", "blob"), ]
 ``:code
 
-The line above adds a ``blob`` field to the ``wiki_page`` table. There is no need to call ``auth.wiki(resolve=False)``:code for this option, unless you need access to the wiki model for other customizations.
+上面的一行将 ``blob`` 字段添加到``wiki_page``表中。不需要调用 ``auth.wiki(resolve=False)``:code，除非您需要访问wiki模型来进行其他定制。
 
 
-#### Components
+#### 组件
 
-One of the most powerful functions of the new web2py consists in the ability of embedding an action inside another action. We call this a component.
+新Web2Py最强大的功能之一是将动作嵌入到另一个动作中的能力。我们称之为组件。
 
-Consider the following model:
+仔细考虑以下模型：
 
 ``
 db.define_table('thing', Field('name', requires=IS_NOT_EMPTY()))
 ``:code
 
-and the following action:
+及下列动作:
 
 ``
 @auth.requires_login()
@@ -1531,189 +1531,189 @@ def manage_things():
     return SQLFORM.grid(db.thing)
 ``:code
 
-This action is special because it returns a widget/helper not a dict of objects. Now we can embed this ``manage_things`` action into any view, with
+这个动作是特殊的，因为它返回一个小部件/帮助器而不是一个字典对象。现在我们可以把这个``manage_things``的动作嵌入到任何视图中。
 
 ``
 {{=LOAD('default', 'manage_things', ajax=True)}}
 ``:code
 
-This allows the visitor interact with the component via Ajax without reloading the host page that embeds the widget. The action is called via Ajax, inherits the style of the host page, and captures all form submissions and flash messages so that they are handled within the current page. On top of this the ``SQLFORM.grid`` widget uses digitally signed URLs to restrict access. More information about components can be found in chapter 13.
+这允许访问者通过Ajax与组件交互，而无需重新加载嵌入小部件的父页面。该操作通过Ajax调用，继承父页面的样式，捕获所有表单提交和flash消息，以便在当前页面中处理它们。在此之上``SQLFORM.grid`` 小部件使用数字签名url来限制访问。关于组件的更多信息可以在第13章找到。
 
-Components like the one above can be embedded into wiki pages using the MARKMIN syntax:
+像上面这样的组件可以使用MARKMIN语法嵌入到wiki页面中:
 
 ``
 @{component:default/manage_things}
 ``
 
-This simply tells web2py that we want to include the "manage_things" action defined in the "default" controller as an Ajax "component".
+这只是告诉web2py，我们希望将 "default" 控制器中的 "manage_things" 动作定义为Ajax "组件"。
 
 ---------
-Most users will be able to build relatively complex applications simply by using ``auth.wiki`` to create pages and menus and embedded custom components into wiki pages. Wikis can be thought of as a mechanism to allow members of the group to create pages, but they can also be thought of as a way to develop applications in a modular way.
+大多数用户只需使用 ``auth.wiki``就能够构建相对复杂的应用程序，创建页面和菜单并将定制组件嵌入到wiki页面中。Wiki可以被认为是一种允许组成员创建页面的机制，但也可以被认为是一种以模块化的方式开发应用程序的方法。
 ---------
 
-### More on **admin**
+###关于 **admin** 的更多内容
 ``admin``:inxx
 
-The administrative interface provides additional functionality that we briefly review here.
+管理界面提供了附加功能,我们这里简要回顾。
 
-#### Site
+#### Site 页面
 ``site``:inxx
 
-This page is the main administrative interface of web2py. It lists all installed applications on the left, while on the right side there are some special action forms.
+这个页面是web2py的主要管理界面。它在左边列出了所有已安装的应用程序，而在右边有一些特殊的操作表单。
 
-The first of them shows the web2py version and proposes to upgrade it if new versions are available. Of course, before upgrading be sure to have a full working backup!
-Then there are two other forms that allow the creation of a new application (simple or by using an online wizard) by specifying its name.
+第一个是web2py版本，如果有新版本可用，建议升级。当然，升级之前一定要有一个完整的工程备份!
+另外还有两种形式允许通过指定新应用程序的名称来创建新应用程序(简单的或通过使用在线向导)。
 
 ``Instant Press``:inxx ``Movuca``:inxx
-The following form allows uploading an existing application from either a local file or a remote URL. When you upload an application, you need to specify a name for it (using different names
-allows you to install multiple copies of the same application). You can try, for example, to upload the Movuca Social Networking application app created by Bruno Rocha:
+在往下的表单允许从本地文件或远程URL上传已有应用程序。上传应用程序时，需要为其指定一个名称(使用不同的名称,
+允许您安装同一应用程序的多个副本)。例如，你可以尝试上传由Bruno Rocha创建的Movuca社交网络应用程序:
 
 ``
 https://github.com/rochacbruno/Movuca
 ``
 
-or Instant Press CMS created by Martin Mulone:
+或者是Martin Mulone创建的即时新闻CMS:
 
 ``
 http://code.google.com/p/instant-press/
 ``
 
-or one of the many example applications available at:
+或众多示例应用程序之一::
 
 ``
 http://web2py.com/appliances
 ``
 
 ------
-Web2py files are packages as ``.w2p`` files. These are tar gzipped files. Web2py uses the ``.w2p`` extension instead of the ``.tgz`` extension to prevent the browser from unzipping on download. They can be uncompressed manually with ``tar xzvf [filename]`` although this is never necessary.
+Web2py 文件打包成 ``.w2p`` 文件。这些是 tar gzip 压缩文件,Web2py 使用 ``.w2p`` 扩展代替 ``.tgz`` 扩展来防止浏览器下载之后解压,它们可以使用``tar xzvf [filename]`` 手动解压它们,尽管从来没有必要这么做。
 ------
 
 [[image @///image/en4100.png center 444px]]
 
-Upon successful upload, web2py displays the MD5 checksum of the uploaded file. You can use it to verify that the file was not corrupted during upload. The application name will appear in the list of installed applications.
+成功上传之后,web2py 显示上传文件的 MD5 校验,可以用它验证文件在上传过程中有没有被损坏。应用程序名称将出现在已安装的应用程序列表中。
 
-If you run web2py from source and you have ``gitpython`` installed (if necessary, set it up with 'easy_install gitpython'), you can install applications directly from git repositories
-using the ``.git`` URL in the upload form. In this case you will also be enabled to use the admin interface to push changes back into the repository, but this is an experimental feature.
+如果您从源代码运行web2py，并且安装 ``gitpython`` (如果需要，使用'easy_install gitpython'安装它)，您可以直接从git存储库安装应用程序
+使用上传表单中的 ``.git`` URL。在这种情况下，您还可以使用admin接口将更改推回到存储库，但这是一个实验性的特性。
 
-For example, you can locally install the application that shows this book on the web2py site with the URL:
+例如，您可以使用URL在web2py site上本地安装这本书的应用程序:
 
 ``
 https://github.com/web2py/web2py-book.git
 ``
 
 ------
-That repository hosts the current, updated version of this book (which could be different from the stable version you can see on the web site). You are warmly invited to use it for submitting
-improvements, fixes and corrections in the form of pull requests.
+这个存储库承载了这本书的最新版本(可能与您在网站上看到的稳定版本不同)。
+我们诚挚地邀请您使用它以pull request的形式提交改进、修复和更正。
 ------
 
-For each application installed you can use the ''site'' page to:
-- Go directly to the application by clicking on its name.
-- Uninstall the application.
-- Jump to the ''about'' page (read below).
-- Jump to the ''edit'' page (read below).
-- Jump to the ''errors'' page (read below).
-- Clean up temporary files (sessions, errors, and cache.disk files).
-- Pack all. This returns a tar file containing a complete copy of the application. We suggest that you clean up temporary files before packing an application.
-- Compile the application. If there are no errors, this option will bytecode-compiles all models, controllers and views. Because views can extend and include other views in a tree, before bytecode compilation, the view tree for every controller is collapsed into a single file. The net effect is that a bytecode-compiled application is faster, because there is no more parsing of templates or string substitutions occurring at runtime.
-- Pack compiled. This option is only present for bytecode-compiled applications. It allows packing the application without source code for distribution as closed source. Note that Python (as any other programming language) can technically be decompiled; therefore compilation does not provide complete protection of the source code. Nevertheless, de-compilation can be difficult and can be illegal.
-- Remove compiled. It simply removes the byte-code compiled models, views and controllers from the application. If the application was packaged with source code or edited locally, there is no harm in removing the bytecode-compiled files, and the application will continue to work. If the application was installed form a packed compiled file, then this is not safe, because there is no source code to revert to, and the application will no longer work.
+对于安装的每个应用程序，您可以使用 ''site'' 页面:
+- 直接点击它的名字进入应用程序。
+- 卸载应用程序。
+- 跳转到''about''页(阅读下文)。
+- 跳转到 ''edit'' 页(阅读下文)。
+- 跳转到''errors'' 页(读下面)。
+- 清理临时文件(会话、错误和缓存文件)。
+- 打包全部。这返回一个包含完整应用副本的 tar 文件,我们建议在打包应用之前清理临时文件。
+- 编译应用程序。如果没有错误,该选项将会字节码编译 (bytecode-compiles)所有模型,控制器和视图。因为视图可以在树中扩展和包含其它视图,所以在字节码编译之前,每个控制器的视图树都被折叠成一个单一的文件,最终的结果是一个字节码编译应用,其速度更快,因为在运行时不再需要模版解析和替换字符串。
+- 包编译。此选项仅存在于字节码编译完成的应用程序中。它它允许将没有源代码的应用程序打包为封闭源代码进行发布。注意，Python（和其他任何编程语言一样）在技术上都可以反编译；因此编译不能提供对源代码的完全保护。然而，反编译可能很困难，也可能是非法的。
+- 移除已编译。它只是从应用程序中删除字节码编译的模型、视图和控制器。如果应用程序打包了源代码或在本地进行了编辑，那么删除字节码编译后的文件并没有什么害处，应用程序将继续工作。如果应用程序是从一个打包的编译文件中安装的，那么这是不安全的，因为没有源代码可以还原，应用程序将不再工作。
 
 ``admin.py``:inxx
 
 -------
-All the functionality available from the web2py admin site page is also accessible programmatically via the API defined in the module ``gluon/admin.py``. Simply open a python shell and import this module.
+web2py admin管理站点页面提供的所有功能也可以通过模块 ``gluon/admin.py``中定义的API以编程方式访问。简单地打开一个python shell并导入这个模块。
 -------
 
-If the Google App Engine SDK is installed the admin ''site'' page shows a button to push your applications to GAE. If ``python-git`` is installed, there is also a button to push your application to Open Shift. To install applications on ``Heroku`` or other hosting system you should look into the "scripts" folder for the appropriate script.
+如果安装了谷歌应用程序引擎SDK，管理 ''site'' 页面将显示一个按钮，将应用程序推到GAE。如果安装了 ``python-git`` ，还会有一个按钮来推动应用程序部署到``OpenShift``。要在 ``Heroku`` 或其他托管系统上安装应用程序，您应该查看 "scripts" 文件夹，寻找合适的脚本。
 
-#### About
+#### About 页面
 ``about``:inxx ``license``:inxx
 
-The ''about'' tab allows editing the description of the application and its license. These are written respectively in the ABOUT and LICENSE files in the application folder.
+ ''about''选项卡允许编辑应用程序及其许可证的描述。它们分别被写入应用文件夹中的 ABOUT 和 LICENSE 文件中。
 
 [[image @///image/en4300.png center 480px]]
 
-You can use ``MARKMIN``, or ``gluon.contrib.markdown.WIKI`` syntax for these files as described in ref.``markdown2``:cite .
+你可以在这些文件用 ``MARKMIN``或 ``gluon.contrib.markdown.WIKI`` 语法,正如参考中描述的``markdown2``:cite。
 
-#### Design
+#### Design 页面
 ``EDIT``:inxx
-You have used the ''edit'' page already in this chapter. Here we want to point out a few more functionalities of the ''edit'' page.
-- If you click on any file name, you can see the contents of the file with syntax highlighting.
-- If you click on edit, you can edit the file via a web interface.
-- If you click on delete, you can delete the file (permanently).
-- If you click on test, web2py will run tests. Tests are written by the developer using Python doctests, and each function should have its own tests.
-- You can add language files, scan the app to discover all strings, and edit string translations via the web interface.
-- If the static files are organized in folders and subfolders, the folder hierarchy can be toggled by clicking on a folder name.
+您已经在本章中使用了 ''edit'' 页面。在这里，我们想指出 ''edit'' 页面的更多功能。
+- 如果您点击任何文件名，您可以看到文件的内容与语法高亮显示。
+- 如果您点击 edit(编辑)，您可以通过 web 界面编辑文件。
+- 如果你点击 delete(删除)，您可以删除文件(永久)。
+- 如果您点击 test(测试), web2py会运行测试。测试是由开发人员使用Python doctests编写的，每个函数都应该有自己的测试。
+- 您可以添加语言文件，扫描应用程序发现所有字符串，并通过 web 界面编辑字符串翻译。
+- 如果静态文件被组织在文件夹和子文件夹中，可以通过单击文件夹名称来切换文件夹层次结构。
 
-The image below shows the output of the test page for the welcome application.
+下图显示了 welcome 应用程序的测试页面的输出。
 
 [[image @///image/en4400.png center 480px]]
 
-The image below show the languages tab for the welcome application.
+下图显示了 welcome 应用程序的语言选项卡。
 
 [[image @///image/en4500.png center 480px]]
 
-The image below shows how to edit a language file, in this case the "it" (Italian) language for the welcome application.
+下图显示了如何编辑语言文件，在本例中是 welcome 应用程序的 "it" (意大利语)语言。
 
 [[image @///image/en4600.png center 480px]]
 
-#### Integrated web-based debugger
+#### 集成基于web的调试器
 
-''(requires Python 2.7 or later)''
+''(需要Python 2.7或更高版本)''
 
-The web2py admin includes a web-based debugger.
+web2py admin 管理包括一个基于web的调试器。
 ``debugger``:inxx
-Using the provided web-based editor you can add breakpoints to the Python code and, from the associated debugger console, you can inspect the system variables at those breakpoints and resume execution. This is illustrated in the following screenshot:
-The interactive console also serves as a python scratchpad.
+使用提供的基于web的编辑器，您可以将断点添加到Python代码中，并且从相关的调试器控制台，您可以在这些断点处检查系统变量并继续执行。如下截图所示:
+交互控制台还可以用作Python暂存器。
 
 [[image @///image/debugger.png center 480px]]
 
-This functionality is based on the Qdb debugger created by Mariano Reingart.
-It uses multiprocessing.connection to communicate between the backend
-and frontend, with a JSON-RPC-like stream protocol. ``qdb``:cite
+此功能基于Mariano Reingart创建的Qdb调试器。
+它使用多进程连接来在后端之间进行通信。
+前端采用 JSON-RPC-like 流协议。 ``qdb``:cite
 
-##### Setting breakpoints via code
+##### 通过代码设置断点
 ``breakpoints``:inxx
-Include this:
+包括:
 ``
 from gluon.debug import dbg
 ``:code
 
-and to drop into the debugger, put this in the desired location:
+要进入调试器，请将其放入所需的位置:
 ``
 dbg.set_trace()
 ``:code
 
-The debugger app has a breakpoint manager.
+调试器应用程序有一个断点管理器。
 
 ------
-Notes:
-web2py does not know whether you actually have a debug window open in your browser; execution suspends regardless.
-IDEs usually have their own inter-process debugger, e.g. PyCharm or PyDev. They may complain if you include the gluon library.
+注:
+web2py不知道在浏览器中是否打开了调试窗口;执行中止。
+IDE通常有自己的进程间调试器，例如 PyCharm 或 PyDev 。如果包含 gluon 库，他们可能会抱怨。
 ------
 
 
-#### Web-based Python shell
+#### 基于web的 Python shell
 
-If you click on the "shell" link under the controllers tab in ''edit'', web2py will open a web based Python shell and will execute the models for the current application. This allows you to interactively talk to your application.
+如果单击 ''edit''中的 controllers 控制器选项卡下的 "shell" 链接，web2py将打开一个基于web的Python shell，并为当前应用程序执行模型。这允许您与应用程序进行交互。
 
 [[image @///image/en4700.png center 480px]]
 
 -------
-Be careful using the web based shell - because different shell requests will be executed in different threads. This easily gives errors, especially if you play with databases
-creation and connections. For activities like these (i.e. if you need persistence) it's much better to use the python command line.
+使用基于web的shell时要小心——因为不同的shell请求将在不同的线程中执行。这很容易导致错误，尤其是在使用数据库时
+创建和连接。对于这样的活动(例如，如果您需要持久性)，最好使用python命令行。
 -------
 #### Crontab
 
-Also under the controllers tab in ''edit'' there is a "crontab" link. By clicking on this link you will be able to edit the web2py crontab file. This follows the same syntax as the Unix crontab but does not rely on Unix. In fact, it only requires web2py, and it works on Windows. It allows you to register actions that need to be executed in background at scheduled times.
-For more information about this, see the next chapter.
+在 ''edit'' 中的controllers控制器选项卡下还有一个 "crontab" 链接。通过单击这个链接，您将能够编辑web2py crontab文件。它遵循与Unix crontab相同的语法，但不依赖于Unix。实际上，它只需要web2py，并且能在Windows上运行。它允许您注册需要在预定时间在后台执行的动作。
+有关这方面的更多信息，请参阅下一章。
 
 #### Errors
 ``errors``:inxx
 
-When programming web2py, you will inevitably make mistakes and introduce bugs. web2py helps in two ways: 1) it allows you to create tests for every function that can be run in the browser from the ''edit'' page; and 2) when an error manifests itself, a ticket is issued to the visitor and the error is logged.
+在编写web2py时，不可避免地会犯错误并引入错误。web2py提供了两方面的帮助:1)它允许您为浏览器中可以从 ''edit'' 页面运行的每个函数创建测试;2)当出现错误时，向访问者发出票据并记录错误。
 
-Intentionally introduce an error in the images application as shown below:
+有意在 images 应用程序中引入一个错误，如下所示:
 ``
 def index():
     images = db().select(db.image.ALL, orderby=db.image.title)
@@ -1721,21 +1721,21 @@ def index():
     return dict(images=images)
 ``:code
 
-When you access the index action, you get the following ticket:
+当您访问 index 动作时，您将得到以下票据:
 
 [[image @///image/en4800.png center 480px]]
 
-Only the administrator can access the ticket:
+只有管理员可以访问票据:
 
 [[image @///image/en4900.png center 480px]]
 
-The ticket shows the traceback, and the content of the file that caused the problem, and the complete state of system (variables, request, session, etc.) If the error occurs in a view, web2py shows the view converted from HTML into Python code. This allows to easily identify the logical structure of the file.
+票据显示回溯,文件的内容引发了问题和系统的完整状态(变量、请求、会话等),如果错误出现在视图中,web2py 显示从 HTML 转换成 Python 代码的视图,这可以很轻松地确定文件的逻辑结构。
 
-By default tickets are stored on filesystem and displayed grouped by traceback. The administrative interface provides an aggregate views (type of traceback and number of occurrence) and a detailed view (all tickets are listed by ticket id). The administrator can switch between the two views.
+默认情况下，票据存储在文件系统上，并按回溯分组显示。管理接口界面提供了一个聚合视图(回溯类型和发生的次数)和一个详细视图(所有的票据都按票据 id 列出)。管理员可以在两个视图之间切换。
 
-Notice that everywhere **admin** shows syntax-highlighted code (for example, in error reports, web2py keywords are shown in orange). If you click on a web2py keyword, you are redirected to a documentation page about the keyword.
+注意 **admin** 处显示语法高亮的代码(例如，在错误报告中，web2py关键字以橙色显示)。如果您单击web2py关键字，您将被重定向到关于该关键字的文档页面。
 
-If you fix the divide-by-zero bug in the index action and introduce one in the index view:
+如果您在 index 动作中修复了除以零的错误并在 index 视图中引入一个:
 ``
 {{extend 'layout.html'}}
 
@@ -1748,170 +1748,170 @@ If you fix the divide-by-zero bug in the index action and introduce one in the i
 </ul>
 ``:code
 
-you get the following ticket:
+你会得到如下票据:
 
 [[image @///image/en5000.png center 480px]]
 
-Note that web2py has converted the view from HTML into a Python file, and the error described in the ticket refers to the generated Python code and NOT to the original view file:
+注意 web2py 将视图从HTML转换为Python文件，票据中描述的错误是指生成的Python代码，而不是原始视图文件:
 
 [[image @///image/en5100.png center 480px]]
 
-This may seem confusing at first, but in practice it makes debugging easier, because the Python indentation highlights the logical structure of the code that you embedded in the views.
+乍一看，这似乎有些令人困惑，但实际上它使调试更容易，因为Python缩进突出显示了嵌入到视图中代码的逻辑结构。
 
-The code is shown at the bottom of the same page.
+代码显示在同一页面的底部。
 
-All tickets are listed under admin in the ''errors'' page for each application:
+所有的票据都在 admin 下的每个应用程序的 ''errors'' 错误页面被列出:
 
 [[image @///image/en5200.png center 480px]]
 
-#### Mercurial
+#### Mercurial （轻量级分布式版本控制系统）
 ``Mercurial``:inxx
 
-If you are running from source, the administrative interface shows one more menu item called "Versioning".
+如果从源代码开始运行，管理界面会显示一个名为 "Versioning" 版本控制的菜单项。
 
 [[images @///image/en5300.png center 480px]]
 
-Entering a comment and pressing the "commit" button in the resulting page will commit the current application. With the first commit, a local Mercurial repository for the specific
-application will be created.
-Under the hood, Mercurial stores information about changes you make in your code into a hidden folder ".hg" in your app subfolder. Every app has its own ".hg" folder and its own ".hgignore" file (tells Mercurial which files to ignore).
-In order to use this feature, you must have the Mercurial version control libraries installed (at least version 1.9):
+在结果页面中输入注释并按下 "commit" 按钮将提交当前应用程序。有了第一个提交，本地的 Mercurial 存储库就有了
+将创建的应用程序
+在幕后，Mercurial 将关于您在代码中所做更改的信息存储在一个隐藏文件夹中。在你的应用子文件夹里。每个应用都有自己的 ".hg" 文件夹和它自己的 ".hgignore" 文件(告诉 Mercurial 忽略哪些文件)。
+为了使用这个特性，您必须安装 Mercurial 版本控制库(最低1.9 版本):
 
 
 ``
 pip install mercurial
 ``:code
 
-The Mercurial web interface does allow you to browse previous commit and diff files but we do recommend you use Mercurial directly from the shell or one of the many GUI-based Mercurial clients since they are more powerful. For example they will allow you to sync your app with a remote source repository.
+Mercurial web界面确实允许您浏览以前的提交和 diff 文件，但我们确实建议您直接从 shell 或许多基于GUI的 Mercurial 客户机中使用 Mercurial ，因为它们更强大。例如，它们将允许您将应用程序与远程资源存储库同步。
 
 
 
-You can read more about Mercurial here:
+可以在如下地址读到更多关于 Mercurial 的信息:
 ``
 http://mercurial.selenic.com/
 ``
 
-#### Git integration
+#### Git 工具(Git integration)
 ``git``:inxx
-The admin app also includes git integration. Python git libraries are required, e.g.
+admin 管理应用程序还包括git integration。需要 Python git库，例如。
 ``
 pip install gitpython
 ``:code
 
-and then per application, you must clone or otherwise configure a git repository.
+然后，对于每个应用程序，您必须克隆或配置git存储库。
 
-After these steps, the Manage menu for each git-managed application will show git push and git pull.
-Applications which are not managed by git are ignored.
-You can pull and push apps from the default remote repository.
+在这些步骤之后，每个 git-managed 应用程序的 Manage 菜单将显示 git push 和 git pull。
+未由git管理的应用程序将被忽略。
+您可以从默认远程存储库中pull（提取）和push（推送）应用程序。
 
 
-#### Application Wizard (experimental)
+#### 应用程序向导(实验性的)
 
-The **admin** interface includes a Wizard that can help you create a new applications.
-You can access the wizard from the "site" page as shown in the image below.
+**admin** 界面包含一个向导，可以帮助您创建新的应用程序。
+您可以从 "site" 页面访问向导，如下图所示。
 
 [[image @///image/en5400.png center 480px]]
 
-The wizard will guide you through a series of steps involved in creating a new application:
+向导将指导您完成创建新应用程序所涉及的一系列步骤:
 
-- Chose a name for the application
-- Configure the application and choose required plugins
-- Build required models (it will create CRUD pages for each model)
-- Allow you to edit the views of those pages using MARKMIN syntax
+- 为应用程序选择名称
+- 配置应用程序并选择所需的插件
+- 构建所需的模型(它将为每个模型创建CRUD页面)
+- 允许您使用 MARKMIN 语法编辑这些页面的视图
 
-The image below shows the second step of the process.
+下图显示了这个过程的第二步。
 
 [[image @///image/en5500.png center 480px]]
 
-You can see a dropdown to select a layout plugin (from ``web2py.com/layouts``), a multiple choice dropdown to check other plugins (from ``web2py.com/plugins``) and a "login config" field where to put the Janrain "domain:key".
+你会看到一个下拉菜单来选择一个布局插件(从``web2py.com/layouts``),一个多选下拉菜单来查看其它插件(从  ``web2py.com/plugins``),还有一个 "login config" 字段在那儿放置的 Janrain "domain:key"。
 
-The other steps are pretty much self-explanatory.
+其他步骤都是不言自明的。
 
-The Wizard works well for what it does but it is considered an ''experimental feature'' for two reasons:
+该向导的工作性能很好，但它被认为是一个 ''实验特性'' ，原因有二:
 
-- Applications created with the wizard and edited manually, cannot later be modified by the wizard.
-- The interface of the wizard will change over time to include support for more features and easier visual development.
+- 使用向导创建并手动编辑的应用程序以后不能被向导修改。
+- 随着时间的推移，向导的界面将会改变，包括支持更多特性和更容易的可视化开发。
 
-In any case the wizard is a handy tool for fast prototyping and it can be used to bootstrap a new application with an alternate layout and optional plugins.
+在任何情况下，向导都是一个用来制作快速原型的方便工具，它可以用来引导一个新的应用程序，带有备用布局和可选插件。
 
-#### Configuring **admin**
+#### 配置 **admin**
 
-Normally there is no need to perform any configuration of **admin** but a few customizations are possible. After you login into admin you can edit the admin configuration file via the URL:
+通常不需要执行任何 **admin** 的配置，但是可以进行一些定制。登录admin后，可以通过URL编辑admin配置文件:
 ``
 http://127.0.0.1:8000/admin/default/edit/admin/models/0.py
 ``
-Notice that **admin** can be used to edit itself. In fact **admin** is an app as any other one.
+注意，可以使用 **admin** 来编辑自己。实际上，**admin** 是一个与其它任何应用一样的应用。
 
-The file "0.py" is more or less self documented, anyway, here are some of the most important possible customizations:
+文件 "0.py" 在很大程度上是自我记录，不管怎样，下面是一些最重要的定制:
 
 ``
 GAE_APPCFG = os.path.abspath(os.path.join('/usr/local/bin/appcfg.py'))
 ``
-This should point to the location of the "appcfg.py" file that comes with the Google App Engine SDK. If you have the SDK you may want to change these config parameters to the correct value. It will allow you to deploy to GAE from the admin interface.
+这应该指向 "appcfg.py"文件的位置,该文件附带 Google App Engine SDK。如果已安装了 SDK 你可能需要将配置参数改为正确的值,这将允许你从 admin 界面部署到 GAE。
 
 ``DEMO_MODE``:inxx
 
-You can also set web2py admin in demo mode:
+您还可以在演示模式下设置 web2py admin:
 ``
 DEMO_MODE = True
 FILTER_APPS = ['welcome']
 ``
-And only the apps listed in FILTER_APPS will be accessible and they will be only accessible in read-only mode.
+并且只有FILTER_APPS中列出的应用程序是可访问的，并且它们只能在只读模式下可访问。
 
 ``MULTI_USER_MODE``:inxx
 ``virtual laboratory``:inxx
 
-If you are a teacher and want to expose the administrative interface to students so that students can share one administrative interface for their projects (think of a virtual lab), can do it by setting:
+如果您是一名教师，需要向学生公开管理界面，以便学生能够为他们的项目共享一个管理界面(可认为是虚拟实验室)，可以通过设置:
 ``
 MULTI_USER_MODE = True
 ``
-In this way students will be required to login and will only be able to access their own apps via admin. You, as first user/teacher, will be able to access them all.
+通过这种方式，学生需要登录，并且只能通过管理员访问自己的应用程序。作为第一个用户/教师，您将能够访问全部应用。
 
-In multi user mode, you can register students using the "bulk register" link in admin and manage them using the "manage students" link. The system also keeps track of when students login and how many lines of code they add/remove to/from their code. This data is presented to the administrator as charts under the application "about" page.
+在多用户模式下，您可以使用admin中的"bulk register"("批量注册")链接注册学生，并使用"manage students"("管理学生")链接管理学生。系统还记录学生登录的时间，以及他们在代码中添加/删除了多少行代码。这些数据在应用程序 "about"页面下以图表的形式呈现给管理员。
 
-Mind that this mechanism still assumes all users are trusted. All the apps created under admin run under the same credentials on the same filesystem. It is possible for an app created by a student to access the data and the source of an app created by another student. It is also possible for a student to create an app that locks the server.
+请注意，此机制仍然假设所有用户都是可信的。在admin下创建的所有应用程序都运行在同一个文件系统上以相同的凭据。一个学生创建的应用程序可以访问另一个学生创建的应用程序的数据和源代码。学生也可以创建一个锁定服务器的应用程序。
 
-#### Mobile **admin**
+#### 移动端 **admin**
 
-Notice that the admin application includes "plugin_jqmobile" which packages jQuery Mobile. When admin is accessed from a mobile device, this is detected by web2py and the interface is displayed using a mobile-friendly layout:
+注意，admin 应用程序包括 "plugin_jqmobile" ，它将jQuery Mobile打包。当从移动设备访问admin时，web2py会检测到这一点，并使用移动友好的布局显示界面:
 
 [[image @///image/mobile.png center 306px]]
 
-### More on **appadmin**
+### 更多关于 **appadmin**
 
 ``appadmin``:inxx
 
-**appadmin** is not intended to be exposed to the public. It is designed to help you by providing an easy access to the database. It consists of only two files: a controller "appadmin.py" and a view "appadmin.html" which are used by all actions in the controller.
+**appadmin**不打算公开给公众。它旨在通过提供对数据库的简单访问来帮助您。它只包含两个文件:一个控制器 "appadmin.py" 和一个视图 "appadmin.html" ,它们被控制器中的所有动作使用。
 
-The **appadmin** controller is relatively small and readable; it provides an example of designing a database interface.
+**appadmin**控制器相对较小且可读;它提供了一个设计数据库接口的示例。
 
-**appadmin** shows which databases are available and which tables exist in each database. You can insert records and list all records for each table individually. **appadmin** paginates output 100 records at a time.
+**appadmin** 显示哪些数据库可用，以及每个数据库中存在哪些表。您可以插入记录并单独列出每个表的所有记录。**appadmin** 每次分页输出100条记录。
 
-Once a set of records is selected, the header of the pages changes, allowing you to update or delete the selected records.
+一旦选择了一组记录，页头就会改变，允许您更新或删除所选的记录。
 
-To update the records, enter an SQL assignment in the Query string field:
+要更新记录，在查询字符串字段中输入SQL赋值:
 ``
 title = 'test'
 ``:code
 
-where string values must be enclosed in single quotes. Multiple fields can be separated by commas.
+其中字符串值必须用单引号括起来。多个字段可以用逗号分隔。
 
-To delete a record, click the corresponding checkbox to confirm that you are sure.
+若要删除记录，请单击相应的复选框以确认您是否确定删除。
 
-**appadmin** can also perform joins if the query contains a SQL condition that involves two or more tables. For example, try:
+如果查询包含一个、两个或多个表的SQL条件，则 **appadmin** 还可以执行连接。例如,尝试:
 ``
 db.image.id == db.post.image_id
 ``:code
 
-web2py passes this along to the DAL, and it understands that the query links two tables; hence, both tables are selected with an INNER JOIN. Here is the output:
+web2py把这个传递给 DAL,它理解该查询链接的两个表;因此,两个表都被 INNER JOIN 内部连接选中。下面是输出:
 
 [[image @///image/en5600.png center 480px]]
 
-If you click on the number of an id field, you get an edit page for the record with the corresponding id.
+如果您单击 id 字段的编号，您将获得具有相应id的记录的编辑页面。
 
-If you click on the number of a reference field, you get an edit page for the referenced record.
+如果单击引用字段的编号，就会得到引用记录的编辑页面。
 
-You cannot update or delete rows selected by a join, because they involve records from multiple tables and this would be ambiguous.
+您不能更新或删除由联接查询选择的行，因为它们涉及来自多个表的记录，这将是含糊不清的。
 
-In addition to its database administration capabilities, **appadmin** also enables you to view details about the contents of the application's ``cache`` (at ``/yourapp/appadmin/cache``) as well as the contents of the current ``request``, ``response``, and ``session`` objects (at ``/yourapp/appadmin/state``).
+除了数据库管理功能， **appadmin** 还可以查看应用程序的``cache`` (在``/yourapp/appadmin/cache``处)以及当前 ``request``(请求)’、``response``(响应)和``session``(在``/yourapp/appadmin/state``)’对象的内容。
 
-**appadmin** replaces ``response.menu`` with its own menu, which provides links to the application's **edit** page in **admin**, the **db** (database administration) page, the **state** page, and the **cache** page. If your application's layout does not generate a menu using ``response.menu``, then you will not see the **appadmin** menu. In that case, you can modify the appadmin.html file and add ``{{=MENU(response.menu)}}`` to display the menu.
+**appadmin**用自己的菜单取代``response.menu`` ,它提供了到 **admin**应用的 **edit** 界面、**db**(数据库管理)界面、**state** 界面和 **cache** 界面的链接。如果你的应用布局没有使用``response.menu`` 生成菜单,那么您将不会看到 **appadmin** 菜单。在这种情况下,您可以修改 appadmin.html 文件并添加``{{=MENU(response.menu)}}``来显示菜单。
