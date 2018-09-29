@@ -91,6 +91,7 @@ all the tasks common in web application development (creating and processing for
 sessions, cookies, errors, etc.).
 
 ``request``:inxx
+
 web2py differs from other frameworks with regard to the third principle, which sometimes conflicts
 with the other two. In particular, web2py does not import user applications, but executes them in a predefined context.  This context exposes the Python keywords, as well as the web2py keywords.
 

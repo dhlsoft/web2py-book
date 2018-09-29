@@ -2,8 +2,8 @@
 ``Python``:inxx
 
 ### 关于Python
-
-Python是一种通用的高级编程语言。它的设计思想是强调程序员的工作效率及代码的可读性。它有一个最低限度的核心语法，包括很少的基本命令以及简单语义，但与此同时它又有一个大规模的全面的标准库，包括许多面向底层操作系统(OS)函数的应用编程接口(API)。Python代码，在简约的同时，定义了内置对象，例如列表 (list)、元组(tuple)、哈希表(字典dict)以及任意长度整型数(long)。
+Python是一种通用的高级编程语言。它的设计思想是强调程序员的工作效率及代码的可读性。
+它有一个最低限度的核心语法，包括很少的基本命令以及简单语义，但与此同时它又有一个大规模的全面的标准库，包括许多面向底层操作系统(OS)函数的应用编程接口(API)。Python代码，在简约的同时，定义了内置对象，例如列表 (list)、元组(tuple)、哈希表(字典dict)以及任意长度整型数(long)。
 
 Python支持多重编程架构，包括面向对象(class)、指令 (def)、以及函数 (lambda)编程，Python还有一套动态类型系统以及通过引用计数实现的（类似于Perl、Ruby和Scheme）自动内存管理。
 
@@ -17,7 +17,6 @@ Python最初由Guido van Rossum于1991年发布。该语言是开源的、基于
 
 ### 启动
 ``shell``:inxx
-
 Web2py的二进制发行版支持微软Windows或苹果OS X操作系统，该发行文件中包含内置的Python2.7解释器。
 
 在Windows操作系统下，可以使用如下命令来启动web2py(在DOS提示符下输入)：
@@ -83,7 +82,6 @@ class int(object)
 
 ### 类型
 ``type``:inxx
-
 Python是一种动态类型语言，这意味着变量没有类型，因此也不需要被声明。另一方面，值是有类型的。您可以查询变量包含的值的类型：
 ``
 >>> a = 3
@@ -393,7 +391,6 @@ for(int i=0; i<4; i=i+1) { print(i); }
 
 ### ``while``
 ``while``:inxx
-
 在Python中，while循环的工作方式与其它语言类似，在执行循环体前先判断循环次数和测试条件。如果条件为假，循环就终止。
 ``
 >>> i = 0
@@ -407,7 +404,6 @@ Python中没有loop…until结构。
 
 ### ``if...elif...else``
 ``if``:inxx ``elif``:inxx ``else``:inxx
-
 在Python中使用条件是直观的：
 ``
 >>> for i in range(3):
@@ -431,7 +427,6 @@ other
 
 ### ``try...except...else...finally``
 ``try``:inxx ``except``:inxx ``finally``:inxx ``Exception``:inxx
-
 Python可以抛出中断，引发异常：
 ``
 >>> try:
@@ -698,6 +693,7 @@ value = d['key']
 ``:code
 
 对任意输入，如何缓存函数isprime的输出呢？这里是一种方法：
+下面是:
 ``
 >>> number = 7
 >>> seconds = 60
@@ -707,10 +703,11 @@ True
 True
 ``:code
 
-输出总是一样的，但是cache.ram第一次被调用时，isprime会被调用；第二次时，就不调用了。
+输出总是一样的，但是 ``cache.ram`` 第一次被调用时， ``isprime``会被调用；第二次时，就不调用了。
 
 -------
-使用def或lambda创建的Python函数，允许根据不同参数组重构已有函数。 cache.ram和cache.disk是web2py缓存函数。
+使用 ``def`` 或``lambda`` 创建的Python函数，允许根据不同参数组重构已有函数。
+``cache.ram``和``cache.disk`` 是web2py缓存函数。
 -------
 
 ### ``类``
@@ -727,14 +724,15 @@ True
 3
 ``:code
 
-注意pass是一条不作任何操作的命令。在本例中它被用来定义MyClass()类，该类不包含任何内容。MyClass()调用类构造函数（在本例中是默认构造），并返回一个对象，即类的一个实例。在类定义中，(object)表明我们的类扩展内置的object类。这不是必需的，但这是好的做法。
+注意 ``pass`` 是一条不作任何操作的命令。在本例中它被用来定义MyClass()类，该类不包含任何内容。MyClass()调用类构造函数（在本例中是默认构造），并返回一个对象，即类的一个实例。在类定义中，(object)表明我们的类扩展内置的object类。这不是必需的，但这是好的做法。
 
 下面是一个更复杂的类：
 ``
 >>> class MyClass(object):
 >>>    z = 2
 >>>    def __init__(self, a, b):
->>>        self.x = a, self.y = b
+>>>        self.x = a
+>>>        self.y = b
 >>>    def add(self):
 >>>        return self.x + self.y + self.z
 >>> myinstance = MyClass(3, 4)
@@ -794,9 +792,7 @@ hello world
 
 另外，你可以使用标准C标记，用 "rb" 在二进制模式下读取，用"wb"在二进制模式下写入，用"a"在附加模式下打开文件。
 
-``file.seek``:inxx
-
-read命令有一个可选参数，它是字节数。你还可以在文件中用seek跳转到任意位置。
+``read`` 命令有一个可选参数，它是字节数。你还可以在文件中用seek跳转到任意位置。
 ``file.seek``:inxx
 
 你可以用read读取文件，
@@ -811,9 +807,7 @@ world
 >>> file.close()
 ``:code
 
--------
 在Python标准发行版被称为CPython，变量是引用计数的，包括那些持有的文件句柄，所以当一个打开文件句柄的引用计数减少到0时，CPython是知道的，这时就可以关闭文件和处理变量。然而，在Python的其它实现如PyPy中，使用垃圾回收取代引用计数，这意味着同一时间内可能积聚过多的打开文件句柄，在gc有机会关闭和处理它们之前导致错误。因此，当不再需要的时候，最好明确关闭文件句柄。web2py在gluon.fileutils 命名空间内提供两个帮助函数read_file() 和 write_file()，它们封装文件访问，并确保正在实用的文件句柄被正确关闭。
--------
 
 -------
 在使用web2py时，你不能确定当前目录的位置，因为这依赖于web2py的配置。变量request.folder包含了当前应用的路径。使用os.path.join命令可以级联路径，将在后面讨论。
@@ -849,7 +843,6 @@ world
 
 ### ``import``
 ``import``:inxx ``random``:inxx
-
 Python真正的强大之处是它的库模块。这些模块对许多系统库提供了一组大量的、一致性的应用编程接口（以一种独立于操作系统的方式）。
 
 例如，如果你需要使用一个随机数生成器，可以采用如下方法：
@@ -996,7 +989,3 @@ cPickle也可以序列化到文件和从文件反序列化;
 >>> cPickle.dump(a, open('myfile.pickle', 'wb'))
 >>> c = cPickle.load(open('myfile.pickle', 'rb'))
 ``:code
-
-
-
-
