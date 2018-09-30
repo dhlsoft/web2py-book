@@ -1,37 +1,37 @@
-## The core
+## 核心
 
 [[CommandLineOptions]]
-### Command line options
+### 命令行选项
 
-It is possible to skip the GUI and start web2py directly from the command line by typing something like:
+可以跳过 GUI 直接从命令行启动 web2py,输入如下内容:
 ``password``:inxx
 
 ``
 python web2py.py -a 'your password' -i 127.0.0.1 -p 8000
 ``:code
 
-When web2py starts, it creates a file called "parameters_8000.py" where it stores the hashed password. If you use "<ask>" as the password, web2py prompts you for it.
+当web2py启动时，它会创建一个名为 "parameters_8000.py"的文件。它存储哈希密码的地方。如果您使用"<ask>"作为密码，web2py会提示您输入密码。
 
-For additional security, you can start web2py with:
+要获得额外的安全性，您可以使用以下命令启动web2py:
 ``
 python web2py.py -a '<recycle>' -i 127.0.0.1 -p 8000
 ``:code
 
-In this case web2py reuses the previously stored hashed password. If no password is provided, or if the "parameters_8000.py" file is deleted, the web-based administrative interface is disabled.
+在本例中，web2py重用了先前存储的哈希密码。如果没有提供密码，或者"parameters_8000.py"文件被删除，基于web的管理界面会被禁用。
 
 ``PAM``:inxx
-On some Unix/Linux systems, if the password is
+一些 Unix/ Linux 系统上,如果密码是
 ``
 <pam_user:some_user>
 ``:code
 
-web2py uses the PAM password of the Operating System account of ``some_user`` to authenticate the administrator, unless blocked by the PAM configuration.
+web2py使用``some_user``操作系统帐户的PAM密码对管理员进行身份验证，除非被PAM配置阻止。
 
 -------
-web2py normally runs with CPython (the C implementation of the Python interpreter created by Guido van Rossum), but it can also run with PyPy and Jython. The latter possibility allows the use of web2py in the context of a Java EE infrastructure. To use Jython, simply replace "python web2py.py ..." with "jython web2py.py". Details about installing Jython, zxJDBC modules required to access the databases can be found in Chapter 14.
+web2py通常与CPython(由Guido van Rossum创建的C语言实现Python解释器)一起运行，但它也可以与PyPy和Jython一起运行。后一种可能性允许web2py在Java EE基础架构中使用。要使用Jython，只需替换"python web2py.py ..."为"jython web2py.py"。关于安装Jython、访问数据库所需的 zxJDBC 模块的详细信息可以在第14章中找到。
 -------
 
-The "web2py.py" script can take many command-line arguments specifying the maximum number of threads, enabling of SSL, etc. For a complete list type:
+"web2py.py"脚本可以接受许多命令行参数，指定线程的最大数量，启用SSL等等。如下获取完整列表:
 
 ``command line``:inxx
 ``
@@ -136,173 +136,173 @@ Options:
 ``:code
 
 ------
-Please note:
-- The option ``-W``, used to install a Windows service, has been removed. Please see [[nssm in the Deployment Recipes chapter ../13#nssm]]
-- Profiler output can be analyzed using ``runsnakerun`` tool
+请注意:
+- ``-W``选项，用于安装Windows服务，已被删除。请参阅[[nssm在部署方法章节的内容../13#nssm]]
+- Profiler输出可以使用``runsnakerun``工具进行分析
 ------
 
-Lower-case options are used to configure the web server. The ``-L`` option tells web2py to read configuration options from a file, while ``-S``, ``-P`` and ``-M`` options start an interactive Python shell. The ``-T`` option finds and runs controller doctests in a web2py execution environment. For example, the following example runs doctests from all controllers in the "welcome" application:
+小写选项用于配置web服务器。 ``-L`` 选项告诉web2py从文件中读取配置选项，而``-S``、``-P``和``-M``选项启动一个交互式Python shell。``-T``选项在web2py执行环境中查找并运行控制器doctests。例如，下面的示例从"welcome"应用程序中的所有控制器运行doctest:
 ``
 python web2py.py -vT welcome
 ``:code
 
-### Workflow
+### 工作流程
 
-The web2py workflow is the following:
-- An HTTP requests arrives to the web server (the built-in Rocket server or a different server connected to web2py via WSGI or another adapter). The web server handles each request in its own thread, in parallel.
-- The HTTP request header is parsed and passed to the dispatcher (explained later in this chapter).
-- The dispatcher decides which of the installed application will handle the request and maps the PATH_INFO in the URL into a function call. Each URL corresponds to one function call.
-- Requests for files in the static folder are handled directly, and large files are automatically streamed to the client.
-- Requests for anything but a static file are mapped into an action (i.e. a function in a controller file, in the requested application).
-- Before calling the action, a few things happen: if the request header contains a session cookie for the app, the session object is retrieved; if not, a session id is created (but the session file is not saved until later); an execution environment for the request is created; models are executed in this environment.
-- Finally the controller action is executed in the pre-built environment.
-- If the action returns a string, this is returned to the client (or if the action returns a web2py HTML helper object, it is serialized and returned to the client).
-- If the action returns an iterable, this is used to loop and stream the data to the client.
-- If the action returns a dictionary, web2py tries to locate a view to render the dictionary. The view must have the same name as the action (unless specified otherwise) and the same extension as the requested page (defaults to .html); on failure, web2py may pick up a generic view (if available and if enabled). The view sees every variable defined in the models as well as those in the dictionary returned by the action, but does not see global variables defined in the controller.
-- The entire user code is executed in a single database transaction unless specified otherwise.
-- If the user code succeeds, the transaction is committed.
-- If the user code fails, the traceback is stored in a ticket, and a ticket ID is issued to the client. Only the system administrator can search and read the tracebacks in tickets.
+web2py 工作流程如下:
+- HTTP请求到达web服务器(内置的Rocket server或通过WSGI或其他适配器连接到web2py的不同服务器)。web服务器并行地在自己的线程中处理每个请求。
+- HTTP请求头被解析并传递给dispatcher调度器(本章稍后将对此进行解释)。
+- 调度器将决定由哪一个安装应用处理请求，并将URL中的PATH_INFO映射到函数调用中。每个URL对应于一个函数调用。
+- 对于静态文件夹中的文件请求被直接处理,并且大文件被自动地流式传输到客户端。
+- 除了静态文件之外的任何请求都被映射到一个动作(即在请求的应用程序中控制器文件中的一个函数)。
+- 在调用动作之前，会发生一些事情:如果请求头包含应用程序的会话cookie，就会检索会话对象;如果没有，则创建会话id(但是会话文件要等到稍后保存);创建请求的执行环境;模型在这个环境中执行。
+- 最后,控制器动作在预先构建的环境中执行。
+- 如果动作返回一个字符串，它将返回给客户端(或者如果动作返回一个web2py HTML帮助对象，它将被序列化并返回给客户端)。
+- 如果动作返回一个可迭代工作流,它被用来循环并将数据分流传送到客户端。
+- 如果动作返回一个字典,web2py 会试图找到一个视图呈现该字典,视图必须与动作名称相同(除非另有规定)并且扩展名与被请求的页面相同(默认为.html);失败的话,web2py 可能采用通用视图(如果可用并且已启用),视图看到定义在模型中和由动作返回的字典中的每个变量,但没有看到在控制器中定义的全局变量。
+- 除非另有说明，整个用户代码在一个数据库事务中执行。
+- 如果用户代码成功，则提交事务。
+- 如果用户代码失败，则回溯存储在票据中，并向客户端发出票据ID。只有系统管理员才能搜索和读取票据中的回溯。
 
-There are some caveats to keep in mind:
-- Models in the same folder/subfolder are executed in alphabetical order.
-- Any variable defined in a model will be visible to other models following alphabetically, to the controllers, and to the views.
+有一些注意事项需要记住:
+- 同一文件夹/子文件夹中的模型按字母顺序执行。
+- 模型中定义的任何变量对按字母顺序的模型、控制器和视图都是可见的。
 ``models_to_run``:inxx
 ``conditional models``:inxx
 [[conditional_models]]
-#### Conditional models
-- Models in subfolders are executed conditionally based on the controller in use. This avoids processing all table definitions at each request. For example, if the user has requested "/a/c/f" where "a" is the application, "c" is the controller, and "f" is the function (action), then the following models are executed:
+#### 条件模型
+- 子文件夹中的模型根据使用中的控制器有条件地执行。这避免了在每个请求时处理所有表定义。例如，如果用户请求"/a/c/f"，其中"a"为应用程序，"c"为控制器，"f"为函数(动作)，那么如下模型会被执行:
 
 ``
 applications/a/models/*.py
 applications/a/models/c/*.py
 applications/a/models/c/f/*.py
 ``
-  This behaviour is enforced by default. Altering the ``response.models_to_run`` regex list, you can force the behaviour you want. Look at [[response #response_models_to_run]] for additional details
+  默认情况下执行此行为。改变``response.models_to_run`` 正则表达式列表，您可以强制执行您想要的行为。查看[[response #response_models_to_run]]了解更多细节
 
-- The requested controller is executed and the requested function is called. This means all top-level code in the controller is also executed at every request for that controller.
-- The view is only called if the action returns a dictionary.
-- If a view is not found, web2py tries to use a generic view. By default, generic views are disabled, although the 'welcome' app includes a line in /models/db.py to enable them on localhost only. They can be enabled per extension type and per action (using ``response.generic_patterns``). In general, generic views are a development tool and typically should not be used in production. If you want some actions to use a generic view, list those actions in ``response.generic_patterns`` (discussed in more detail in the chapter on Services).
+- 执行请求的控制器并调用请求的函数。这意味着控制器中的所有顶级代码也会在每次请求该控制器时执行。
+- 只有当动作返回字典时才调用视图。
+- 如果没有找到视图，web2py会尝试使用通用视图。默认情况下，通用视图是禁用的，尽管'welcome'应用程序在/models/db.py中包含一行代码。该代码在 localhost 上启用它们。它们可以在每个扩展类型和每个动作中启用(使用``response.generic_patterns``)。一般来说，通用视图是一种开发工具，通常不应该在生产环境中使用。如果您想要一些动作使用通用视图，请在``response.generic_patterns``中列出这些动作(更多细节在 Services 章节中讨论)。
 
-The possible behaviors of an action are the following:
+动作的可能行为有以下几种:
 
-**Return a string**
+**返回一个字符串**
 ``
 def index():
     return 'data'
 ``
 
-**Return a dictionary for a view**:
+**为视图返回一个字典**:
 ``
 def index():
     return dict(key='value')
 ``
 
-**Return all local variables**:
+**返回所有局部变量**:
 ``
 def index():
     return locals()
 ``
 
-**Redirect the user to another page**:
+**将用户重定向到另一个页面**:
 ``
 def index():
     redirect(URL('other_action'))
 ``
 
-**Return an HTTP page other than "200 OK"**:
+**返回 "200 OK"之外的 HTTP 页面**:
 ``
 def index():
     raise HTTP(404)
 ``
 
-**Return a helper** (for example, a FORM):
+**返回一个帮助对象(例如,一个表单):
 ``
 def index():
     return FORM(INPUT(_name='test'))
 ``
-(this is mostly used for Ajax callbacks and components, see chapter 12)
+(这主要用于 Ajax 回调和组件,请参阅第 12 章)
 
-When an action returns a dictionary, it may contain code generated by helpers, including forms based on database tables or forms from a factory, for example:
+当一个动作返回一个字典时，它可能包含由帮助对象生成的代码，包括基于数据库表的表单或来自工厂的表单，例如:
 
 ``
 def index():
     return dict(form=SQLFORM.factory(Field('name')).process())
 ``
-(all forms generated by web2py use postbacks, see chapter 3)
+(web2py 生成的所有表单都使用页面回传,见第 3 章)
 
-### Dispatching
+### 调度
 ``url mapping``:inxx ``dispatching``:inxx
 
-web2py maps a URL of the form:
+web2py 将映射成如下 形式 的 URL:
 
 ``
 http://127.0.0.1:8000/a/c/f.html
 ``:code
 
-to the function ``f()`` in controller "c.py" in application "a". If ``f`` is not present, web2py defaults to the ``index`` controller function. If ``c`` is not present, web2py defaults to the "default.py" controller, and if ``a`` is not present, web2py defaults to the ``init`` application. If there is no ``init`` application, web2py tries to run the ``welcome`` application. This is shown schematically in the image below:
+对于应用 "a" 控制器 "c.py" 中的函数 ``f()`` ,如果 ``f``不存在,web2py 默认使用``index``控制器函数;如果 c 不存在,web2py 默认使用"default.py"控制器;并且如果 ``a`` 不存在,web2py 默认使用 ``init`` 应用;如果没有 init 应用, web2py 尝试运行 ``welcome`` 应用。如下图所示:
 
 [[image @///image/en5700.png center 480px]]
 
-By default, any new request also creates a new session. In addition, a session cookie is returned to the client browser to keep track of the session.
+默认情况下,任何新请求都创建一个新会话。除此之外,会话 cookie 被返回客户端浏览器来追踪会话。
 
-The extension ``.html`` is optional; ``.html`` is assumed as default. The extension determines the extension of the view that renders the output of the controller function ``f()``. It allows the same content to be served in multiple formats (html, xml, json, rss, etc.).
+扩展名 ``.html``是可选的, ``.html``被假定为默认,该扩展名决定了用于呈现控制器函数 ``f()``的输出的视图的扩展名,它允许以多种格式(html、 xml、 json、 rss 等)提供相同的内容。
 
 -------
-Functions that take arguments or start with a double underscore are not publicly exposed and can only be called by other functions.
+带参数或双下划线开始的函数是不公开的并且只能由其它函数调用。
 -------
 
 ``static files``:inxx
-There is an exception made for URLs of the form:
+对于表单的url有例外:
 ``
 http://127.0.0.1:8000/a/static/filename
 ``:code
 
-There is no controller called "static". web2py interprets this as a request for the file called "filename" in the subfolder "static" of the application "a".
+没有所谓的"static"控制器。web2py将此解释为对应用程序"a"的"static"子文件夹中名为"filename"的文件的请求。
 
 ``PARTIAL CONTENT``:inxx ``IF_MODIFIED_SINCE``:inxx
-When static files are downloaded, web2py does not create a session, nor does it issue a cookie or execute the models. web2py always streams static files in chunks of 1MB, and sends PARTIAL CONTENT when the client sends a RANGE request for a subset of the file.
+当下载静态文件时，web2py不会创建会话，也不会发出cookie或执行模型。web2py总是以1MB的块数据流静态文件，当客户端发送 RANGE 请求文件的一个子集时，它会发送PARTIAL CONTENT。
 
-web2py also supports the IF_MODIFIED_SINCE protocol, and does not send the file if it is already stored in the browser's cache and if the file has not changed since that version.
+web2py还支持IF_MODIFIED_SINCE协议，如果文件已经存储在浏览器的缓存中，并且该版本之后文件没有改变，则不发送文件。
 
-When linking to an audio or video file in the static folder, if you want to force the browser to download the file instead of streaming the audio/video via a media player, add ``?attachment`` to the URL. This tells web2py to set the ``Content-Disposition`` header of the HTTP response to "attachment". For example:
+当连接到静态文件夹中的音频或视频文件时，如果你想强迫浏览器下载文件而不是通过媒体播放器播放音频/视频，添加 ``?attachment`` 到URL。这告诉web2py将HTTP响应的Content-Disposition头设置为附件"attachment"。例如:
 
 ``
 <a href="/app/static/my_audio_file.mp3?attachment">Download</a>
 ``:code
 
-When the above link is clicked, the browser will prompt the user to download the MP3 file rather than immediately streaming the audio. (As discussed [[below #response]], you can also set HTTP response headers directly by assigning a ``dict`` of header names and their values to ``response.headers``.)
+当点击上面的链接时，浏览器将提示用户下载MP3文件，而不是立即播放音频。(如[[下面的 #response]]所讨论的，您还可以通过将标头名称及其值的``dict``赋值给``response.headers``来直接设置HTTP请求标头。)
 
 ``request.application``:inxx ``request.controller``:inxx ``request.function``:inxx ``GET``:inxx ``POST``:inxx ``request.args``:inxx
-web2py maps GET/POST requests of the form:
+web2py 映射如下形式的 GET/POST 请求:
 ``
 http://127.0.0.1:8000/a/c/f.html/x/y/z?p=1&q=2
 ``:code
 
-to function ``f`` in controller "c.py" in application ``a``, and it stores the URL parameters in the ``request`` variable as follows:
+到应用``a``控制器 "c.py"中的函数``f``,并且它在``request``变量中存储 URL 参数如下:
 ``
 request.args = ['x', 'y', 'z']
 ``:code
 
-and:
+和:
 ``
 request.vars = {'p': 1, 'q': 2}
 ``:code
 
-and:
+以及:
 ``
 request.application = 'a'
 request.controller = 'c'
 request.function = 'f'
 ``:code
 
-In the above example, both ``request.args[i]`` and ``request.args(i)`` can be used to retrieve the i-th element of the ``request.args``, but while the former raises an exception if the list does not have such an index, the latter returns None in this case.
+在上面的例子中,``request.args[i]``和 ``request.args(i)``)都能用来检索``request.args``的第 i 个元素,如果列表没有这样的索引,前者会引发异常,后者在这种情况下返回 None。
 
 ``request.url``:inxx
 ``
 request.url
 ``:code
 
-stores the full URL of the current request (not including GET variables).
+存储当前请求的完整 URL(不包括 GET 变量)。
 
 ``request.ajax``:inxx ``request.cid``:inxx
 
@@ -310,66 +310,66 @@ stores the full URL of the current request (not including GET variables).
 request.ajax
 ``:code
 
-defaults False but it is True if web2py determines that the action was called by an Ajax request.
+默认为 False,但如果 web2py 决定动作是 Ajax 请求调用的,它就是 True。
 
-If the request is an Ajax request and it is initiated by a web2py component, the name of the component can be found in:
+如果请求是 Ajax 请求并且是由 web2py 组件发起的,可以找到该组件的名称:
 
 ``
 request.cid
 ``:code
 
-Components are discussed in more detail in Chapter 12.
+第12章将更详细地讨论组件。
 
 ``request.get_vars``:inxx ``request.post_vars``:inxx ``request.vars``:inxx
-If the HTTP request is a GET, then ``request.env.request_method`` is set to "GET"; if it is a POST, ``request.env.request_method`` is set to "POST".
-URL query variables are stored in ``request.get_vars``.
-``request.post_vars`` contains all parameters passed into the body of a request (usually a POST, PUT or a DELETE one).
-The ``request.vars`` Storage dictionary contains both of them (``get_vars`` and ``post_vars`` get merged)
+如果HTTP请求是GET，那么``request.env.request_method`` 设置为 "GET";如果是POST，``request.env.request_method``设置为 "POST"。
+URL查询变量存储在``request.get_vars``中。
+``request.post_vars``包含传递到请求主体(通常是POST、PUT或DELETE)的所有参数。
+``request.vars`` 存储字典包含这两者(``get_vars``和 ``post_vars``的合并)
 
-web2py stores WSGI and web2py environment variables in ``request.env``, for example:
+web2py在 ``request.env``中存储 WSGI 和 web2py 环境变量,例如:
 ``
 request.env.path_info = 'a/c/f'
 ``:code
 
-and HTTP headers into environment variables, for example:
+和 HTTP 头到环境变量,例如:
 ``
 request.env.http_host = '127.0.0.1:8000'
 ``:code
 
 -------
-Notice that web2py validates all URLs to prevent directory traversal attacks.
+请注意,web2py 验证所有的 URL 以防止目录遍历攻击。
 -------
 
-URLs are only allowed to contain alphanumeric characters, underscores, and slashes; the ``args`` may contain non-consecutive dots. Spaces are replaced by underscores before validation. If the URL syntax is invalid, web2py returns an HTTP 400 error message``http-w``:cite ``http-o``:cite .
+url只允许包含字母数字字符、下划线和斜线; ``args`` 可能包含非连续点。在验证之前，空格被下划线替换。如果URL语法无效，web2py返回一个HTTP 400错误消息``http-w``:cite ``http-o``:cite 。
 
-If the URL corresponds to a request for a static file, web2py simply reads and returns (streams) the requested file.
+如果URL对应一个静态文件的请求，web2py只是读取并返回请求的文件(流式传输)。
 
-If the URL does not request a static file, web2py processes the request in the following order:
-- Parses cookies.
-- Creates an environment in which to execute the function.
-- Initializes ``request``, ``response``, ``cache``.
-- Opens the existing ``session`` or creates a new one.
-- Executes the models belonging to the requested application.
-- Executes the requested controller action function.
-- If the function returns a dictionary, executes the associated view.
-- On success, commits all open transactions.
-- Saves the session.
-- Returns an HTTP response.
+如果URL不请求静态文件，web2py将按照以下顺序处理请求:
+- 解析 cookie。
+- 创建执行函数的环境
+- 初始化``请求``、``响应``、``缓存``。
+- 打开现有``session``或创建一个新的``session``。
+- 执行属于所要求的应用程序的模型。
+- 执行请求的控制器动作函数。
+- 如果该函数返回一个字典,则执行关联的视图。
+- 如果成功,提交所有开放事务。
+- 保存会话session。
+- 返回一个 HTTP 响应。
 
-Notice that the controller and the view are executed in different copies of the same environment; therefore, the view does not see the controller, but it sees the models and it sees the variables returned by the controller action function.
+注意，控制器和视图在相同环境的不同副本中执行;因此，视图看不到控制器，但它看到的是模型和控制器动作函数返回的变量。
 
-If an exception (other than HTTP) is raised, web2py does the following:
-- Stores the traceback in an error file and assigns a ticket number to it.
-- Rolls back all open database transactions.
-- Returns an error page reporting the ticket number.
+如果引发异常(HTTP除外),web2py 会执行以下操作:
+- 在错误文件中存储回溯并为其分配一个票据号。
+- 回滚所有开放事务。
+- 返回一个报告票据号的错误页面。
 
-If the exception is an ``HTTP`` exception, this is assumed to be the intended behavior (for example, an ``HTTP`` redirect), and all open database transactions are committed. The behavior after that is specified by the ``HTTP`` exception itself. The ``HTTP`` exception class is not a standard Python exception; it is defined by web2py.
+如果异常是``HTTP`` 异常，则假定这是预期的行为(例如， ``HTTP`` 重定向)，并提交所有数据库事务。之后的行为由``HTTP`` 异常本身指定。``HTTP`` 异常类不是标准的Python异常;它由web2py定义。
 
-### Libraries
+### 库
 
-The web2py libraries are exposed to the user applications as global objects. For example (``request``, ``response``, ``session``, ``cache``), classes (helpers,  validators, DAL API), and functions (``T`` and ``redirect``).
+web2py库作为全局对象公开给用户应用程序。例如(``request``, ``response``, ``session``, ``cache``)，类(helper, validator, DAL API)和函数(``T`` 和``redirect``)。
 
-These objects are defined in the following core files:
+这些对象定义在以下核心文件中:
 ``
 web2py.py
 gluon/__init__.py    gluon/highlight.py   gluon/restricted.py  gluon/streamer.py
@@ -385,33 +385,33 @@ gluon/globals.py     gluon/reserved_sql_keywords.py
 ``:code
 
 ------
-Notice that many of these modules, specifically ``dal`` (the Database Abstraction Layer), ``template`` (the template language), ``rocket`` (the web server), and
-``html`` (the helpers) have no dependencies and can be used outside of web2py.
+注意，这些模块中有很多，特别是 ``dal`` (数据库抽象层)、``template``(模板语言)、``rocket``(web服务器)和
+``html``(帮助对象)没有依赖关系，可以在web2py之外使用。
 -----
 
-The tar gzipped scaffolding app that ships with web2py is
+与web2py一起发布的tar gzip构建应用程序是:
 ``
 welcome.w2p
 ``:code
 
-This is created upon installation and overwritten on upgrade.
+它在安装时被创建,在升级时被覆盖。
 
 -------
-The first time you start web2py, two new folders are created: deposit and applications. The deposit folder is used as temporary storage for installing and uninstalling applications.
+第一次启动web2py时，会创建两个新文件夹:deposit和applications。deposit文件夹用作安装和卸载应用程序的临时存储。
 
-The first time you start web2py and after an upgrade, the "welcome" app is zipped into a "welcome.w2p" file to be used as a scaffolding app.
+第一次启动web2py和升级之后，"welcome"应用程序被压缩成"welcome.w2p"文件将作为基本构建应用程序来使用。
 -------
 
-When web2py is upgraded it comes with a file called "NEWINSTALL". If web2py finds this file, it understands an upgrade was performed, hence it removes the file and creates a new "welcome.w2p".
+当web2py升级时，它附带一个名为"NEWINSTALL"的文件。如果web2py找到这个文件，它就知道执行了升级，因此它会删除这个文件并创建一个新的"welcome.w2p"。
 
-The current web2py version is stored in the field "VERSION" and it follows standard semantic versioning notation where the build id is the build timestamp.
+当前的web2py版本存储在"VERSION"字段中，它遵循标准的语义版本标记，其中构建id是构建时间戳。
 
-web2py unit-tests are in
+web2py 的单元测试是在
 ``
 gluon/tests/
 ``:code
 
-There are handlers for connecting with various web servers:
+有与各种 web 服务器连接的处理程序:
 ``
 cgihandler.py       # discouraged
 gaehandler.py       # for Google App Engine
@@ -421,163 +421,163 @@ isapiwsgihandler.py # for IIS
 modpythonhandler.py # deprecated
 ``:code
 
-("fcgihandler" calls  "gluon/contrib/gateways/fcgi.py" developed by Allan Saddi) and
+"fcgihandler" 调用由 Allan Saddi 开发的 "gluon/contrib/gateways/fcgi.py")和
 
 ``
 anyserver.py
 ``
 
-which is a script to interface with many different web servers, described in Chapter 13.
+这是一个与许多不同的web服务器交互的脚本，在第13章中描述。
 
-There are three example files in the "examples" directory:
+在"examples"目录中有三个示例文件:
 ``
 options_std.py
 routes.parametric.example.py
 routes.patterns.example.py
 ``:code
 
-They are all meant to be copied to the root dir (where web2py.py or web2py.exe is) and edited according to your own preferences.
-The former is an optional configuration file that can be passed to web2py.py with the ``-L`` option. The second is an example of a URL mapping file. It is loaded automatically when renamed "routes.py". The third is an alternative syntax for URL mapping, and can also be renamed (or copied to) "routes.py".
+它们都要复制到根目录(其中有web2py.py或web2py.exe)并根据您自己的喜好编辑。
+前者是一个可选的配置文件,可以通过 ``-L`` 选项传递给 web2py.py。第二个示例是URL映射文件。它在重命名为"routes.py"时自动加载。第三个是一个 URL 映射的替代语法,也可以重命名(或复制到)"routes.py"。
 
-The files
+文件
 ``
 app.example.yaml
 queue.example.yaml
 ``:code
 
-are example configuration files used for deployment on the Google App Engine. You can read more about them in the Deployment Recipes chapter and on the Google Documentation pages.
+示例配置文件用于在 Google App Engine 上部署的。您可以在Deployment Recipes部署章节和Google Documentation页面阅读更多关于它们的内容。
 
-There are also additional libraries, some developed by a third party:
+还有附加的库,通常由第三方开发:
 
-**feedparser**``feedparser``:cite  by Mark Pilgrim for reading RSS and Atom feeds:
+Mark Pilgrim 开发的读取 RSS 和 Atom feeds 的 **feedparser**``feedparser``:cite  :
 ``
 gluon/contrib/__init__.py
 gluon/contrib/feedparser.py
 ``:code
 
-**markdown2**``markdown2``:cite  by Trent Mick for wiki markup:
+Trent Mick 开发的用于 wiki 标记的 **markdown2**``markdown2``:cite :
 ``
 gluon/contrib/markdown/__init__.py
 gluon/contrib/markdown/markdown2.py
 ``:code
 
-**markmin** markup:
+**markmin**  标记:
 ``
 gluon/contrib/markmin
 ``:code
-(see [[MARKMIN syntax ../05#markmin_syntax]] for more)
+(参见 [[MARKMIN语法 ../05#markmin_syntax]]更多)
 
-**fpdf** created my Mariano Reingart for generating PDF documents:
+Mariano Reingart 创建的生成 PDF 文档的 **fpdf** :
 ``
 gluon/contrib/fpdf
 ``
-This is not documented in this book but it is hosted and documented here:
+本书中没有对此介绍,对它的介绍在如下位置:
 ``
 http://code.google.com/p/pyfpdf/
 ``
 
-**pysimplesoap** is a lightweight SOAP server implementation created by Mariano Reingart:
+**pysimplesoap** 是由 Mariano Reingart 创建的一个轻量级的 SOAP 服务器实现:
 
 ``
 gluon/contrib/pysimplesoap/
 ``:code
 
-**simplejsonrpc** is a lightweight JSON-RPC client also created by Mariano Reingart: ``jsonrpc``:inxx
+**simplejsonrpc** 是一个轻量级JSON-RPC客户端，也是由Mariano Reingart创建的: ``jsonrpc``:inxx
 
 ``
 gluon/contrib/simplejsonrpc.py
 ``
 
-**memcache**``memcache``:cite  Python API by Evan Martin:
+Evan Martin 开发的 **memcache**``memcache``:cite  Python API:
 ``
 gluon/contrib/memcache/__init__.py
 gluon/contrib/memcache/memcache.py
 ``
 
-**redis_cache** ``redis``:inxx is a module to store cache in the redis database:
+**redis_cache** 是一个在``redis``:inxx数据库中存储缓存的模块:
 ``
 gluon/contrib/redis_cache.py
 ``
 
-**gql**, a port of the DAL to the Google App Engine:
+**gql**是到 Google App Engine 的一个 DAL 端口:
 ``
 gluon/contrib/gql.py
 ``:code
 
-**memdb**, a port of the DAL on top of memcache:
+**memdb**是在 memcache 上的一个 DAL 端口:
 ``
 gluon/contrib/memdb.py
 ``:code
 
-**gae_memcache** is an API to use memcache on the Google App Engine:
+**gae_memcache** 是一 个在 Google App Engine 上使用 memcache 的 API:
 ``
 gluon/contrib/gae_memcache.py
 ``:code
 
-**pyrtf**``pyrtf``:cite  for generating Rich Text Format (RTF) documents, developed by Simon Cusack and revised by Grant Edwards:
+**pyrtf**``pyrtf``:cite用于生成 RTF 格式文件,由 Simon Cusack 开发,Grant Edwards 修订:
 ``
 gluon/contrib/pyrtf/
 ``:code
 
-**PyRSS2Gen**``pyrss2gen``:cite  developed by Dalke Scientific Software, to generate RSS feeds:
+Dalke Scientific Software 开发的 **PyRSS2Gen**``pyrss2gen``:cite 用于生成 RSS 订阅:
 ``
 gluon/contrib/rss2.py
 ``:code
 
-**simplejson**``simplejson``:cite  by Bob Ippolito, the standard library for parsing and writing JSON objects:
+**simplejson**``simplejson``:cite 是由 Bob Ippolito 开发的用于分析和编写 JSON 对象的标准库:
 ``
 gluon/contrib/simplejson/
 ``:code
 
 **Google Wallet** ``googlewallet``:cite
-provides "pay now" buttons which link Google as payment processor:
+提供 "pay now" 按钮,其链接谷歌作为付款处理器:
 ``
 gluon/contrib/google_wallet.py
 ``:code
 
-**Stripe.com** ``stripe``:cite provides a simple API for accepting credit card payments:
+**Stripe.com** ``stripe``:cite 提供一个简单的 API 用于接受信用卡付款:
 ``
 gluon/contrib/stripe.py
 ``:code
 
-**AuthorizeNet** ``authorizenet``:cite  provides API to accept credit card payments via Authorize.net network
+**AuthorizeNet** ``authorizenet``:cite 提供 API 通过 Authorize.net 网络接收信用卡付款
 ``
 gluon/contrib/AuthorizeNet.py
 ``:code
 
-**Dowcommerce** ``dowcommerce``:cite credit card processing API:
+**Dowcommerce** ``dowcommerce``:cite 是另一个信用卡购物车处理 API:
 ``
 gluon/contrib/DowCommerce.py
 ``:code
 
-**PaymentTech** credit card processing API:
+**PaymentTech** 信用卡处理API:
 
 ``
 gluon/contrib/paymentech.py
 ``:code
 
-**PAM**``PAM``:cite  authentication API created by Chris AtLee:
+**PAM**``PAM``:cite是由 Chris AtLee 创建的身份验证的API:
 ``
 gluon/contrib/pam.py
 ``:code
 
-A Bayesian classifier to populate the database with dummy data for testing purposes:
+一个贝叶斯分类器,为了测试目的而用虚拟数据填充数据库:
 ``
 gluon/contrib/populate.py
 ``:code
 
-A file with API for running on Heroku.com : ``heroku``:inxx
+一个在Heroku.com : ``heroku``:inxx上运行的API文件:
 
 ``
 gluon/contrib/heroku.py
 ``:code
 
-A file that allows interaction with the taskbar in windows, when web2py is running as a service:
+当 web2py 作为服务运行时,允许与 Windows 任务栏交互的一个文件:
 ``
 gluon/contrib/taskbar_widget.py
 ``:code
 
-Optional **login_methods** and login_forms to be used for authentication:
+可选的 **login_methods** 和  login_forms  被用于身份认证:
 ``
 gluon/contrib/login_methods/__init__.py
 gluon/contrib/login_methods/basic_auth.py
@@ -599,7 +599,7 @@ gluon/contrib/login_methods/rpx_account.py
 gluon/contrib/login_methods/x509_auth.py
 ``:code
 
-web2py also contains a folder with useful scripts including
+web2py 还包括一个含有如下有用脚本的文件夹
 ``
 scripts/setup-web2py-fedora.sh
 scripts/setup-web2py-ubuntu.sh
@@ -620,41 +620,41 @@ scripts/access.wsgi
 scripts/cpdb.py
 ``:code
 
-The ``setup-web2py-*`` are particularly useful because they attempt a complete installation and setup of a web2py production environment from scratch.
-Some of these are discussed in Chapter 14, but all of them contain a documentation string inside that explains their purpose and usage.
+``setup-web2py-*`` 特别有用，因为它们尝试从头开始完整安装和设置web2py生产环境。
+其中一些在第 14 章中讨论,它们里面都包含一个文档注释解释说明用途和用法。
 
-Finally web2py includes these files required to build the binary distributions.
+最后,web2py 包含建立二进制发行版需要的文件。
 ``
 Makefile
 setup_exe.py
 setup_app.py
 ``:code
 
-These are setup scripts for **py2exe** and **py2app**, respectively, and they are only required to build the binary distributions of web2py. YOU SHOULD NEVER NEED TO RUN THEM.
+**py2exe** 和 **py2app** 分别有设置脚本,只有建立 web2py 的二进制发行版时才需要它们,你应该从来不需要运行它们。
 
-web2py applications contain additional files, particularly third-party JavaScript libraries, such as jQuery, calendar, and Codemirror. Their authors are acknowledged in the files themselves.
+web2py应用程序包含其它文件，特别是第三方JavaScript库，如jQuery、calendar和Codemirror。它们的作者在文件中得到承认。
 
-### Applications
+### 应用程序
 
-Applications developed in web2py are composed of the following parts:
-- **models** describe a representation of the data as database tables and relations between tables.
-- **controllers** describe the application logic and workflow.
-- **views** describe how data should be presented to the user using HTML and JavaScript.
-- **languages** describe how to translate strings in the application into various supported languages.
-- **static files** do not require processing (e.g. images, CSS stylesheets, etc).
-- **ABOUT** and **README** documents are self-explanatory.
-- **errors** store error reports generated by the application.
-- **sessions** store information related to each particular user.
-- **databases** store SQLite databases and additional table information.
-- **cache** store cached application items.
-- **modules** are other optional Python modules.
-- **private** files are accessed by the controllers but not directly by the developer.
-- **uploads** files are accessed by the models but not directly by the developer (e.g., files uploaded by users of the application).
-- **tests** is a directory for storing test scripts, fixtures and mocks.
+web2py中开发的应用程序由以下部分组成:
+- **models** **模型**描述数据库表的数据表示和表之间的关系。
+- **controllers** **控制器**描述应用逻辑和工作流程。
+- **views** **视图**描述了如何使用HTML和JavaScript向用户显示数据。
+- **languages** **语言**描述如何将应用中的字符串翻译成各种受支持的语言。
+- **static files** **静态文件**不需要处理(例如图片，CSS样式表等)。
+- **ABOUT** 和 **README** 文件是不言自明的。
+- **errors** **错误**存储应用程序生成的错误报告。
+- **sessions** **会话**存储有关每个特定用户的信息。
+- **databases** **数据库**存储SQLite数据库和其他表信息。
+- **cache** **缓存**存储缓存的应用程序项。
+- **modules** **模块**是其他可选的Python模块。
+- **private** **私有**文件由控制器访问，而不是由开发者直接访问。
+- **uploads** **上传**文件由模型访问，而不是由开发者直接访问(例如，应用程序用户上传的文件)。
+- **tests** **tests**是存储测试脚本、fixture和mock的目录。
 
-Models, views, controllers, languages, and static files are accessible via the web administration [design] interface. ABOUT, README, and errors are also accessible via the administration interface through the corresponding menu items. Sessions, cache, modules and private files are accessible to the applications but not via the administration interface.
+模型、视图、控制器、语言和静态文件的访问是通过 web 管理[design]界面,ABOUT、README 和 errors 也可以通过相应的菜单项经由管理界面访问,Sessions、 cache、modules 和 private 文件可以被应用程序访问的,但不能通过管理界面访问。
 
-Everything is neatly organized in a clear directory structure that is replicated for every installed web2py application, although the user never needs to access the filesystem directly:
+所有内容都整齐地组织在一个清晰的目录结构中,每个已安装的 web2py 应用都复制该结构,虽然用户永远不需要直接访问文件系统:
 
 ``about``:inxx ``license``:inxx ``cache``:inxx ``controllers``:inxx ``databases``:inxx ``errors``:inxx ``languages``:inxx ``models``:inxx ``modules``:inxx ``private``:inxx ``session``:inxx ``static``:inxx ``tests``:inxx ``uploads``:inxx ``views``:inxx ``__init__.py``:inxx
 ``
@@ -663,34 +663,34 @@ controllers  modules      private    tests     cron
 cache        errors       upload     sessions  static
 ``:code
 
-"__init__.py" is an empty file which is required in order to allow Python (and web2py) to import the modules in the ``modules`` directory.
+"__init__.py"是一个空文件，为了允许Python(和web2py)导入 ``modules`` 目录中的模块，它是必需的。
 
-Notice that the **admin** application simply provides a web interface to web2py applications on the server file system. web2py applications can also be created and developed from the command-line or your preferred text editor/IDE; you don't have to use the browser **admin** interface.  A new application can be created manually by replicating the above directory structure under ,e.g., "applications/newapp/" (or simply untar the ``welcome.w2p`` file into your new application directory). Application files can also be created and edited from the command-line without having to use the web **admin** interface.
+注意，**admin**应用程序只是为服务器文件系统上的web2py应用程序提供了一个web接口。web2py应用程序也可以通过命令行或文本编辑器/IDE创建和开发;您不必使用浏览器**admin**接口。通过复制上面的目录结构，可以手动创建新的应用程序，例如"applications/newapp/"(或者简单的将 welcome.w2p 文件解压到新应用程序目录)。应用程序文件也可以从命令行创建和编辑，而不必使用web **admin**接口界面。
 
 ### API
 
-Models, controllers, and views are executed in an environment where the following objects are already imported for us:
+在已被我们导入以下对象的环境中执行模型、控制器和视图:
 
-**Global Objects:** ``request``:inxx ``response``:inxx ``session``:inxx ``cache``:inxx
+**全局对象:** ``request``:inxx ``response``:inxx ``session``:inxx ``cache``:inxx
 
 ``
 request, response, session, cache
 ``:code
 
-**Internationalization:** ``T``:inxx ``internationalization``:inxx
+**国际化:** ``T``:inxx ``internationalization``:inxx
 
 ``
 T
 ``:code
 
-**Navigation:** ``redirect``:inxx ``HTTP``:inxx
+**导航:** ``redirect``:inxx ``HTTP``:inxx
 
 ``
 redirect, HTTP
 ``:code
 
 
-**Helpers:** ``helpers``:inxx
+**导航:** ``helpers``:inxx
 
 ``
 XML, URL, BEAUTIFY
@@ -706,13 +706,13 @@ TITLE, TR, TT, URL, XHTML, xmlescape, embed64
 CAT, MARKMIN, MENU, ON
 ``:code
 
-**Forms and tables**
+**表单和表**
 
 ``
 SQLFORM (SQLFORM.factory, SQLFORM.grid, SQLFORM.smartgrid)
 ``
 
-**Validators:** ``validators``:inxx
+**验证器:** ``validators``:inxx
 
 ``
 CLEANUP, CRYPT, IS_ALPHANUMERIC, IS_DATE_IN_RANGE, IS_DATE,
@@ -724,17 +724,17 @@ IS_NOT_IN_DB, IS_NULL_OR, IS_SLUG, IS_STRONG, IS_TIME,
 IS_UPLOAD_FILENAME, IS_UPPER, IS_URL
 ``:code
 
-**Database:** ``DAL``:inxx
+**数据库:** ``DAL``:inxx
 
 ``
 DAL, Field
 ``:code
 
-For backward compatibility ``SQLDB=DAL`` and ``SQLField=Field``. We encourage you to use the new syntax ``DAL`` and ``Field``, instead of the old syntax.
+为了向后兼容 ``SQLDB=DAL`` 和 ``SQLField=Field``,我们鼓励使用新的语法 ``DAL`` 和 ``Field``,而不是旧的语法。
 
-Other objects and modules are defined in the libraries, but they are not automatically imported since they are not used as often.
+其他对象和模块在库中定义，但它们不会自动导入，因为它们不常被使用。
 
-The core API entities in the web2py execution environment are ``request``, ``response``, ``session``, ``cache``, ``URL``, ``HTTP``, ``redirect`` and ``T`` and are discussed below.
+web2py 执行环境中的核心 API 实体包括 ``request``、  ``response``、 ``session``、``cache``、URL、 ``HTTP``、``redirect`` 和 ``T``,并在下面讨论。
 
 A few objects and functions, including **Auth**, **Crud** and **Service**, are defined in "gluon/tools.py" and they need to be imported as necessary:
 ``
