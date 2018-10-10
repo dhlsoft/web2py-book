@@ -736,101 +736,101 @@ DAL, Field
 
 web2py 执行环境中的核心 API 实体包括 ``request``、  ``response``、 ``session``、``cache``、URL、 ``HTTP``、``redirect`` 和 ``T``,并在下面讨论。
 
-A few objects and functions, including **Auth**, **Crud** and **Service**, are defined in "gluon/tools.py" and they need to be imported as necessary:
+在 "gluon/tools.py" 中定义了一些对象和函数，包括**Auth**、**Crud**和**Service**，需要用的时候导入它们:
 ``
 from gluon.tools import Auth, Crud, Service
 ``:code
-They are imported in ``db.py`` in the scaffolding application.
+它们在搭建应用程序中的``db.py``中导入。
 
-### Accessing the API from Python modules
+### 从Python模块访问API
 
-Your models or controller may import python modules. These are usually python files you store in the modules directory of your app. They may need to use some of the web2py API. The way to do it is by importing them:
+您的模型或控制器可以导入python模块。这些通常是python文件，存储在应用程序的modules目录中。它们可能需要使用一些web2py API。方法是通过导入它们:
 
 ``
 from gluon import *
 ``
 
-In fact, any Python module, even if not imported by a web2py application, can import the web2py API as long as web2py is in the ``sys.path``.
+实际上，任何Python模块，即使不是由web2py应用程序导入，只要web2py位于 ``sys.path``中，就可以导入web2py API。
 
 [[current_object]]
-#### Sharing the global scope with modules using the current object
-There is one caveat, though. Web2py defines some global objects (request, response, session, cache, T) that can only exist when an HTTP request is present (or is faked). Therefore, modules can access them only if they are called from an application. For this reasons they are placed into a container called ``current``, which is a thread local object. Here is an example.
+#### 使用当前对象与modules共享全局作用域
+但有一点需要注意。Web2py 中定义了一些全局对象(请求 request、 响应 response、会话 session、缓存 cache、 T),当一个 HTTP 请求存在(或伪造)时,其才能存在。因此,只有当它们被应用调用时模块才可以访问它们,出于这个原因,它们被放置到一个叫做 ``current``的容器中,这是一个线程局部对象。这里有一个例子。
 
-Create a module "/myapp/modules/mytest.py" that contains:
+创建一个模块 "/myapp/modules/mytest.py" ,其中包含:
 ``
 from gluon import *
 def ip(): return current.request.client
 ``
-Now from a controller in "myapp" you can do
+现在你从 "myapp" 的控制器中可以
 ``
 import mytest
 def index():
     return "Your ip is " + mytest.ip()
 ``
 
-Notice a few things:
+注意以下几点:
 
-- ``import mytest`` looks for the module first in the current app's modules folder, then in the folders listed in ``sys.path``. Therefore, app-level modules always take precedence over Python modules. This allows different apps to ship with different versions of their modules, without conflicts.
+- ``import mytest`` 首先在当前应用的modules文件夹中寻找模块,之后在 ``sys.path``列出的文件夹中寻找 。 因此,应用级模块总是优先于 Python 模块,这允许不同应用附带它们不同版本的模块,而不会发生冲突。
 
-- Different users can call the same action ``index`` concurrently, which calls the function in the module, and yet there is no conflict because ``current.request`` is a different object in different threads. Just be careful not to access ``current.request`` outside of functions or classes (i.e., at the top level) in the module.
+- 不同的用户可以同时调用相同的 ``index`` 动作,调用模块中的函数,而且不会有任何冲突,因为 ``current.request`` 是处在不同线程中的不同对象,请慎重仔细,不要在模块的函数或类(即顶层)之外访问 ``current.request`` 。
 
-- ``import mytest`` is a shortcut for ``from applications.appname.modules import mytest``. Using the longer syntax, it is possible to import modules from other applications.
+- ``import mytest`` 是从 ``applications.appname.modules`` 导入 mytest 的快捷方式,使用较长的语法,可以从其它应用导入模块。
 
-For uniformity with normal Python behavior, by default web2py does not reload modules when changes are made. Yet this can be changed. To turn on the auto-reload feature for modules, use the ``track_changes`` function as follows (typically in a model file, before any imports):
+为了与普通 Python 行为的一致性,默认情况下,进行更改时 web2py 不会重新加载模块。然而,这是可以改变的,要开启自动重载模块功能,如下使用 ``track_changes`` 函数(通常在一个模型文件中,在任何导入之前):
 
 ``
 from gluon.custom_import import track_changes; track_changes(True)
 ``:code
 
-From now on, every time a module is imported, the importer will check if the Python source file (.py) has changed. If it has changed, the module will be reloaded.
+从现在开始，每次导入模块时，导入器都会检查Python源文件(.py)是否更改。如果已经更改，模块将被重新加载。
 
 ------
-Do not call track_changes in the modules themselves.
+不要在modules本身中调用track_changes。
 ------
 
-Track changes only tracks changes for modules that are stored in the application.
-Modules that import ``current`` can access:
+跟踪更改只跟踪存储在应用程序中modules的更改。
+导入``current`` 的模块可以访问:
 - ``current.request``
 - ``current.response``
 - ``current.session``
 - ``current.cache``
 - ``current.T``
-and any other variable your application chooses to store in current. For example a model could do
+以及应用程序选择在current存储任何其他变量。例如，一个模型可以做到
 
 ``
 auth = Auth(db)
 from gluon import current
 current.auth = auth
-current.db = db #not needed in this case but useful
+current.db = db #不需要，但是有用
 ``
 
-and now all modules imported can access ``current.auth``.
+现在所有导入的模块都可以访问 ``current.auth``。
 
-``current`` and ``import`` create a powerful mechanism to build extensible and reusable modules for your applications.
+``current``和``import``建立了一个强大的机制，为您的应用程序构建可扩展和可重用的模块。
 
-#### Warning! Do not use the current object in global scope in a module
-Beware! Given ``from gluon import current``, it is correct to use ``current.request`` and any of the other thread local objects but one should never assign them to global variables in the module, such as in
+#### 警告!在模块的全局作用域中不使用当前对象
+小心!给定 ``from gluon import current``，使用``current.request``和任何其他线程本地对象是正确的，但不应该将它们分配给模块中的全局变量，比如
 ``
 request = current.request # WRONG! DANGER!
 ``
-nor should one use current to assign class attributes:
+也不能把它分配给类属性
 ``
 class MyClass:
     request = current.request # WRONG! DANGER!
 ``
-This is because the thread local object must be extracted at runtime. Global variables instead are defined only once when the model is imported for the first time.
+这是因为线程本地对象必须在运行时提取,而全局变量只在模型第一次导入时定义一次。
 
-Instead, assign inside a function.
+相反，在函数内部赋值。
 
 ``
 import * from gluon
 ...
 def a_module_function():
-    db = current.db  # assuming you assigned current.db = db in the model db.py
+    db = current.db  # 假设你分配了 current.db = db 在db.py模型中
    ...
 ``:code
 
-Another caveat has to do with cache. You cannot use the ``cache`` object to decorate functions in modules, that is because it would not behave as expected. In order to cache a function ``f`` in a module you must use ``lazy_cache``:
+另一个警告与缓存有关。不能使用``cache`` 对象来修饰模块中的函数，这是因为它的行为与预期不符。为了在模块中缓存一个函数``f`` ，您必须使用``lazy_cache``:
 
 ``
 from gluon.cache import lazy_cache
@@ -839,76 +839,76 @@ from gluon.cache import lazy_cache
 def f(a, b, c): ....
 ``:code
 
-Mind that the key is user defined but must be uniquely associated to the function. If omitted web2py will automatically determine a key.
+注意，key是用户定义的，但必须与函数唯一关联。如果省略web2py将自动确定一个键。
 
-### ``request``
+### ``request``请求对象
 ``request``:inxx ``Storage``:inxx ``request.cookies``:inxx ``user_agent``:inxx
 
-The ``request`` object is an instance of the ubiquitous web2py class that is called ``gluon.storage.Storage``, which extends the Python ``dict`` class. It is basically a dictionary, but the item values can also be accessed as attributes:
+``request`` 对象是一个无处不在的被称为 ``gluon.storage.Storage``的 web2py 类的实例,Storage 扩展 Python 的 ``dict`` 类,它基本上是一本字典,但项目值也可以作为属性访问:
 ``
 request.vars
 ``:code
 
-is the same as:
+等同于:
 ``
 request['vars']
 ``:code
 
-Unlike a dictionary, if an attribute (or key) does not exist, it does not raise an exception. Instead, it returns ``None``.
+与字典不同，如果一个属性(或键)不存在，它不会引发异常。相反，它返回 ``None``。
 
 -----
-It is sometimes useful to create your own Storage objects. You can do so as follows:
+创建自己的Storage(存储)对象有时很有用。你可以这样做:
 ``
 from gluon.storage import Storage
-my_storage = Storage()  # empty storage object
-my_other_storage = Storage(dict(a=1, b=2))  # convert dictionary to Storage
+my_storage = Storage()  # 空storage对象
+my_other_storage = Storage(dict(a=1, b=2))  # 将字典转换为Storage
 ``:code
 -----
 
-``request`` has the following items/attributes, some of which are also an instance of the ``Storage`` class:
-- ``request.cookies``: a ``Cookie.SimpleCookie()`` object containing the cookies passed with the HTTP request. It acts like a dictionary of cookies. Each cookie is a Morsel object ``morsel``:cite.
-- ``request.env``: a ``Storage`` object containing the environment variables passed to the controller, including HTTP header variables from the HTTP request and standard WSGI parameters. The environment variables are all converted to lower case, and dots are converted to underscores for easier memorization.
-- ``request.application``: the name of the requested application.
-- ``request.controller``: the name of the requested controller.
-- ``request.function``: the name of the requested function.
-- ``request.extension``: the extension of the requested action. It defaults to "html". If the controller function returns a dictionary and does not specify a view, this is used to determine the extension of the view file that will render the dictionary (parsed from the ``request.env.path_info``).
-- ``request.folder``: the application directory. For example if the application is "welcome", ``request.folder`` is set to the absolute path "/path/to/welcome". In your programs, you should always use this variable and the ``os.path.join`` function to build paths to the files you need to access. Although web2py always uses absolute paths, it is a good rule never to explicitly  change the current working folder (whatever that is) since this is not a thread-safe practice.
-- ``request.now``: a ``datetime.datetime`` object storing the datetime of the current request.
-- ``request.utcnow``: a ``datetime.datetime`` object storing the UTC datetime of the current request.
-- ``request.args``: A list of the URL path components following the controller function name; equivalent to ``request.env.path_info.split('/')[3:]``
-- ``request.vars``: a ``gluon.storage.Storage`` object containing all request parameters.
-- ``request.get_vars``: a ``gluon.storage.Storage`` object containing only parameters passed into the query string (a request to ``/a/c/f?var1=1&var2=2`` will end in ``{var1: "1", var2: "2"}``)
-- ``request.post_vars``: a ``gluon.storage.Storage`` object containing only the parameters passed into the body of the request (usually in POST, PUT, DELETE requests).
-- ``request.client``: The ip address of the client as determined by, if present, ``request.env.http_x_forwarded_for`` or by ``request.env.remote_addr`` otherwise. While this is useful it should not be trusted because the ``http_x_forwarded_for`` can be spoofed.
-- ``request.is_local``: ``True`` if the client is localhost, ``False`` otherwise. Should work behind a proxy if the proxy supports ``http_x_forwarded_for``.
-- ``request.is_https``: ``True`` if the request is using the HTTPS protocol, ``False`` otherwise.
-- ``request.body``: a read-only file stream that contains the body of the HTTP request. This is automatically parsed to get the ``request.post_vars`` and then rewinded. It can be read with ``request.body.read()``.
-- ``request.ajax`` is True if the function is being called via an Ajax request.
-- ``request.cid`` is the ``id`` of the component that generated the Ajax request (if any). You can read more about components in Chapter 12.
-- ``request.requires_https()`` prevents further code execution if the request is not over HTTPS and redirects the visitor to the current page over HTTPS.
-- ``request.restful`` this is a new and very useful decorator that can be used to change the default behavior of web2py actions by separating GET/POST/PUT/DELETE requests. It will be discussed in some detail in Chapter 10.
-- ``request.user_agent()`` parses the user_agent field from the client and returns the information in the form of a dictionary. It is useful to detect mobile devices. It uses "gluon/contrib/user_agent_parser.py" created by Ross Peoples. To see what it does, try to embed the following code in a view:
+``request`` 具有以下项/属性，其中一些也是 ``Storage`` 类的一个实例:
+- ``request.cookies``: ``Cookie.SimpleCookie()``对象包含 HTTP 请求传递的 cookie,它就像一个cookie 字典,每个 cookie 就是一个 Morsel 对象 ``morsel``:cite。
+- ``request.env``: ``Storage``对象包含传递到控制器的环境变量,包括来自 HTTP 请求的 HTTP 标头变量和 WSGI 参数,便于记忆 ,环境变量都转换成小写,点转换成下划线。
+- ``request.application``: 请求的应用程序的名称。
+- ``request.controller``: 请求的控制器名称。
+- ``request.function``: 请求的函数名称。
+- ``request.extension``: 请求的动作扩展。默认是"html",如果控制器函数返回一个字典且没有指定视图,这用来确定呈现字典的视图文件的扩展名(从``request.env.path_info``解析)。
+- ``request.folder``: 应用程序目录。例如，如果应用程序是 "welcome"，``request.folder``被设置为绝对路径"/path/to/welcome"。在程序中，应该始终使用这个变量和 ``os.path.join`` 函数来构建您需要访问的文件的路径。虽然web2py总是使用绝对路径，但最好不要显式地更改当前工作文件夹(无论它是什么)，因为这不是线程安全的实践。
+- ``request.now``: 一个 ``datetime.datetime`` 对象存储当前请求的日期时间。
+- ``request.utcnow``: 一个``datetime.datetime``对象存储当前请求的 UTC 日期时间。
+- ``request.args``: 控制器函数名称之后的 URL 路径组件列表,等同于``request.env.path_info.split('/')[3:]``
+- ``request.vars``: 一个``gluon.storage.Storage``对象，该对象包含所有请求参数。
+- ``request.get_vars``: 一个``gluon.storage.Storage``对象仅包含传递给查询字符串的参数（一个请求``/a/c/f?var1=1&var2=2``将以处理成``{var1: "1", var2: "2"}``）
+- ``request.post_vars``: 一个``gluon.storage.Storage``对象，仅包含传递到请求体中的参数(通常在POST、PUT、DELETE请求中)。
+- ``request.client``: 当客户端的 ip 地址被确定,如果存在的话,由``request.env.http_x_forwarded_for``确定或否则的话由``request.env.remote_addr``确定。虽然这是有用的,但是不应该信任它,因为``http_x_forwarded_for``可以被欺骗。
+- ``request.is_local``: 客户端是 localhost 为``True``,否则为``False``,如果代理支持``http_x_forwarded_for``,则应该在代理后工作。
+- ``request.is_https``: 如果请求使用 HTTPS 协议,则为``True``,否则为``False``。
+- ``request.body``: 一个只读文件流,它包含HTTP请求的主体,这将被自动解析得到``request.post_vars``然后重发,它可以用``request.body.read()``来读取。
+- ``request.ajax`` 如果通过 Ajax 请求调用函数,则为``True``。
+- ``request.cid`` 是生成Ajax请求(如果有的话)的组件的 ``id`` 。您可以在第12章中阅读有关组件的更多信息。
+- ``request.requires_https()`` 如果请求不是通过HTTPS发送的，则阻止代码执行，并通过HTTPS将访问者重定向到当前页面。
+- ``request.restful`` 这是一个非常有用的新装饰器，可以通过分离GET/POST/PUT/DELETE请求来改变web2py动作的默认行为。它将在第10章中详细讨论。
+- ``request.user_agent()`` 从客户端解析user_agent字段并以字典的形式返回信息。检测移动设备是很有用的。它使用罗斯人创建的"gluon/contrib/user_agent_parser.py"。要知道它的功能，请尝试在视图中嵌入以下代码:
 ``
 {{=BEAUTIFY(request.user_agent())}}
 ``:code
 
-- ``request.global_settings`` ``request.global_settings``:inxx contains web2py system wide settings. They are set automatically and you should not change them. For example ``request.global_settings.gluon_parent`` contains the full path to the web2py folder, ``request.global_settings.is_pypy`` determines if web2py is running on PyPy.
+- ``request.global_settings`` ``request.global_settings``:inxx包含web2py系统范围的设置。它们是自动设置的，您不应该更改它们。例如 ``request.global_settings.gluon_parent``包含到web2py文件夹的完整路径，``request.global_settings.is_pypy``确定web2py是否在PyPy上运行。
 
-- ``request.wsgi`` is a hook that allows you to call third party WSGI applications from inside actions
+- ``request.wsgi`` 是一个允许您从内部操作调用第三方wsgi应用程序的钩子hook
 
-The latter includes:
+后者包括:
 - ``request.wsgi.environ``
 - ``request.wsgi.start_response``
 - ``request.wsgi.middleware``
-their usage is discussed at the end of this Chapter.
+它们的用法在本章最后讨论。
 
-As an example, the following call on a typical system:
+例如，下面对一个典型系统的调用:
 
 ``
 http://127.0.0.1:8000/examples/default/status/x/y/z?p=1&q=2
 ``:code
 
-results in the following ``request`` object:
+产生下面的request请求对象:
 ``request``:inxx ``env``:inxx
 
 ----------
@@ -952,15 +952,15 @@ results in the following ``request`` object:
 ``request.env.wsgi_url_scheme`` | ``http``
 --------
 
-Which environment variables are actually defined depends on the web server. Here we are assuming the built-in Rocket wsgi server. The set of variables is not much different when using the Apache web server.
+实际上定义了哪些环境变量取决于web服务器。这里我们假设是内置的Rocket wsgi服务器。在使用Apache web服务器时，变量集没有太大的不同。
 
-The ``request.env.http_*`` variables are parsed from the request HTTP header.
+``request.env.http_*`` 变量从请求 HTTP 报头解析。
 
-The ``request.env.web2py_*`` variables are not parsed from the web server environment, but are created by web2py in case your applications need to know about the web2py location and version, and whether it is running on the Google App Engine (because specific optimizations may be necessary).
+``request.env.web2py_*`` 变量不是从web服务器环境中解析的，而是由web2py创建的，以防您的应用程序需要了解web2py的位置和版本，以及它是否在谷歌应用引擎上运行(因为可能需要进行特定的优化)。
 
-Also notice the ``request.env.wsgi_*`` variables. They are specific to the wsgi adapter.
+还要注意``request.env.wsgi_*``变量。它们是特定于wsgi适配器的。
 
-### ``response``
+### ``response``响应对象
 ``response``:inxx
 ``response.body``:inxx
 ``response.cookies``:inxx
@@ -989,60 +989,60 @@ Also notice the ``request.env.wsgi_*`` variables. They are specific to the wsgi 
 ``response._caller``:inxx
 ``response.models_to_run``:inxx
 
-``response`` is another instance of the ``Storage`` class. It contains the following:
+``response`` 是 ``Storage`` 类的另一个实例。内容如下:
 
-- ``response.body``: a ``StringIO`` object into which web2py writes the output page body. NEVER CHANGE THIS VARIABLE.
-- ``response.cookies``: similar to ``request.cookies``, but while the latter contains the cookies sent from the client to the server, the former contains cookies sent by the server to the client. The session cookie is handled automatically.
-- ``response.download(request, db)``: a method used to implement the controller function that allows downloading of uploaded files. ``response.download`` expects the last ``arg`` in ``request.args`` to be the encoded filename (i.e., the filename generated at upload time and stored in the upload field). It extracts the upload field name and table name as well as the original filename from the encoded filename. ``response.download`` takes two optional arguments: ``chunk_size`` sets the size in bytes for chunked streaming (defaults to 64K), and ``attachments`` determines whether the downloaded file should be treated as an attachment or not (default to ``True``). Note, ``response.download`` is specifically for downloading files associated with ``db`` upload fields. Use ``response.stream`` (see below) for other types of file downloads and streaming. Also, note that it is not necessary to use ``response.download`` to access files uploaded to the /static folder -- static files can (and generally should) be accessed directly via URL (e.g., /app/static/files/myfile.pdf).
-- ``response.files``: a list of ``.css``, ``.js``, ``.coffee``, and ``.less`` files required by the page. They will automatically be linked in the head of the standard "layout.html" via the included "web2py_ajax.html". To include a new CSS, JS, COFFEE, or LESS file, just append it to this list. It will handle duplicates. The order is important.
-- ``response.include_files()`` generates html head tags to include all ``response.files`` (used in "views/web2py_ajax.html").
-- ``response.flash``: optional parameter that may be included in the views. Normally used to notify the user about something that happened.
-- ``response.headers``: a ``dict`` for HTTP response headers. Web2py sets some headers by default, including "Content-Length", "Content-Type", and "X-Powered-By" (set equal to web2py). Web2py also sets the "Cache-Control", "Expires", and "Pragma" headers to prevent client-side caching, except for static file requests, for which client-side caching is enabled. The headers that web2py sets can be overwritten or removed, and new headers can be added (e.g., ``response.headers['Cache-Control'] = 'private'``). You can remove a header by removing its key from the response.headers dict, e.g. ``del response.headers['Custom-Header']``, however web2py's default headers will be re-added just before returning the response. To avoid this behavior, just set the header value to None, e.g. to remove the default Content-Type header, ``response.headers['Content-Type'] = None``
-- ``response.menu``: optional parameter that may be included in the views, normally used to pass a navigation menu tree to the view. It can be rendered by the MENU helper.
-- ``response.meta``: a Storage object that contains optional ``<meta>`` information like ``response.meta.author``, ``.description``, and/or ``.keywords``. The content of each meta variable is automatically placed in the proper ``META`` tag by the code in "views/web2py_ajax.html", which is included by default in "views/layout.html".
-- ``response.include_meta()`` generates a string that includes all ``response.meta`` headers serialized (used in "views/web2py_ajax.html").
-- ``response.postprocessing``: this is a list of functions, empty by default. These functions are used to filter the response object at the output of an action, before the output is rendered by the view. It can be used to implement support for other template languages.
-- ``response.render(view, vars)``: a method used to call the view explicitly inside the controller. ``view`` is an optional parameter which is the name of the view file, ``vars`` is a dictionary of named values passed to the view.
-- ``response.session_file``: file stream containing the session.
-- ``response.session_file_name``: name of the file where the session will be saved.
-- ``response.session_id``: the id of the current session. It is determined automatically. NEVER CHANGE THIS VARIABLE.
-- ``response.session_id_name``: the name of the session cookie for this application. NEVER CHANGE THIS VARIABLE.
-- ``response.static_version``: a version number for the static asset management.
-- ``response.status``: the HTTP status code integer to be passed to the response. Default is 200 (OK).
-- ``response.stream(file, chunk_size, request=request, attachment=False, filename=None)``: when a controller returns it, web2py streams the file content back to the client in blocks of size ``chunk_size``. The ``request`` parameter is required to use the chunk start in the HTTP header. ``file`` should be a file path (for backward compatibility, it can also be an open file object, but this is not recommended). As noted above, ``response.download`` should be used to retrieve files stored via an upload field. ``response.stream`` can be used in other cases, such as returning a temporary file or StringIO object created by the controller. If ``attachment`` is True, the Content-Disposition header will be set to "attachment", and if ``filename`` is also provided, it will be added to the Content-Disposition header as well (but only when ``attachment`` is True). If not already included in ``response.headers``, the following response headers will be set automatically: Content-Type, Content-Length, Cache-Control, Pragma, and Last-Modified (the latter three are set to allow browser caching of the file). To override any of these automatic header settings, simply set them in ``response.headers`` before calling ``response.stream``.
-- ``response.subtitle``: optional parameter that may be included in the views. It should contain the subtitle of the page.
-- ``response.title``: optional parameter that may be included in the views. It should contain the title of the page and should be rendered inside the html title tag in the header.
-- ``response.toolbar``: a function that allows you to embed a toolbar into page for debugging purposes ``{{=response.toolbar()}}``. The toolbar displays request, response, session variables and database access time for each query.
-- ``response._vars``: this variable is accessible only in a view, not in the action. It contains the values returned by the action to the view.
-- ``response._caller``: this is a function that wraps all action calls. It defaults to the identity function, but it can be modified in order to catch special types of exception to do extra logging;
+- ``response.body``: 一个 ``StringIO``对象,web2py 向其中写入输出页面的主体,切勿更改此变量。
+- ``response.cookies``: 类似于``request.cookies``,但后者包含从客户端向服务器发送cookie,前者包含由服务器发送到客户端的 cookie,会话 cookie 自动处理。
+- ``response.download(request, db)``: 是一种方法,该方法用于实现控制器功能,其功能允许下载已上传文件, ``response.download`` 期望在``request.args``中的最后一个参数``arg``是编码文件名(即,upload 上传时间产生的并存储在 upload 字段的文件名),它从编码文件名中提取上传字段名、表名以及原始文件名, ``response.download``有两个可选参数: ``chunk_size``  以字节为单位设置分块数据流的大小(默认为 64k),  ``attachments``  确定下载的文件是否应被视为附件(默认为 True)。注意,``response.download`` 是专门用于与 ``db``上传字段相关的下载文件,对于其它类型的文件下载和流媒体,使用 ``response.stream``(见下文)。另外,需要注意,没有必要使用``response.download`` 访问上传到/static 文件夹的文件——静态文件(通常应该)可以通过 URL(例如,/app/static/files/myfile.pdf)直接被访问。
+- ``response.files``: 页面所需的``.css``、``.js``、``.coffee``和  ``.less``文件的列表,它们将通过包含的"web2py_ajax.html"被自动链接在标准"layout.html"的顶部。要包含一个新的CSS、JS、COFFEE或LESS文件，只需将它附加到这个列表中。它将处理重复。顺序很重要。
+- ``response.include_files()`` 生成 html 头标签来包含所有``response.files``(用在"views/web2py_ajax.html"中)。
+- ``response.flash``: 可选参数，可包含在视图中。通常用于通知用户发生的事情。
+- ``response.headers``: 一个 HTTP响应头的``dict``。Web2py默认设置了一些头信息，包括"Content-Length"、"Content-Type"和"X-Powered-By"(设置为Web2py)。Web2py还设置了"Cache-Control"、"Expires"和"Pragma"头文件，以防止客户端缓存，只有静态文件请求除外。可以覆盖或删除web2py的标头，可以添加新的标头(例如，``response.headers['Cache-Control'] = 'private'``)。您可以通过从响应中删除其键来删除头信息。``del response.headers['Custom-Header']``，然而web2py的默认header会在返回响应之前被重新添加。要避免这种行为，只需将标头值设置为None，例如删除默认的Content-Type标头``response.headers['Content-Type'] = None``
+- ``response.menu``: 可选参数,可以包含在视图中,通常用来向视图传递一个导航菜单栏,可以被 MENU 帮助对象呈现。
+- ``response.meta``: 一个 storage 对象(类似一个字典)其中包含可选  ``<meta>`` 元信息如``response.meta.author``、``.description`` 和/或``.keywords``,每个 meta 元变量的内容自动放置在适当的``META`` 标签中,通过 "views/web2py_ajax.html" 中的代码实现,它默认包含在"views/layout.html" 中。
+- ``response.include_meta()`` 生成一个字符串,其中包含所有序列化的``response.meta`` 标头(用在 "views/web2py_ajax.html"中)。
+- ``response.postprocessing``: 这是一个函数列表，默认为空。这些函数用于在一个动作的输出处过滤响应对象，然后由视图呈现输出。它可以用来实现对其他模板语言的支持。
+- ``response.render(view, vars)``: 一种用于控制器内显式调用视图的方法,``view`` 是一个可选的参数,它是视图文件的名称,``vars`` 是一个传递给视图的命名值的字典。
+- ``response.session_file``: 包含会话的文件流。
+- ``response.session_file_name``: 将保存会话的文件的名称。
+- ``response.session_id``: 当前会话的id,它被自动确定。切勿更改此变量。
+- ``response.session_id_name``: 此应用会话 cookie 的名称。切勿更改此变量。
+- ``response.static_version``: 静态资源管理的版本号。
+- ``response.status``: 传递给响应的 HTTP 状态代码整数,默认是 200(OK)。
+- ``response.stream(file, chunk_size, request=request, attachment=False, filename=None)``:当控制器返回它时，web2py将文件内容以``chunk_size``大小的块流传输文件内容返回给客户端。使用HTTP报头中的块时，需要使用``request``参数。``file`` 应该是一个文件路径(为了向后兼容，它也可以是一个打开的文件对象，但不建议这样做)。如上所述，``response.download``应该用于检索通过上传字段存储的文件。``response.stream``可以用于其他情况，如返回一个临时文件或由控制器创建的StringIO对象。如果``attachment``为True,Content-Disposition标头将设置为"attachment"，如果还提供``filename``，它也将被添加到Content-Disposition标头中(但仅当``attachment``为True)。如果没有包含在``response.headers``中，下面的响应标头将被自动设置:Content-Type、Content-Length、Cache-Control、Pragma和Last-Modified(后三种被设置为允许文件的浏览器缓存)。要覆盖这些自动标头设置，只需在``response.headers``中设置它们，在调用``response.stream``之前。
+- ``response.subtitle``: 可选的参数,该参数可以被包括在视图中,它应包含页面副标题。
+- ``response.title``: 可选的参数,该参数可以被包括在视图中,它应包含页面标题并且应该由标头中的HTML标题TAG标签呈现。
+- ``response.toolbar``: 允许你为调试目的在页面中嵌入工具栏的函数``{{=response.toolbar()}}``。工具栏显示每个查询的请求、响应、会话变量和数据库访问时间。
+- ``response._vars``: 仅能在视图中访问此变量,而不能在动作中,它包含由动作返回给视图的值。
+- ``response._caller``: 这是一个封装所有动作调用的函数。它默认为identity函数，但可以对其进行修改，以捕获特殊类型的异常以执行额外的日志记录;
   ``
   response._caller = lambda f: f()
   ``
-- ``response.optimize_css``: can be set to "concat,minify,inline" to concatenate, minify and inline the CSS files included by web2py.
-- ``response.optimize_js``: can be set to "concat,minify,inline" to concatenate, minify and inline the JavaScript files included by web2py.
-- ``response.view``: the name of the view template that must render the page. This is set by default to:
+- ``response.optimize_css``: 如果可以设置为"concat,minify,inline"来连接、缩小和内联 web2py 包含的 CSS 文件。
+- ``response.optimize_js``: 如果可以设置为"concat,minify,inline"来连接、缩小和内联web2py 包含的JavaScript文件。
+- ``response.view``: 呈现页面的视图模板的名称。默认设置为
   ``
   "%s/%s.%s" % (request.controller, request.function, request.extension)
   ``:code
-  or, if the above file cannot be located, to
+  或者,如果上述文件不能定位,设置为
   ``
   "generic.%s" % (request.extension)
   ``:code
-  Change the value of this variable to modify the view file associated with a particular action.
+  更改此变量的值以修改与特定动作联的视图文件。
 
-- ``response.delimiters`` defaults to ``('{{','}}')``. It allows you to change the delimiter of code embedded in views.
-- ``response.xmlrpc(request, methods)``: when a controller returns it, this function exposes the methods via XML-RPC``xmlrpc``:cite . This function is deprecated since a better mechanism is available and described in Chapter 10.
-- ``response.write(text)``: a method to write text into the output page body.
-- ``response.js`` can contain Javascript code. This code will be executed if and only if the response is received by a web2py component as discussed in Chapter 12.
-- ``response.models_to_run`` [[response_models_to_run]] contains a list of regexes that chooses what models to run.
--- By default, this is set automatically to load /a/models/*.py, /a/models/c/*.py, and /a/models/c/f/*.py files when ``/a/c/f`` is requested. You can set, e.g., ``response.models_to_run = ['myfolder/']`` to force the execution only of the models inside your application's ``models/myfolder`` subfolder.
--- NB: ``response.models_to_run`` is a list of regex, not a list of filepaths. The regex are relative to the models/ folder, so any model file with a relative file path that matches one of the regexes will be executed. Note also that this can not affect any models which have already been evaluated because they were earlier in the alphabetic sort order. That is, if a conditional model for controller orange was orange/orange_model.py and it set the regex to [.*], that change does not affect any models previously rejected for loading such as the model apple/apple_model.py ; it matches the new regex, but it was evaluated and rejected before orange/orange_model.py changed the regex.
--- This means that if you want to use models_to_run to share conditional models between controllers, put the models in a sub-directory that will sort last such as zzz, and then use a regex 'zzz'.
+- ``response.delimiters`` 默认为``('{{','}}')``。它允许您更改嵌入在视图中的代码的分隔符。
+- ``response.xmlrpc(request, methods)``: 当控制器返回它时，该函数通过XML-RPC``xmlrpc``:cite公开方法。由于有更好的机制将在第10章中描述，所以不建议使用此函数。
+- ``response.write(text)``: 将文本写入输出页面正文的方法
+- ``response.js`` 可以包含Javascript代码。此代码将在web2py组件接收到响应时执行，在第12章中讨论。
+- ``response.models_to_run`` [[response_models_to_run]] 包含一个选择运行什么模型的regex正则表达式列表。
+-- 默认情况下，当请求``/a/c/f``时，会自动将其设置为加载/a/models/*.py、/a/models/c/*.py和/a/models/c/f/*.py文件。您可以设置，例如，``response.models_to_run = ['myfolder/']``，以强制只在应用程序的``models/myfolder``子文件夹中执行模型。
+-- 注: ``response.models_to_run``是regex正则表达式列表，而不是文件路径列表。正则表达式是相对于模型/文件夹的，因此将执行具有匹配其中一个正则表达式的相对文件路径的任何模型文件。还要注意，这不会影响已经评估过的任何模型，因为它们是按字母排序顺序更早的。也就是说，如果控制器orange的条件模型是orange/orange_model.py，并且它将正则表达式设置为[.*]，则该更改不会影响先前拒绝加载的任何模型，例如apple/apple_model.py模型；它匹配新的正则表达式，但是在orange/orange_model.py更改正则表达式之前对其进行评估并拒绝了。
+-- 这意味着，如果您想使用models_to_run在控制器之间共享条件模型，请将模型放在最后排序的子目录中，例如zzz，然后使用regex 'zzz'。
 .
 
-Since ``response`` is a ``gluon.storage.Storage`` object, it can be used to store other attributes that you may want to pass to the view. While there is no technical restriction, our recommendation is to store only variables that are to be rendered by all pages in the overall layout ("layout.html").
+因为``response``是``gluon.storage.Storage``对象，它可以用来存储您可能想要传递给视图的其他属性。虽然没有技术限制，但我们的建议是只存储所有页面在整体布局中呈现的变量("layout.html")。
 
-Anyway, we strongly suggest to stick to the variables listed here:
+无论如何,我们强烈建议坚持如下列出的变量:
 ``
 response.title
 response.subtitle
@@ -1054,51 +1054,51 @@ response.meta.keywords
 response.meta.*
 ``:code
 
-because this will make it easier for you to replace the standard "layout.html" file that comes with web2py with another layout file, one that uses the same set of variables.
+因为这会让您用其它布局文件替换 web2py 附带的标准"layout.html"文件变得更容易,它们使用相同变量集合。
 
-Old versions of web2py used ``response.author`` instead of ``response.meta.author`` and similar for the other meta attributes.
+老版本的 web2py 使用``response.author``而不是``response.meta.author``,其它 meta 属性也是相似的。
 
-### ``session``
+### ``session``会话对象
 ``session``:inxx ``session.connect``:inxx ``session.forget``:inxx ``session.secure``:inxx
-``session`` is another instance of the ``Storage`` class. Whatever is stored into ``session`` for example:
+``session`` 是``Storage``类的另一个实例。无论什么被存储到``session``中,例如:
 ``
 session.myvariable = "hello"
 ``:code
 
-can be retrieved at a later time:
+可以在稍后的时间被检索:
 ``
 a = session.myvariable
 ``:code
 
-as long as the code is executed within the same session by the same user (provided the user has not deleted session cookies and the session has not expired). Because ``session`` is a ``Storage`` object, trying to access an attribute/key that has not been set does not raise an exception; it returns ``None`` instead.
+只要代码由相同的用户在同一个会话中执行(前提是用户没有删除会话cookie，会话也没有过期)。因为``session``是``Storage``对象，尝试访问未设置的属性/键不会引发异常;它返回``None``。
 
-The session object has three important methods. One is ``forget``:
+会话对象有三个重要的方法。一个是``forget``:
 ``
 session.forget(response)
 ``:code
 
-It tells web2py not to save the session. This should be used in those controllers whose actions are called often and do not need to track user activity. ``session.forget()`` prevents the session file from being written, regardless of whether it has been modified. ``session.forget(response)`` additionally unlocks and closes the session file. You rarely need to call this method since sessions are not saved when they are not changed. However, if the page makes multiple simultaneous Ajax requests, it is a good idea for the actions called via Ajax to call ``session.forget(response)`` (assuming the session is not needed by the action). Otherwise, each Ajax action will have to wait for the previous one to complete (and unlock the session file) before proceeding, which will slow down the page loading. Notice that sessions are not locked when stored in the database.
+它告诉web2py不要保存会话。这应该用于那些动作经常被调用且不需要跟踪用户活动的控制器。``session.forget()``阻止会话文件被写入，不管它是否被修改过。另外，``session.forget(response)``解锁并关闭会话文件。您很少需要调用此方法，因为会话在未更改时不会保存。但是，如果页面同时发出多个Ajax请求，那么通过Ajax调用的动作调用``session.forget(response)``(假设动作不需要会话)是一个好主意。否则，每个Ajax操作都必须等待前一个动作完成(并解锁会话文件)后才能继续，这会减慢页面加载速度。请注意，在数据库中存储会话时没有锁定。
 
-Another method is:
+另一个方法是:
 
 ``
 session.secure()
 ``:code
 
-which tells web2py to set the session cookie to be a secure cookie. This should be set if the app is going over https. By setting the session cookie to be secure, the server is asking the browser not to send the session cookie back to the server unless over an https connection.
+它告诉web2py将会话cookie设置为安全cookie。如果应用程序在https上运行，应该设置此设置。通过将会话cookie设置为安全的，服务器请求浏览器不要将会话cookie发送回服务器，除非通过https连接。
 
-The other method is ``connect``.
-By default sessions are stored on the filesystem and a session cookie is used to store and retrieve the ``session.id``. Using the connect method it is possible to tell web2y to store sessions in the database or in the cookies thus eliminating need to access the filesystem for session management.
+第三个方法是 ``connect``.
+默认情况下，会话存储在文件系统中，会话cookie用于存储和检索``session.id``。使用connect方法，可以告诉web2y将会话存储在数据库或cookie中，从而消除了访问文件系统进行会话管理的需求。
 
-For example to **store sessions in the database**:
+例如在**数据库中存储会话**:
 
 ``
 session.connect(request, response, db, masterapp=None)
 ``:code
 
-where ``db`` is the name of an open database connection (as returned by the DAL). It tells web2py that you want to store the sessions in the database and not on the filesystem. ``session.connect`` must come after ``db=DAL(...)``, but before any other logic that requires session, for example, setting up ``Auth``.
+其中``db``是开放式数据库连接(如同由 DAL 返回的)名称,它告诉 web2py 要在数据库而不是在文件系统中存储会话, ``session.connect``必须跟在``db=DAL(...)``之后,但在任何其它要求会话的逻辑之前,例如设置``Auth``。
 
-web2py creates a table:
+web2py创建一个表:
 ``
 db.define_table('web2py_session',
                  Field('locked', 'boolean', default=False),
@@ -1109,57 +1109,57 @@ db.define_table('web2py_session',
                  Field('session_data', 'text'))
 ``:code
 
-and stores cPickled sessions in the ``session_data`` field.
+并将cPickled会话存储在``session_data``字段中。
 
-The option ``masterapp=None``, by default, tells web2py to try to retrieve an existing session for the application with name in ``request.application``, in the running application.
+默认情况下，选项``masterapp=None``告诉web2py尝试在运行的应用程序中检索名称为``request.application``的应用程序的现有会话。
 
-If you want two or more applications to share sessions, set ``masterapp`` to the name of the master application.
+如果您希望两个或多个应用程序共享会话，请将``masterapp``设置为主应用程序的名称。
 
 
-To **store sessions in cookies** instead you can do:
+要在**cookie中存储会话**,您可以这样做:
 
 ``
 session.connect(request, response, cookie_key='yoursecret', compression_level=None)
 ``:code
 
-Here ``cookie_key`` is a symmetric encryption key.
-``compression_level`` is an optional ``zlib`` encryption level.
+这里的``cookie_key``是一个对称加密密钥。
+``compression_level``是一个可选`zlib``加密级别。
 
-While sessions in cookie are often recommended for scalability reason they are limited in size. Large sessions will result in broken cookies.
+尽管出于可伸缩性的考虑，常常推荐cookie会话，但它们的大小有限。大的会话会导致cookie损坏。
 
-You can check the state of your application at any time by printing the ``request``, ``session`` and ``response`` system variables. One way to do it is to create a dedicated action:
+您可以通过打印``request``、``session``和``response``系统变量，随时检查应用程序的状态。一种方法是创建一个专门的动作:
 ``
 def status():
     return dict(request=request, session=session, response=response)
 ``:code
 
-In the "generic.html" view this is done using ``{{=response.toolbar()}}``.
+在"generic.html"视图中，这是使用``{{=response.toolbar()}}``完成的。
 
-#### Don't store user-defined classes in session
+#### 不要在会话中存储用户定义的类
 
-Variables stored in the session are preserved between requests by serialisation.
+在会话中存储的变量通过序列化保存在请求之中。
 
-Sessions are retrieved before module code is executed and therefore before classes are defined. Therefore user defined classes cannot be pickled.
+在执行模块代码和在定义类之前检索会话。因此，用户定义的类不能是pickled。
 
-Classes defined in modules are also a grey area and they should not put in storage. Most of the time they work but they can break. This is because, for example, if you restart the web server and a user retrieves a session, this may happen before the module is imported. Same problem when the web server starts a new worker process. Same problem in a distributed environment.
+模块中定义的类也是一个灰色区域，不应该放在存储中。它们大部分时间都在工作，但它们可能会崩溃。这是因为，例如，如果重新启动web服务器，用户检索会话，这可能发生在导入模块之前。当web服务器启动一个新的工作进程时也是同样的问题。分布式环境中的也有相同问题。
 
-#### Separate sessions
+#### 单独的会话
 
-If you are storing sessions on the filesystem and you have lots of them, the file system access may become a bottle-neck. One solution is the following:
+如果您正在文件系统上存储会话，并且您有许多会话，那么文件系统访问可能成为瓶颈。一个解决方案是:
 ``
 session.connect(request, response, separate=True)
 ``:code
 
-By setting ``separate=True`` web2py will store sessions not in the "sessions/" folder but in subfolders of the "sessions/" folder. The subfolder will be created automatically. Sessions with the same prefix will be in the same subfolder. Again, note that the above must be called before any logic that might require the session.
+通过设置``separate=True``,web2py 不会在"sessions/"文件夹中存储会话,而是在"sessions/"文件夹的子文件夹中存储,并将自动创建子文件夹,具有相同前缀的会话将处在同一子文件夹中。同样,请注意,在任何可能需要该会话的逻辑之前,必须调用上述代码。
 
-### ``cache``
+### ``cache``缓存对象
 ``cache``:inxx ``cache.ram``:inxx ``cache.disk``:inxx
-``cache`` is a global object that is also available in the web2py execution environment. It has two attributes:
-- ``cache.ram``: the application cache in main memory.
-- ``cache.disk``: the application cache on disk.
-``cache`` is callable, this allows it to be used as a decorator for caching actions and views.
+``cache``是一个全局对象,在 web2py 执行环境中也可用。它有两个属性:
+- ``cache.ram``: 主内存中的应用程序缓存。
+- ``cache.disk``: 磁盘上的应用程序缓存。
+``cache``是可调用的,这使得它被用来作为缓存动作和视图的装饰器decorator。
 
-The following example caches the ``time.ctime()`` function in RAM:
+下面的例子缓存RAM中的``time.ctime()``函数:
 ``
 def cache_in_ram():
     import time
@@ -1167,9 +1167,9 @@ def cache_in_ram():
     return dict(time=t, link=A('click me', _href=request.url))
 ``:code
 
-The output of ``lambda: time.ctime()`` is cached in RAM for 5 seconds. The string ``'time'`` is used as cache key.
+``lambda: time.ctime()``的输出在 RAM 中被缓存 5s,字符串``'time'``被用作缓存关键字。
 
-The following example caches the ``time.ctime()`` function on disk:
+下面的例子在磁盘上缓存``time.ctime()``函数:
 ``
 def cache_on_disk():
     import time
@@ -1177,14 +1177,14 @@ def cache_on_disk():
     return dict(time=t, link=A('click me', _href=request.url))
 ``:code
 
-The output of ``lambda: time.ctime()`` is cached on disk (using the shelve module) for 5 seconds.
+``lambda: time.ctime()``的输出被缓存在磁盘上(使用shelve模块)5秒。
 
-Note, the second argument to ``cache.ram`` and ``cache.disk`` must be a function or callable object. If you want to cache an existing object rather than the output of a function, you can simply return it via a lambda function:
+注意,``cache.ram``和``cache.disk``的第 2 个参数必须是函数或可调用的对象,如果想缓存现有对象而不是函数的输出,只需通过一个lambda函数将它返回:
 ``
 cache.ram('myobject', lambda: myobject, time_expire=60*60*24)
 ``:code
 
-The next example caches the ``time.ctime()`` function to both RAM and disk:
+下一个例子缓存``time.ctime()``函数到 RAM 和磁盘:
 ``
 def cache_in_ram_and_disk():
     import time
@@ -1192,9 +1192,9 @@ def cache_in_ram_and_disk():
     return dict(time=t, link=A('click me', _href=request.url))
 ``:code
 
-The output of ``lambda: time.ctime()`` is cached on disk (using the shelve module) and then in RAM for 5 seconds. web2py looks in RAM first and if not there it looks on disk. If it is not in RAM or on disk, ``lambda: time.ctime()`` is executed and the cache is updated. This technique is useful in a multiprocessor environment. The two times do not have to be the same.
+``lambda: time.ctime()``的输出缓存在磁盘上(使用shelve模块)，然后在RAM中缓存5秒。web2py首先在RAM中查找，如果不在那里，则在磁盘上查找。如果缓存不在RAM或磁盘上，则执行``lambda: time.ctime()``，并更新缓存。这种技术在多进程环境中很有用。这两次不必相同。
 
-The following example is caching in RAM the output of the controller function (but not the view):
+下面的例子是在RAM中缓存控制器函数(而不是视图)的输出:
 
 ``cache controller``:inxx
 ``
@@ -1205,9 +1205,9 @@ def cache_controller_in_ram():
     return dict(time=t, link=A('click me', _href=request.url))
 ``:code
 
-The dictionary returned by ``cache_controller_in_ram`` is cached in RAM for 5 seconds. Note that the result of a database select cannot be cached without first being serialized. A better way is to cache the database select directly using the ``select`` method's ``cache`` argument.
+``cache_controller_in_ram``返回的字典在RAM中缓存5秒。请注意，如果不首先序列化，数据库选择的结果就不能缓存。更好的方法是使用``select``方法的``cache``参数直接缓存数据库select。
 
-The following example is caching the output of the controller function on disk (but not the view):
+下面的例子是在磁盘上缓存控制器函数的输出(而不是视图):
 ``
 @cache(request.env.path_info, time_expire=5, cache_model=cache.disk)
 def cache_controller_on_disk():
@@ -1216,9 +1216,9 @@ def cache_controller_on_disk():
     return dict(time=t, link=A('click to reload', _href=request.url))
 ``:code
 
-The dictionary returned by ``cache_controller_on_disk``  is cached on disk for 5 seconds. Remember that web2py cannot cache a dictionary that contains un-pickleable objects.
+``cache_controller_on_disk``返回的字典在磁盘上缓存5秒。请记住，web2py不能缓存包含un-pickle对象的字典。
 
-It is also possible to cache the view. The trick is to render the view in the controller function, so that the controller returns a string. This is done by returning ``response.render(d)`` where ``d`` is the dictionary we intended to pass to the view. The following example caches the output of the controller function in RAM (including the rendered view):
+也可以缓存视图。诀窍是在控制器函数中呈现视图，这样控制器就返回一个字符串。通过返回``response.render(d)``完成的,其中``d``是我们打算传递给视图的字典。以下示例将控制器函数的输出缓存到RAM中(包括呈现的视图):
 
 ``cache view``:inxx
 ``
@@ -1229,119 +1229,119 @@ def cache_controller_and_view():
     d = dict(time=t, link=A('click to reload', _href=request.url))
     return response.render(d)
 ``:code
-``response.render(d)`` returns the rendered view as a string, which is now cached for 5 seconds. This is the best and fastest way of caching.
+``response.render(d)``以字符串的形式返回渲染后的视图，现在缓存5秒。这是最好和最快的缓存方式。
 ------
-We recommend [[@cache.action #cache_action]] starting from web2py > 2.4.6
+我们建议[[@cache.action #cache_action]] 从web2py > 2.4.6 开始
 ------
 
-Note, ``time_expire`` is used to compare the current time with the time the requested object was last saved in the cache. It does not affect future requests. This enables ``time_expire`` to be set dynamically when an object is requested rather than being fixed when the object is saved. For example:
+注意，``time_expire``用于将当前时间与请求对象最后一次保存到缓存中的时间进行比较。它不会影响将来的请求。这使得``time_expire``能够在请求对象时动态设置，而不是在保存对象时固定。例如:
 ``
 message = cache.ram('message', lambda: 'Hello', time_expire=5)
 ``:code
 
-Now, suppose the following call is made 10 seconds after the above call:
+现在，假设在上述调用之后10秒钟发出以下调用:
 ``
 message = cache.ram('message', lambda: 'Goodbye', time_expire=20)
 ``:code
 
-Because ``time_expire`` is set to 20 seconds in the second call and only 10 seconds has elapsed since the message was first saved, the value "Hello" will be retrieved from the cache, and it will not be updated with "Goodbye". The ``time_expire`` value of 5 seconds in the first call has no impact on the second call.
+因为在第二次调用中``time_expire``被设置为20秒，并且从第一次保存消息以来只经过了10秒，所以将从缓存中检索值"Hello"，并且不会使用"Goodbye"更新它。第一次调用中的``time_expire``值5秒对第二次调用没有影响。
 
-Setting ``time_expire=0`` (or a negative value) forces the cached item to be refreshed (because the elapsed time since the last save will always be > 0), and setting ``time_expire=None`` forces retrieval of the cached value, regardless of the time elapsed since it was saved (if ``time_expire`` is always ``None``, the cached item will effectively never expire).
+设置``time_expire=0``(或者一个负数)强制更新缓存项目(因为距上次保存所经过的时间总是>0),设置``time_expire=None``强制恢复缓存值,不管距上次保存所经过的时间(如果``time_expire``始终是``None``,缓存项目将有效地永不过期)。
 
-You can clear one or more cache variables with
+您可以使用它清除一个或多个缓存变量
 ``cache clear``:inxx
 
 ``
 cache.ram.clear(regex='...')
 ``:code
 
-where ``regex`` is a regular expression matching all the keys you want removed from the cache. You can also clear a single item with:
+其中``regex``是一个正则表达式，匹配要从缓存中删除的所有键。你也可以用以下方法来清理一个项目:
 ``
 cache.ram(key, None)
 ``:code
 
-where ``key`` is the key of the cached item.
+其中``key``是缓存项的键。
 
-It is also possible to define other caching mechanisms such as memcache. Memcache is available via ``gluon.contrib.memcache`` and is discussed in more detail in Chapter 14.
-
-------
-Be careful when caching to remember that caching is usually at the app-level not at the user level. If you need, for example, to cache user specific content, choose a key that includes the user id.
-------
+还可以定义其他缓存机制，比如memcache。Memcache可以通过``gluon.contrib.memcache``找到。在第14章中有更详细的讨论。
 
 ------
-The admin app for an application lets you view cache keys (and clear the cache). Access it from the database management screen of admin.
+缓存时要小心，要记住缓存通常在应用程序级别，而不是用户级别。例如，如果需要缓存特定于用户的内容，请选择包含用户id的键。
+------
+
+------
+应用程序的admin管理应用允许您查看缓存键(并清除缓存)。从管理员的数据库管理屏幕访问它。
 ------
 
 [[cache_action]]
 #### ``cache.action``
-Web2py by default assumes that the returned content is not going to be cached, as this reduces the shortcomings of an improper caching of the page client-side.
+Web2py默认情况下假定返回的内容不会被缓存，因为这减少了页面客户端不适当缓存的缺点。
 
-For example, when you show a form to the user, or a list of records, the web page should not be cached, as other users may have inserted new records on the table you are showing.
+例如，当向用户显示表单或记录列表时，web页面不应该被缓存，因为其他用户可能已经在显示的表中插入了新记录。
 
-Instead, if you are showing to the user a wiki page whose content will never change (or it changes once a week), it is useful to store that page, but it is even more useful
-to tell the client that that page is not going to change.
+相反，如果您要向用户显示一个内容永远不会改变的wiki页面(或者每周更改一次)，那么存储该页面是有用的，
+但是告诉客户端该页面不会更改则更有用。
 
-This is accomplished sending out some specific headers along with the page: when the client's browser receives the content, it is stored in the browser's cache and it will not be requested again
-to your site. Of course this is a **major** speedup for public-facing sites.
+这是通过发送一些特定的标头来完成的:当客户机的浏览器接收到内容时，它被存储在浏览器的缓存中，不会再次被请求
+你的网站。当然，对于面向公众的网站来说，这是一个**主要的**加速方式。
 
-Web2py > 2.4.6 introduced a new ``cache.action`` decorator to allow a smarter handling of this situation.
-``cache.action`` can be used:
-- for setting smart cache headers
-- to cache the results accordingly
+Web2py > 2.4.6 引入了一个新的``cache.action``装饰器decorator允许更聪明地处理这种情况。
+``cache.action`` 可以使用:
+- 用于设置智能缓存标头
+- 相应地缓存结果
 ------
-NB: it will do one or another or **both**.
+注:它会做一个或另一个或**两者都**使用。
 ------
-The main problem with caching a view with ``@cache(request.env.path_info, time_expire=300, cache_model=cache.ram)`` is that request.env.path_info as a key leads to several problems, e.g.
-+ URL vars are not considered
-  -- You cached the result of ''/app/default/index?**search=foo**'' : for the next 300 seconds ''/app/default/index?**search=bar**'' will return the exact same thing of ''/app/default/index?**search=foo**''
-+ User is not considered
-  -- Your user accesses a page often and you choose to cache it.
-     However, you cached the result of ''/app/default/index'' using request.env.path_info as the key, so another user
-     will see a page that was not meant for him
-  -- You cached a page for "Bill", but "Bill" accessed the page from the desktop. Now he tries to access it from his phone: if you prepared a template
-     for mobile users that is different from the standard one, "Joe" will not see it
-+ Language is not considered
-  -- When you cache the page, if you use T() for some elements, the page will be stored with a fixed translation
-+ Method is not considered
-  -- When you cache a page, you should only cache it if it's a result of a GET operation
-+ Status code is not considered
-  -- When you cached the page for the first time, something went wrong and you returned a nice 404 page.
-     You don't want to cache errors ^_^
+用``@cache(request.env.path_info, time_expire=300, cache_model=cache.ram)``缓存视图的主要问题是request.env.path_info作为一个关键会导致几个问题，例如。
++ URL参数vars不被考虑
+  -- 您缓存了''/app/default/index?**search=foo**''的结果:在接下来的300秒内''/app/default/index?**search=bar**''将返回完全相同的''/app/default/index?**search=foo**''
++ 用户不被考虑
+  -- 用户经常访问一个页面，然后选择缓存它。
+     但是，使用request.env.path_info作为键缓存''/app/default/index''的结果，所以是另一个用户
+     将会看到不适合他的页面
+  -- 您缓存了一个"Bill"页面，但是"Bill"从桌面访问了该页面。现在，他试图从他的手机访问它:如果你为
+     移动用户准备一个不同于标准的模板，"Joe"将不会看到它
++ 语言不被考虑
+  -- 当缓存页面时，如果对某些元素使用T()，页面将以固定的转换方式存储
++方法未被考虑
+  -- 当缓存一个页面时，只有当它是GET操作的结果时，才应该缓存它
++ 状态代码未被考虑
+  -- 当您第一次缓存页面时，出现了一些问题，您返回了一个404页面。
+     你不想缓存错误^_^
 
-Instead of letting users write a lot of boilerplate code to take care of all those problems, ``cache.action`` was created.
-It will by default use smart cache headers to let the browser cache the result: if you pass a cache model to it, it will also figure out the best key automatically,
-so different versions of the same page can be stored and retrieved accordingly (e.g. one for English users and one for Spanish ones)
+不是让用户编写大量的样板代码来解决这些问题，而是创建了``cache.action``。
+默认情况下，它会使用智能缓存标头让浏览器缓存结果:如果你向它传递一个缓存模型，它也会自动找出最佳的键，
+因此，同一个页面的不同版本可以相应地存储和检索(例如，一个用于英语用户，一个用于西班牙语用户)
 
-It takes several parameters, with smart defaults:
+它需要几个参数，具有智能默认值：
 
-- time_expire : the usual, defaults to 300 seconds
-- cache_model : by default is None. This means that @cache.action will **only** alter the default headers to let the client's browser cache the content
-    -- if you pass, e.g., ``cache.ram``, the result will be stored in the cache as well
-- prefix : if you want to prefix the auto-generated key (useful for clearing it later with, e.g. ``cache.ram.clear(prefix*)``)
-- session : if you want to consider the session, defaults to False
-- vars : if you want to consider URL vars, defaults to True
-- lang : if you want to consider the language, defaults to True
-- user_agent : if you want to consider the user agent, defaults to False
-- public : if you want the same page for all the users that will ever access it, defaults to True
-- valid_statuses : defaults to None. cache.client will cache only pages requested with a GET method, whose status codes begin with 1,2 or 3.
-  You can pass a list of status codes (when you want pages to be cached with those statuses, e.g. status_codes=[200] will cache only pages
-  that resulted in a 200 status code)
-- quick : defaults to None, but you can pass a list of initials to set a particular feature:
+- time_expire : 通常默认为300秒
+- cache_model : 默认情况下为None。这意味着@cache.action**只会**改变默认的头信息，让客户端浏览器缓存内容
+    -- 如果其它，例如，``cache.ram``，结果也将被存储在缓存中。
+- prefix : 如果您想自动生成带前缀的键（稍后用于清除它，例如``cache.ram.clear(prefix*)``）
+- session : 如果你想考虑session会话，默认为False
+- vars : 如果你想考虑URL参数vars，默认为True
+- lang : 如果你想考虑语言，默认为True
+- user_agent : 如果您想考虑user agent用户代理，默认为false
+- public :如果您想让所有用户访问同一个页面，默认为True
+- valid_statuses : 默认为None。cache.client将仅缓存使用GET方法请求的页面，GET方法的状态代码以1、2或3开头。
+  您可以传递一个状态码列表(当您希望使用这些状态缓存页面时，例如status_codes=[200]将只缓存
+  产生200状态码的页面)
+- quick : 默认为None，但您可以传递一个首字母列表来设置一个特定的特性::
   -- **S**ession, **V**ars, **L**ang, **U**ser_agent, **P**ublic
-     e.g. ``@cache.action(time_expire=300, cache_model=cache.ram, quick='SVP')`` is the same as
+     例如. ``@cache.action(time_expire=300, cache_model=cache.ram, quick='SVP')`` 等价于
      ``@cache.action(time_expire=300, cache_model=cache.ram, session=True, vars=True, public=True)``
 
-"Consider" means for e.g. **vars**, that you want to cache different pages if **vars** are different,
-so  ''/app/default/index?**search=foo**'' will not be the same one for ''/app/default/index?**search=bar**''
-Some settings override others, so, e.g., if you set ``session=True, public=True`` the latter will be discarded.
-Use them wisely!
+"考虑"的意思是，如果**vars**不同，您想缓存不同的页面，
+所以对于''/app/default/index?**search=foo**''和''/app/default/index?**search=bar**''就不一样了
+有些设置会覆盖其他设置，例如，如果您设置``session=True, public=True``，那么后者将被丢弃。
+正确地使用它们吧!
 
 [[URL]]
-### ``URL``
+### ``URL``统一资源定位符
 ``URL``:inxx
-The ``URL`` function is one of the most important functions in web2py. It generates internal URL paths for the actions and the static files.
+``URL``函数是 web2py 中最重要的函数之一。它为动作和静态文件生成内部 URL 路径。
 
-Here is an example:
+下面是一个例子:
 
 ``
 URL('f')
