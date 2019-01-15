@@ -1347,130 +1347,130 @@ Web2py > 2.4.6 引入了一个新的``cache.action``装饰器decorator允许更�
 URL('f')
 ``:code
 
-is mapped into
+映射到
 
 ``
 /[application]/[controller]/f
 ``:code
 
-Notice that the output of the ``URL`` function depends on the name of the current application, the calling controller, and other parameters. web2py supports URL mapping and reverse URL mapping. URL mapping allows you to redefine the format of external URLs. If you use the ``URL`` function to generate all the internal URLs, then additions or changes to URL mappings will prevent broken links within the web2py application.
+注意，``URL``函数的输出取决于当前应用程序的名称、调用控制器和其他参数。web2py支持URL映射和反向URL映射。URL映射允许您重新定义外部URL的格式。如果使用``URL``函数生成所有内部URL，那么对URL映射的添加或更改将防止破坏web2py应用程序中的链接。
 
 You can pass additional parameters to the ``URL`` function, i.e., extra terms in the URL path (args) and URL query variables (vars):
-
+您可以向 ``URL`` 函数传递额外的参数，即， URL路径(args)和URL查询变量(vars):
 ``
 URL('f', args=['x', 'y'], vars=dict(z='t'))
 ``:code
 
-is mapped into
+映射到
 
 ``
 /[application]/[controller]/f/x/y?z=t
 ``:code
 
-The ``args`` attributes are automatically parsed, decoded, and finally stored in ``request.args`` by web2py. Similarly, the ``vars`` are parsed, decoded, and then stored in ``request.vars``.
-``args`` and ``vars`` provide the basic mechanism by which web2py exchanges information with the client's browser.
+ ``args`` 属性会自动解析、解码，最后存储在web2py的 ``request.args`` 中。同样， ``vars`` 也被解析、解码，然后存储在``request.vars``中。
+``args`` 和 ``vars`` 提供了web2py与客户端浏览器交换信息的基本机制。
 
-If args contains only one element, there is no need to pass it in a list.
+如果args只包含一个元素，则不需要在列表中传递它。
 
-You can also use the ``URL`` function to generate URLs to actions in other controllers and other applications:
+你也可以使用 ``URL`` 函数来生成URL到其他控制器和其他应用程序中的动作:
 
 ``
 URL('a', 'c', 'f', args=['x', 'y'], vars=dict(z='t'))
 ``:code
 
-is mapped into
+映射到
 
 ``
 /a/c/f/x/y?z=t
 ``
 
-It is also possible to specify application, controller and function using named arguments:
+还可以使用命名参数指定应用程序、控制器和函数:
 
 ``
 URL(a='a', c='c', f='f')
 ``:code
 
-If the application name ''a'' is missing the current app is assumed.
+如果应用程序名称 ''a'' 缺失，则假定当前应用程序。
 
 ``
 URL('c', 'f')
 ``:code
 
-If the controller name ''c'' is missing, the current one is assumed.
+如果缺少控制器名称 ''c'' ，则假定是当前的。
 
 ``
 URL('f')
 ``:code
 
-Instead of passing the name of a controller function it is also possible to pass the function itself
+与其传递控制器函数的名称，还可以传递函数本身
 
 ``
 URL(f)
 ``:code
 
-For the reasons mentioned above, you should always use the ``URL`` function to generate URLs of static files for your applications. Static files are stored in the application's ``static`` subfolder (that's where they go when uploaded using the administrative interface). web2py provides a virtual 'static' controller whose job is to retrieve files from the ``static`` subfolder, determine their content-type, and stream the file to the client. The following example generates the URL for the static file "image.png":
+基于上述原因，您应该始终使用``URL`` 函数为您的应用程序生成静态文件的URL。静态文件存储在应用程序的``static``静态子文件夹中(当使用admin管理界面上传时，它们会被存储在该子文件夹中)。web2py提供了一个虚拟的'static'静态控制器，其工作是从``static``静态子文件夹中检索文件，确定它们的内容类型，并将文件流传输到客户端。下面的示例生成静态文件"image.png"的URL:
 
 ``
 URL('static', 'image.png')
 ``:code
 
-is mapped into
+映射到
 
 ``
 /[application]/static/image.png
 ``:code
 
-If the static file is in a subfolder within the ``static`` folder, you can include the subfolder(s) as part of the filename. For example, to generate:
+如果静态文件位于``static``静态文件夹中的子文件夹中，则可以将子文件夹作为文件名的一部分。例如，生成:
 
 ``
 /[application]/static/images/icons/arrow.png
 ``
 
-one should use:
+每个人都应该使用:
 
 ``
 URL('static', 'images/icons/arrow.png')
 ``:code
 
-You do not need to encode/escape the ``args`` and ``vars`` arguments; this is done automatically for you.
+你不需要编码/转义``args`` 和 ``vars`` 参数;这是自动为你做的。
 
-By default, the extension corresponding to the current request (which can be found in ``request.extension``) is appended to the function, unless request.extension is html, the default. This can be overridden by explicitly including an extension as part of the function name ``URL(f='name.ext')`` or with the extension argument:
+默认情况下，与当前请求相对应的扩展(可以在``request.extension``中找到)被追加到函数中，除非request.extension是默认的html。这可以通过显式地包括扩展作为函数名 ``URL(f='name.ext')`` 的一部分或使用扩展参数来覆盖:
 ``
 URL(..., extension='css')
 ``:code
 
-The current extension can be explicitly suppressed:
+可以显式地抑制当前扩展:
 ``
 URL(..., extension=False)
 ``:code
 
-#### Absolute urls
+#### 绝对url
 
-By default, ``URL`` generates relative URLs. However, you can also generate absolute URLs by specifying the ``scheme`` and ``host`` arguments (this is useful, for example, when inserting URLs in email messages):
+默认情况下，``URL``生成相对URL。不过，您也可以通过指定``scheme``和``host``参数来生成绝对url(例如，在电子邮件消息中插入url时，这很有用):
 
 ``
 URL(..., scheme='http', host='www.mysite.com')
 ``:code
 
-You can automatically include the scheme and host of the current request by simply setting the arguments to ``True``.
+您可以通过简单地将参数设置为``True``来自动包括方案和当前请求的主机。
 
 ``
 URL(..., scheme=True, host=True)
 ``:code
 
-The ``URL`` function also accepts a ``port`` argument to specify the server port if necessary.
+``URL``函数还接受``port``端口参数，以便在必要时指定服务器端口。
 
-#### Digitally signed urls
+#### 数字签名的url
 ``digitally signed URL``:inxx
 
-When generating a URL, you have the option to digitally sign it. This will append a ``_signature`` GET variable that can be verified by the server. This can be done in two ways.
+在生成URL时，您可以选择对其进行数字签名。这将附加一个``_signature``GET变量，可以由服务器验证。这可以通过两种方式实现。
 
-You can pass to the URL function the following arguments:
-- ``hmac_key``: the key for signing the URL (a string)
-- ``salt``: an optional string to salt the data before signing
-- ``hash_vars``: an optional list of names of variables from the URL query string (i.e., GET variables) to be included in the signature. It can also be set to ``True`` (the default) to include all variables, or ``False`` to include none of the variables.
+您可以将以下参数传递给URL函数:
+- ``hmac_key``: 签署名URL的密钥(一个字符串)
+- ``salt``: 一个可选的字符串，用于在签名前对数据进行salt处理
+- ``hash_vars``: 来自 URL 查询字符串的变量名可选列表(即 GET 变量)要包含在签名中,也可以将它设置成``True`` ,以包含全部变量;或``False``,以不包含任何变量。
 
-Here is an example of usage:
+下面是一个用法的例子:
 
 ``
 KEY = 'mykey'
@@ -1480,18 +1480,18 @@ def one():
 
 def two():
     if not URL.verify(request, hmac_key=KEY): raise HTTP(403)
-    # do something
+    # 这块可以做一些事情
     return locals()
 ``:code
 
-This makes the action ``two`` accessible only via a digitally signed URL. A digitally signed URL looks like this:
+这使得动作 ``two`` 只能通过数字签名URL访问。数字签名URL如下:
 ``
 '/welcome/default/two?a=123&_signature=4981bc70e13866bb60e52a09073560ae822224e9'
 ``
 
-Note, the digital signature is verified via the ``URL.verify`` function. ``URL.verify`` also takes the ``hmac_key``, ``salt``, and ``hash_vars`` arguments described above, and their values must match the values that were passed to the ``URL`` function when the digital signature was created in order to verify the URL.
+注意，数字签名是通过``URL.verify``函数验证。``URL.verify`` 还使用上面描述的``hmac_key``、``salt``和``hash_vars``参数，其值必须与数字签名创建时传递给 ``URL`` 函数的值匹配，以验证URL。
 
-A second and more sophisticated but more common use of digitally signed URLs is in conjunction with Auth. This is best explained with an example:
+第二个更复杂但更常见的数字签名url与Auth一起使用。最好用一个例子来解释:
 
 ``
 @auth.requires_login()
@@ -1500,28 +1500,28 @@ def one():
 
 @auth.requires_signature()
 def two():
-    # do something
+    # 这块可以做一些事情
     return locals()
 ``:code
 
-In this case the ``hmac_key`` is automatically generated and shared within the session. This allows action ``two`` to delegate any access control to action ``one``. If the link is generated and signed, it is valid; else it is not. If the link is stolen by another user, the link will be invalid.
+在这种情况下，``hmac_key`` 会自动生成并在会话中共享。这允许action ``two``将任何访问控制委托给action ``one``。如果该链接被生成并签名，它是有效的;否则就不是。如果该链接被其他用户窃取，该链接将无效。
 
-It is good practice to always digitally sign Ajax callbacks. If you use the web2py ``LOAD`` function, it has a ``user_signature`` argument too that can be used for this purpose:
+总是对Ajax回调进行数字签名是很好的实践。如果你使用web2py``LOAD``函数，它也有一个``user_signature``参数，可以用于这个目的:
 
 ``
 {{=LOAD('default', 'two', vars=dict(a=123), ajax=True, user_signature=True)}}
 ``
 
-### ``HTTP`` and ``redirect``
+### ``HTTP``和重定向``redirect``
 ``HTTP``:inxx ``redirect``:inxx
 
-web2py defines only one new exception called ``HTTP``. This exception can be raised anywhere in a model, a controller, or a view with the command:
+web2py只定义了一个名为``HTTP``的新异常。这个异常可以用以下命令在模型、控制器或视图的任何地方引发:
 
 ``
 raise HTTP(400, "my message")
 ``:code
 
-It causes the control flow to jump away from the user's code, back to web2py, and return an HTTP response like:
+它导致控制流从用户的代码跳到web2py，并返回HTTP响应，如下所示:
 ``
 HTTP/1.1 400 BAD REQUEST
 Date: Sat, 05 Jul 2008 19:36:22 GMT
@@ -1534,13 +1534,13 @@ Transfer-Encoding: chunked
 my message
 ``:code
 
-The first argument of ``HTTP`` is the HTTP status code. The second argument is the string that will be returned as the body of the response. Additional optional named arguments are used to build the response HTTP header.
-For example:
+``HTTP``的第一个参数是HTTP状态码。第二个参数是作为响应主体返回的字符串。附加的可选命名参数用于构建响应HTTP头。
+例如:
 ``
 raise HTTP(400, 'my message', test='hello')
 ``:code
 
-generates:
+生成:
 ``
 HTTP/1.1 400 BAD REQUEST
 Date: Sat, 05 Jul 2008 19:36:22 GMT
